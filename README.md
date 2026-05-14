@@ -1,0 +1,339 @@
+# Mecha Suit
+
+Mecha Suit is a reusable skill harness for Codex-first development. It gives your coding agent a small, opinionated set of global skills for deciding what kind of work is being requested, clarifying vague tasks, doing specialist work, and escalating only genuinely cross-domain problems.
+
+Authorship note: Mecha Suit was vibe-coded by Codex and human-QC'ed by the maintainer.
+
+## Read This First
+
+Mecha Suit is not magic safety. It does not make an agent correct, harmless, or production-ready by default. It gives the agent better instructions and cleaner routing boundaries so it is less likely to sprawl, guess silently, or use the wrong mode of work.
+
+You still need to:
+
+- read commands before running them
+- inspect diffs before accepting changes
+- run tests before trusting output
+- keep secrets and private infrastructure out of global reusable skills
+- write repo-local instructions for project-specific facts
+
+If you are vibecoding fast, Mecha Suit is the seatbelt, not the driver.
+
+## What This Is
+
+Mecha Suit is a version-controlled library of reusable agent skills.
+
+The basic model:
+
+1. Keep this repository somewhere you control.
+2. Install the skill folders as symlinks into an agent skill directory.
+3. Put project-specific facts in each project's `AGENTS.md` or in repo-local adapter skills.
+4. Let the global skills provide reusable behavior: routing, clarification, engineering workflows, CTF workflows, ML workflows, and cross-domain council synthesis.
+
+The harness is designed for Codex first, while keeping the skill documents portable enough to adapt to other agent hosts later.
+
+## What This Is Not
+
+Mecha Suit is not:
+
+- a replacement for code review
+- a replacement for tests
+- a prompt that should contain every fact about every project
+- a permission slip to run destructive commands blindly
+- a subagent free-for-all
+- a production framework or package manager
+
+The global skills should stay generic. Local facts belong locally.
+
+## Quick Start
+
+From this repository:
+
+```bash
+./test.sh
+```
+
+This verifies the harness before you install anything. It checks script syntax, skill names, routing layout, subagent boundaries, and install/uninstall behavior against a temporary skill root.
+
+Install every skill into the default Codex skill root:
+
+```bash
+./install.sh
+```
+
+By default, this creates symlinks under:
+
+```text
+$CODEX_HOME/skills, when CODEX_HOME is set
+$HOME/.codex/skills, otherwise
+```
+
+On Windows, run the scripts from WSL, Git Bash, MSYS, or Cygwin. The installer
+uses the Bash-visible home directory, and converts `USERPROFILE` to a Unix-style
+path in common Windows Bash shells when possible.
+
+Install only selected skills:
+
+```bash
+./install.sh task-router task-clarifier interdisciplinary-council
+```
+
+Install into a custom skill root:
+
+```bash
+MECHA_SKILL_ROOT="$HOME/.codex/skills" ./install.sh
+```
+
+Install into the legacy compatibility root:
+
+```bash
+MECHA_SKILL_ROOT="$HOME/.agents/skills" ./install.sh
+```
+
+Uninstall every managed symlink:
+
+```bash
+./uninstall.sh
+```
+
+Uninstall from a custom skill root:
+
+```bash
+MECHA_SKILL_ROOT="$HOME/.codex/skills" ./uninstall.sh
+```
+
+The install scripts are intentionally conservative. They skip unrelated files, directories, and symlinks instead of overwriting them.
+
+## How Installation Works
+
+`install.sh` discovers skills by looking for:
+
+```text
+families/*/*/SKILL.md
+```
+
+Each skill directory is symlinked into the selected skill root. The selected root is:
+
+1. `MECHA_SKILL_ROOT`, when set.
+2. `$CODEX_HOME/skills`, when `CODEX_HOME` is set.
+3. `$HOME/.codex/skills`, otherwise.
+
+For Windows Git Bash, MSYS, or Cygwin, the default root is the Unix-style path
+for `%USERPROFILE%\.codex\skills` when `USERPROFILE` can be converted.
+
+The installer is idempotent. Running it twice should report already-installed skills, not duplicate anything.
+
+`uninstall.sh` removes only symlinks that point back to skill directories in this repository. If it sees a real file, directory, or symlink owned by something else, it skips it.
+
+## How The Harness Is Organized
+
+Mecha Suit is organized into skill families:
+
+- `families/routing/`: cheap task selection and ambiguity repair.
+- `families/council/`: controlled multi-specialist synthesis.
+- `families/engineering/`: fully authored leaves for existing-codebase changes and small prototypes.
+- `families/ctf/`: fully authored leaves for challenge triage, reverse engineering, binary exploitation, cryptography, web exploitation, forensics, AI/ML security, and miscellaneous challenges.
+- `families/ml/`: stub leaves for dataset triage, classical baselines, and deep learning experiments.
+
+The top layer is a routing family, not an orchestration family. The original `orchestration/intake-router` sketch became `routing/task-router` because this layer should classify and hand off, not solve tasks or coordinate hidden work.
+
+Current status: the ML specialist leaves are contract-complete stubs. Each one should literally say `This is a stub. NEVER CALL THIS SKILL.` until it is fully authored. The engineering and CTF specialist leaves are fully authored.
+
+## Which Skill Do I Use?
+
+Use `task-router` when you do not know which skill fits.
+
+Examples:
+
+- "Which skill should handle adding auth to this repo?"
+- "Is this CTF prompt reverse, pwn, or something else?"
+- "I have a dataset and want to model churn. Where do I start?"
+
+Use `task-clarifier` when the request is too vague to route safely.
+
+Examples:
+
+- "Improve my project."
+- "Make this better."
+- "Help with this dataset" without a dataset path, target, or metric.
+- "Train a model for this dataset" while the ML leaves are still stubs.
+
+Do not call the current ML specialist leaves directly. They are architecture placeholders, not callable skills. Engineering specialist leaves (`large-codebase-change`, `prototype-builder`) and CTF specialist leaves (`ctf-triage`, `reverse-ctf`, `pwn-ctf`, `crypto-ctf`, `web-ctf`, `forensics-ctf`, `ai-ctf`, `misc-ctf`) are fully authored and callable.
+
+Use `interdisciplinary-council` rarely. It is for tasks that genuinely need multiple specialist perspectives, and only when the relevant non-council leaves are fully authored. It is not the fallback for confusion; use `task-clarifier` for confusion.
+
+## Responsible Use
+
+Before asking an agent to work in a repository:
+
+1. Read that repository's `AGENTS.md`.
+2. Confirm setup, test, lint, and run commands.
+3. Tell the agent what files or areas are out of scope.
+4. Run `./test.sh` in this harness after editing the harness.
+5. Inspect diffs before committing or deploying.
+
+Do not paste secrets into global skills. Do not hardcode private company systems in global skills. Do not turn one project's local quirks into reusable rules for every future project.
+
+If a command sounds destructive, ask the agent to explain it first. If a change affects data, auth, billing, deployments, or security boundaries, slow down and verify.
+
+## Persistence, Not Flailing
+
+Mecha Suit expects agents to keep working while the work is evidence-producing. Useful progress means new evidence, narrower uncertainty, an improved artifact, an invalidated assumption, a clearer next action, or a risk surfaced with evidence.
+
+Mecha Suit also expects agents to stop before hallucinating, repeating failed moves, or broadening scope irresponsibly. Yielding is allowed only after bounded, distinct attempts and a concise record of attempts, evidence, blocker, and next recovery step.
+
+Hard, uncertain, or incomplete work is not enough reason to stop. The agent must show why another in-scope attempt would repeat prior work, require unsafe guessing, or need input it cannot discover.
+
+## Common Workflows
+
+Install all skills:
+
+```bash
+./install.sh
+```
+
+Install selected skills:
+
+```bash
+./install.sh task-router task-clarifier interdisciplinary-council
+```
+
+Use a custom skill root:
+
+```bash
+MECHA_SKILL_ROOT="/path/to/skills" ./install.sh
+```
+
+Add a repo-local `AGENTS.md`:
+
+1. Copy `templates/repo-AGENTS.template.md` into the target repository as `AGENTS.md`.
+2. Fill in local commands, paths, generated-file rules, and guardrails.
+3. Keep reusable methods out of the local file.
+
+Create a repo-local adapter skill:
+
+1. Copy `templates/repo-adapter-skill.template.md` into the target repository's local skill area.
+2. Point it at one global skill.
+3. Add only local context: commands, paths, conventions, constraints.
+
+Add or edit a global skill:
+
+1. Read `AGENTS.md` in this repository.
+2. Start specialist leaves from `templates/leaf-skill.template.md`.
+3. Keep the skill narrow.
+4. Leave the exact stub warning in place until the leaf is fully authored.
+5. Update routing examples and README when the visible skill set changes.
+6. Run `./test.sh`.
+
+Uninstall safely:
+
+```bash
+./uninstall.sh
+```
+
+If you installed with `MECHA_SKILL_ROOT`, uninstall with the same value.
+
+## What Goes Where
+
+- `SKILL.md`: runtime behavior, trigger boundaries, input needs, output contract, done conditions.
+- `references/`: passive checklists, rubrics, examples, and decision aids.
+- `scripts/`: deterministic helpers that remove repeated procedural work.
+- `templates/`: repeatable authoring patterns.
+- `docs/`: human-facing maintenance and platform notes.
+- `agents/`: host metadata only when it materially improves routing or invocation behavior. Routing, council, and fully authored CTF specialists currently use Codex metadata; engineering leaves and ML stubs rely on frontmatter.
+- `AGENTS.md`: rules for developing this harness itself.
+- `PROMPT.md`: original scaffold prompt, kept as project history.
+
+Do not hide active runtime instructions in `references/`. Do not add scripts unless they improve repeatability. Do not add `agents/` metadata to specialist leaves by default; add it only when a fully authored leaf materially benefits from host display or invocation metadata. Do not remove `This is a stub. NEVER CALL THIS SKILL.` until a leaf is fully authored.
+
+## Verify Changes
+
+Run:
+
+```bash
+./test.sh
+```
+
+The test harness checks:
+
+- shell syntax for executable scripts
+- `SKILL.md` frontmatter names against folder names
+- required routing and council layout
+- absence of `families/orchestration/`
+- non-council subagent boundary rules
+- install behavior against a temporary skill root
+- idempotent reinstall
+- selected-skill install
+- missing-skill failure
+- unrelated file and symlink protection
+- managed uninstall behavior
+
+Add focused checks to `test.sh` when a new executable invariant is introduced.
+
+## Troubleshooting
+
+### The skill root is wrong
+
+Set `MECHA_SKILL_ROOT` explicitly:
+
+```bash
+MECHA_SKILL_ROOT="/path/to/skills" ./install.sh
+```
+
+Use the same value for uninstalling.
+
+### Install skipped an existing file
+
+The installer refuses to overwrite unrelated files or directories. Inspect the skipped path. Move it yourself if it is safe, then rerun install.
+
+### Install skipped an unrelated symlink
+
+The target name already points somewhere else. The harness will not steal it. Inspect the link with:
+
+```bash
+ls -l "$HOME/.codex/skills/<skill-name>"
+```
+
+Then decide whether to keep it, rename it, or remove it manually.
+
+### Uninstall skipped a symlink
+
+The symlink does not point back to this checkout. That means it is not managed by this harness. Remove it manually only if you are sure it is not needed.
+
+### A skill does not trigger
+
+Check that the skill is installed in the skill root your agent host actually reads. Then check the skill frontmatter `name` and `description` in its `SKILL.md`.
+
+If the task is vague, use `task-router` or `task-clarifier` explicitly.
+
+### `./test.sh` fails
+
+Read the failing `[fail]` line first. The test harness is intentionally small; failures usually mean one of these changed:
+
+- a script has invalid shell syntax
+- a skill folder name and frontmatter name diverged
+- routing/council layout changed
+- a non-council skill appears to authorize subagents
+- install/uninstall safety behavior regressed
+
+Fix the cause, then rerun:
+
+```bash
+./test.sh
+```
+
+## Architectural Rules
+
+- Routing stays narrow, cheap, context-efficient, non-specialist, and non-subagentic.
+- `task-clarifier` repairs routing ambiguity; it is not a domain solver.
+- Only `interdisciplinary-council` may use subagents.
+- Council is for genuine cross-domain work, not ordinary ambiguity.
+- Specialist leaves do one job well.
+- Runtime behavior belongs in `SKILL.md`.
+- Repo-maintenance policy belongs in `AGENTS.md` and `docs/`.
+- Project-specific facts belong in repo-local instructions or adapter skills.
+
+## Repository Development
+
+Before meaningful changes, read `AGENTS.md`. It defines the rules for developing this harness.
+
+Use `docs/maintenance-playbook.md` for skill maintenance workflow and `docs/platform-notes.md` for host-specific notes.

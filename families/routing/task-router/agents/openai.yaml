@@ -1,0 +1,6 @@
+interface:
+    display_name: "Task Router"
+    short_description: "Choose the next skill cheaply"
+    default_prompt: "Use $task-router to select the next skill and emit a compact handoff."
+policy:
+    allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+    display_name: "Task Clarifier"
+    short_description: "Reduce ambiguity before routing"
+    default_prompt: "Use $task-clarifier to turn an unclear task into a clean next-step framing."
+policy:
+    allow_implicit_invocation: true
