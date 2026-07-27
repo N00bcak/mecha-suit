@@ -35,6 +35,8 @@ families/council/
 - This is the only family allowed to use subagents.
 - Council is not a fallback for ambiguity; use `task-clarifier` first.
 - Council subagents must inherit from fully authored non-council leaves.
+- `product-co-design` is eligible to provide a product perspective.
+- `interview-me` is never council-eligible.
 - Stub leaves, router, and clarifier cannot be inherited as council subagents.
 - The council layer synthesizes; subagents do not synthesize each other.
 

@@ -35,6 +35,7 @@ Allowed subagent archetypes must inherit from exactly one fully authored non-cou
 
 Currently eligible inherited leaves:
 
+- `product-co-design`
 - `large-codebase-change`
 - `prototype-builder`
 - `ctf-triage`
@@ -48,7 +49,9 @@ Currently eligible inherited leaves:
 
 Do not use stub specialist leaves as council subagents. The current ML specialist leaves are marked `This is a stub. NEVER CALL THIS SKILL.` and therefore must not be inherited until they are fully authored.
 
-Do not inherit from `task-router`, `task-clarifier`, or any stub leaf. Do not create council-specific subagent roles. The council itself is not one of the inherited leaves.
+Do not inherit from `task-router`, `task-clarifier`, `interview-me`, or any stub
+leaf. Do not create council-specific subagent roles. The council itself is not
+one of the inherited leaves.
 
 ## Spawning Policy
 

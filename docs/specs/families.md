@@ -3,7 +3,8 @@
 ## Purpose
 
 `families/` is the core skill library. It groups runtime skills by architectural
-role: routing, council synthesis, engineering work, CTF work, and ML stubs.
+role: routing, council synthesis, collaboration, engineering work, CTF work,
+and ML stubs.
 
 ## Architecture Tree
 
@@ -14,6 +15,9 @@ families/
         task-clarifier/
     council/
         interdisciplinary-council/
+    collaboration/
+        interview-me/
+        product-co-design/
     engineering/
         large-codebase-change/
         prototype-builder/
@@ -48,6 +52,7 @@ Each skill folder may contain:
 - Keep skill boundaries explicit enough for cheap routing.
 - Separate active execution behavior from passive references.
 - Keep specialist leaves narrow and composable.
+- Preserve explicit-only invocation for specialist modes that should never be inferred.
 
 ## Strengths
 
@@ -60,6 +65,7 @@ Each skill folder may contain:
 
 - Top layer is `routing/`, not orchestration.
 - Only `interdisciplinary-council` may use subagents.
+- `interview-me` is explicit-invocation-only.
 - Specialist leaves do one job well.
 - Runtime behavior belongs in `SKILL.md`.
 - Passive background belongs in `references/`.

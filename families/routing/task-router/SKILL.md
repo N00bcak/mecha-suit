@@ -25,6 +25,7 @@ This skill is a router, not an orchestrator.
 
 | Signal | Select |
 | --- | --- |
+| Product idea, service, workflow, or experience needs concept shaping, assumption testing, tradeoff analysis, validation planning, or constructive critique | `product-co-design` |
 | Existing codebase change, integration work, systems-heavy engineering, migrations, shared contracts, tests, refactors | `large-codebase-change` |
 | Small greenfield build, prototype, demo, utility, or app likely under about 1kLoC | `prototype-builder` |
 | CTF challenge with unknown or ambiguous category | `ctf-triage` |
@@ -40,6 +41,8 @@ This skill is a router, not an orchestrator.
 | Clearly deep learning experiment after dataset and objective are known while `deep-learning-experiment` remains a stub | `task-clarifier` |
 | Mixed, unclear, underspecified, conflicting, or missing key artifact/objective | `task-clarifier` |
 | Genuine cross-domain work requiring multiple specialist interpretations or reconciliation when the relevant non-council leaves are fully authored | `interdisciplinary-council` |
+
+`interview-me` is explicit-invocation-only. Never select it through routing.
 
 ## Minimal Context Policy
 

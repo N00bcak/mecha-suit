@@ -14,7 +14,7 @@ This skill improves routing quality. It is not a domain specialist and does not 
 ## Hard Rules
 
 - Do not solve the domain task.
-- Do not import engineering, CTF, ML, or council playbooks.
+- Do not import collaboration, engineering, CTF, ML, or council playbooks.
 - Do not produce broad implementation plans.
 - Do not use, spawn, request, or rely on subagents.
 - Ask at most one user question, and only when no reasonable next step can be framed.

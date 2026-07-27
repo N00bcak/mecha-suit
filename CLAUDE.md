@@ -24,13 +24,14 @@ Always run `./test.sh` after any harness edit.
 
 - **`routing/`** — Fully authored. `task-router` (classify and hand off, must stay cheap/narrow/non-subagentic) and `task-clarifier` (ambiguity repair, not a domain solver).
 - **`council/`** — Fully authored. `interdisciplinary-council` is the **only** skill allowed to use subagents. Reserved for genuine multi-specialist work.
+- **`collaboration/`** — Fully authored. `interview-me` (explicit-invocation-only scoped interviewing) and `product-co-design` (conversation-first product concept development and critique).
 - **`engineering/`** — Fully authored. `large-codebase-change` (existing-codebase modifications, integration, migrations) and `prototype-builder` (small greenfield prototypes under ~1kLoC). Both enforce session continuity via scratchpads, code correctness, and asymptotic sanity.
 - **`ctf/`** — Fully authored. Specialist leaves for challenge triage, reverse engineering, binary exploitation, cryptography, web exploitation, forensics, AI/ML security, and miscellaneous challenges.
 - **`ml/`** — Contract-complete stubs. Each contains `This is a stub. NEVER CALL THIS SKILL.` and must not be routed to or used as council subagents until fully authored.
 
 ### Skill folder structure
 
-Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for routing, council, and fully authored CTF specialists; engineering leaves and ML stubs rely on frontmatter only.
+Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for routing, council, and fully authored CTF specialists; collaboration and engineering leaves and ML stubs rely on frontmatter only.
 
 ### Shared resources
 

@@ -1,5 +1,11 @@
 # Routing Examples
 
+## Collaboration
+
+- "Help me turn this rough product idea into a coherent concept" -> `product-co-design`
+- "Pressure-test this service idea and identify what we need to validate" -> `product-co-design`
+- "Interview me about what I want from this project" -> `interview-me` (explicit invocation only; the router never selects it)
+
 ## Engineering
 
 - "Add OAuth to this existing app and update tests" -> `large-codebase-change`

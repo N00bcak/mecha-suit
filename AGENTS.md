@@ -165,6 +165,8 @@ Use council for multi-specialist reasoning.
 Specialist leaves should do one job well.
 
 Current non-council specialist leaves include:
+- `interview-me`
+- `product-co-design`
 - `large-codebase-change`
 - `prototype-builder`
 - `ctf-triage`
@@ -218,6 +220,10 @@ Contains the fully authored routing layer.
 
 ### `families/council/`
 Contains the only subagent-enabled skill family.
+
+### `families/collaboration/`
+Contains conversation-first specialist leaves. `interview-me` is
+explicit-invocation-only. `product-co-design` is routable and council-eligible.
 
 ### `families/engineering/`, `families/ctf/`, `families/ml/`
 Contain specialist leaves.

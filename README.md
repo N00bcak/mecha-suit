@@ -1,6 +1,9 @@
 # Mecha Suit
 
-Mecha Suit is a reusable skill harness for Codex-first development. It gives your coding agent a small, opinionated set of global skills for deciding what kind of work is being requested, clarifying vague tasks, doing specialist work, and escalating only genuinely cross-domain problems.
+Mecha Suit is a reusable skill harness for Codex-first work. It gives your
+agent a small, opinionated set of global skills for deciding what kind of work
+is being requested, clarifying vague tasks, collaborating on product ideas,
+doing specialist work, and escalating only genuinely cross-domain problems.
 
 Authorship note: Mecha Suit was vibe-coded by Codex and human-QC'ed by the maintainer.
 
@@ -27,7 +30,9 @@ The basic model:
 1. Keep this repository somewhere you control.
 2. Install the skill folders as symlinks into an agent skill directory.
 3. Put project-specific facts in each project's `AGENTS.md` or in repo-local adapter skills.
-4. Let the global skills provide reusable behavior: routing, clarification, engineering workflows, CTF workflows, ML workflows, and cross-domain council synthesis.
+4. Let the global skills provide reusable behavior: routing, clarification,
+   product collaboration, engineering workflows, CTF workflows, ML workflows,
+   and cross-domain council synthesis.
 
 The harness is designed for Codex first, while keeping the skill documents portable enough to adapt to other agent hosts later.
 
@@ -130,13 +135,17 @@ Mecha Suit is organized into skill families:
 
 - `families/routing/`: cheap task selection and ambiguity repair.
 - `families/council/`: controlled multi-specialist synthesis.
+- `families/collaboration/`: explicit interviewing and conversation-first product co-design.
 - `families/engineering/`: fully authored leaves for existing-codebase changes and small prototypes.
 - `families/ctf/`: fully authored leaves for challenge triage, reverse engineering, binary exploitation, cryptography, web exploitation, forensics, AI/ML security, and miscellaneous challenges.
 - `families/ml/`: stub leaves for dataset triage, classical baselines, and deep learning experiments.
 
 The top layer is a routing family, not an orchestration family. The original `orchestration/intake-router` sketch became `routing/task-router` because this layer should classify and hand off, not solve tasks or coordinate hidden work.
 
-Current status: the ML specialist leaves are contract-complete stubs. Each one should literally say `This is a stub. NEVER CALL THIS SKILL.` until it is fully authored. The engineering and CTF specialist leaves are fully authored.
+Current status: the ML specialist leaves are contract-complete stubs. Each one
+should literally say `This is a stub. NEVER CALL THIS SKILL.` until it is fully
+authored. The collaboration, engineering, and CTF specialist leaves are fully
+authored.
 
 ## Which Skill Do I Use?
 
@@ -158,6 +167,13 @@ Examples:
 - "Train a model for this dataset" while the ML leaves are still stubs.
 
 Do not call the current ML specialist leaves directly. They are architecture placeholders, not callable skills. Engineering specialist leaves (`large-codebase-change`, `prototype-builder`) and CTF specialist leaves (`ctf-triage`, `reverse-ctf`, `pwn-ctf`, `crypto-ctf`, `web-ctf`, `forensics-ctf`, `ai-ctf`, `misc-ctf`) are fully authored and callable.
+
+Use `interview-me` only by explicitly naming or invoking it. It conducts a
+scoped, one-question-at-a-time interview and is never an automatic router
+destination.
+
+Use `product-co-design` to shape and scrutinize a product, service, workflow,
+experience, or product concept from a fuzzy idea through a coherent brief.
 
 Use `interdisciplinary-council` rarely. It is for tasks that genuinely need multiple specialist perspectives, and only when the relevant non-council leaves are fully authored. It is not the fallback for confusion; use `task-clarifier` for confusion.
 
@@ -239,7 +255,7 @@ If you installed with `MECHA_SKILL_ROOT`, uninstall with the same value.
 - `scripts/`: deterministic helpers that remove repeated procedural work.
 - `templates/`: repeatable authoring patterns.
 - `docs/`: human-facing maintenance and platform notes.
-- `agents/`: host metadata only when it materially improves routing or invocation behavior. Routing, council, and fully authored CTF specialists currently use Codex metadata; engineering leaves and ML stubs rely on frontmatter.
+- `agents/`: host metadata only when it materially improves routing or invocation behavior. Routing, council, and fully authored CTF specialists currently use Codex metadata; collaboration and engineering leaves and ML stubs rely on frontmatter.
 - `AGENTS.md`: rules for developing this harness itself.
 - `PROMPT.md`: original scaffold prompt, kept as project history.
 

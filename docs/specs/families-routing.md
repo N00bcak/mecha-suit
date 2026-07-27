@@ -22,6 +22,8 @@ families/routing/
 - Classify tasks by shape and minimum required inputs.
 - Select a next skill when fit is clear.
 - Route unclear or missing-input tasks to `task-clarifier`.
+- Route product concept development and critique to `product-co-design`.
+- Never select the explicit-invocation-only `interview-me` skill.
 - Keep handoffs compact and context-efficient.
 
 ## Strengths

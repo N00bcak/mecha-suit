@@ -6,6 +6,8 @@ Use this file as a compact global instruction layer when this toolbox is install
 
 - Use `$task-router` when the user asks for skill selection or when the next skill is not obvious.
 - Use `$task-clarifier` when the request is ambiguous, mixed, underspecified, or novel.
+- Use `$interview-me` only when the user explicitly invokes it.
+- Use `$product-co-design` when a product concept needs shaping, constructive critique, validation planning, or a specialist-ready brief.
 - Do not call specialist leaves still marked `This is a stub. NEVER CALL THIS SKILL.`
 - Use `$interdisciplinary-council` only for genuine cross-domain work where the relevant non-council specialists are fully authored.
 
