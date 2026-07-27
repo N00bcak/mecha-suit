@@ -4,15 +4,15 @@ Use this as a concise Claude Code-facing integration note if adapting this toolb
 
 ## Skill Usage
 
-- Route first with `task-router` when skill choice is unclear.
-- Clarify with `task-clarifier` when the task lacks a concrete objective, artifact, or constraint.
+- Inspect supplied context before asking about missing facts.
+- Separate mixed goals, state safe assumptions, and ask one focused question
+  only when a user-owned decision materially changes the work.
 - Do not call specialist leaves still marked `This is a stub. NEVER CALL THIS SKILL.`
 - Escalate to `interdisciplinary-council` only for real multi-specialist work with fully authored non-council specialists.
 
 ## Boundaries
 
-- The router is not an orchestrator.
-- The clarifier is not a domain specialist.
+- Native host behavior owns ordinary selection and clarification.
 - Stub specialist leaves are architecture placeholders, not callable skills.
 - Council-style delegation is restricted to `interdisciplinary-council`.
 

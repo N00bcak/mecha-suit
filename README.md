@@ -1,9 +1,9 @@
 # Mecha Suit
 
 Mecha Suit is a reusable skill harness for Codex-first work. It gives your
-agent a small, opinionated set of global skills for deciding what kind of work
-is being requested, clarifying vague tasks, collaborating on product ideas,
-doing specialist work, and escalating only genuinely cross-domain problems.
+agent a small, opinionated set of global skills for collaborating on product
+ideas, doing specialist work, and escalating only genuinely cross-domain
+problems.
 
 Authorship note: Mecha Suit was vibe-coded by Codex and human-QC'ed by the maintainer.
 
@@ -30,9 +30,9 @@ The basic model:
 1. Keep this repository somewhere you control.
 2. Install the skill folders as symlinks into an agent skill directory.
 3. Put project-specific facts in each project's `AGENTS.md` or in repo-local adapter skills.
-4. Let the global skills provide reusable behavior: routing, clarification,
-   product collaboration, engineering workflows, CTF workflows, ML workflows,
-   and cross-domain council synthesis.
+4. Let native Codex handle ordinary selection and clarification while global
+   skills provide product collaboration, engineering workflows, CTF workflows,
+   ML workflows, and cross-domain council synthesis.
 
 The harness is designed for Codex first, while keeping the skill documents portable enough to adapt to other agent hosts later.
 
@@ -64,7 +64,7 @@ validator uses to parse skill frontmatter. The skill installer and installed
 skills do not depend on Python or this environment.
 
 `./test.sh` verifies the harness before you install anything. It checks
-Codex-compatible YAML frontmatter, script syntax, skill names, routing layout,
+Codex-compatible YAML frontmatter, script syntax, skill names, family layout,
 subagent boundaries, and install/uninstall behavior against a temporary skill
 root.
 
@@ -88,7 +88,7 @@ path in common Windows Bash shells when possible.
 Install only selected skills:
 
 ```bash
-./install.sh task-router task-clarifier interdisciplinary-council
+./install.sh product-co-design interdisciplinary-council
 ```
 
 Install into a custom skill root:
@@ -142,14 +142,14 @@ The installer is idempotent. Running it twice should report already-installed sk
 
 Mecha Suit is organized into skill families:
 
-- `families/routing/`: cheap task selection and ambiguity repair.
 - `families/council/`: controlled multi-specialist synthesis.
 - `families/collaboration/`: explicit interviewing and conversation-first product co-design.
 - `families/engineering/`: fully authored leaves for existing-codebase changes and small prototypes.
 - `families/ctf/`: fully authored leaves for challenge triage, reverse engineering, binary exploitation, cryptography, web exploitation, forensics, AI/ML security, and miscellaneous challenges.
 - `families/ml/`: stub leaves for dataset triage, classical baselines, and deep learning experiments.
 
-The top layer is a routing family, not an orchestration family. The original `orchestration/intake-router` sketch became `routing/task-router` because this layer should classify and hand off, not solve tasks or coordinate hidden work.
+Codex selects callable skills directly from their frontmatter descriptions and
+handles ordinary ambiguity without a generic routing or clarification skill.
 
 Current status: the ML specialist leaves are contract-complete stubs. Each one
 should literally say `This is a stub. NEVER CALL THIS SKILL.` until it is fully
@@ -158,33 +158,27 @@ authored.
 
 ## Which Skill Do I Use?
 
-Use `task-router` when you do not know which skill fits.
+For ordinary ambiguity, let Codex inspect supplied context, state safe
+assumptions, and ask one focused question only when a user-owned decision
+materially changes the work.
 
-Examples:
-
-- "Which skill should handle adding auth to this repo?"
-- "Is this CTF prompt reverse, pwn, or something else?"
-- "I have a dataset and want to model churn. Where do I start?"
-
-Use `task-clarifier` when the request is too vague to route safely.
-
-Examples:
-
-- "Improve my project."
-- "Make this better."
-- "Help with this dataset" without a dataset path, target, or metric.
-- "Train a model for this dataset" while the ML leaves are still stubs.
-
-Do not call the current ML specialist leaves directly. They are architecture placeholders, not callable skills. Engineering specialist leaves (`large-codebase-change`, `prototype-builder`) and CTF specialist leaves (`ctf-triage`, `reverse-ctf`, `pwn-ctf`, `crypto-ctf`, `web-ctf`, `forensics-ctf`, `ai-ctf`, `misc-ctf`) are fully authored and callable.
+Do not call the current ML specialist leaves directly. They are architecture
+placeholders, not callable skills; native Codex handles ML requests until a
+matching leaf is fully authored. Engineering specialist leaves
+(`large-codebase-change`, `prototype-builder`) and CTF specialist leaves
+(`ctf-triage`, `reverse-ctf`, `pwn-ctf`, `crypto-ctf`, `web-ctf`,
+`forensics-ctf`, `ai-ctf`, `misc-ctf`) are fully authored and callable.
 
 Use `interview-me` only by explicitly naming or invoking it. It conducts a
-scoped, one-question-at-a-time interview and is never an automatic router
+scoped, one-question-at-a-time interview and is never an automatic selection
 destination.
 
 Use `product-co-design` to shape and scrutinize a product, service, workflow,
 experience, or product concept from a fuzzy idea through a coherent brief.
 
-Use `interdisciplinary-council` rarely. It is for tasks that genuinely need multiple specialist perspectives, and only when the relevant non-council leaves are fully authored. It is not the fallback for confusion; use `task-clarifier` for confusion.
+Use `interdisciplinary-council` rarely. It is for tasks that genuinely need
+multiple specialist perspectives, and only when the relevant non-council
+leaves are fully authored. It is not a fallback for ordinary ambiguity.
 
 ## Responsible Use
 
@@ -219,7 +213,7 @@ Install all skills:
 Install selected skills:
 
 ```bash
-./install.sh task-router task-clarifier interdisciplinary-council
+./install.sh product-co-design interdisciplinary-council
 ```
 
 Use a custom skill root:
@@ -329,7 +323,8 @@ The symlink does not point back to this checkout. That means it is not managed b
 
 Check that the skill is installed in the skill root your agent host actually reads. Then check the skill frontmatter `name` and `description` in its `SKILL.md`.
 
-If the task is vague, use `task-router` or `task-clarifier` explicitly.
+If the task is vague, inspect supplied context and clarify it before expecting
+a specialist skill to trigger.
 
 ### `./test.sh` fails
 
@@ -339,7 +334,7 @@ Read the failing `[fail]` line first. The test harness is intentionally small; f
 - skill frontmatter is not valid YAML accepted by Codex's validator
 - a script has invalid shell syntax
 - a skill folder name and frontmatter name diverged
-- routing/council layout changed
+- family/council layout changed
 - a non-council skill appears to authorize subagents
 - install/uninstall safety behavior regressed
 
@@ -352,8 +347,7 @@ uv sync --dev
 
 ## Architectural Rules
 
-- Routing stays narrow, cheap, context-efficient, non-specialist, and non-subagentic.
-- `task-clarifier` repairs routing ambiguity; it is not a domain solver.
+- Native Codex owns ordinary skill selection and clarification.
 - Only `interdisciplinary-council` may use subagents.
 - Council is for genuine cross-domain work, not ordinary ambiguity.
 - Specialist leaves do one job well.

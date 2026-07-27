@@ -64,13 +64,12 @@ frontmatter_checks() {
 }
 
 architecture_checks() {
-    assert_exists "${ROOT_DIR}/families/routing/task-router/SKILL.md"
-    assert_exists "${ROOT_DIR}/families/routing/task-clarifier/SKILL.md"
     assert_exists "${ROOT_DIR}/families/council/interdisciplinary-council/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/interview-me/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/product-co-design/SKILL.md"
+    assert_not_exists "${ROOT_DIR}/families/routing"
     assert_not_exists "${ROOT_DIR}/families/orchestration"
-    pass "routing, council, and collaboration layout"
+    pass "native selection, council, and collaboration layout"
 }
 
 subagent_boundary_checks() {
@@ -120,20 +119,17 @@ council_eligibility_checks() {
     do
         grep -Fq -- "- \`${leaf}\`" "${council_file}" || fail "council eligible leaf is missing: ${leaf}"
     done
-    grep -Fq 'Do not inherit from `task-router`, `task-clarifier`, `interview-me`, or any stub' "${council_file}" || fail "council non-specialist exclusion is missing"
+    grep -Fq 'Do not inherit from `interview-me` or any stub leaf' "${council_file}" || fail "council non-specialist exclusion is missing"
     pass "council eligible inherited leaves"
 }
 
 collaboration_checks() {
     local interview_file="${ROOT_DIR}/families/collaboration/interview-me/SKILL.md"
     local interview_metadata="${ROOT_DIR}/families/collaboration/interview-me/agents/openai.yaml"
-    local router_file="${ROOT_DIR}/families/routing/task-router/SKILL.md"
 
     grep -Fxq 'description: Interview the user one focused question at a time.' "${interview_file}" || fail "interview-me description is missing"
     assert_exists "${interview_metadata}"
     grep -Fq 'allow_implicit_invocation: false' "${interview_metadata}" || fail "interview-me implicit invocation is not disabled"
-    grep -Fq '`interview-me` is explicit-invocation-only. Never select it through routing.' "${router_file}" || fail "router interview-me exclusion is missing"
-    grep -Fq '| Product idea, service, workflow, or experience needs concept shaping' "${router_file}" || fail "product-co-design route is missing"
     pass "collaboration routing boundaries"
 }
 
@@ -154,7 +150,6 @@ stub_skill_checks() {
         fi
     done < <(find "${ROOT_DIR}/families/collaboration" "${ROOT_DIR}/families/engineering" "${ROOT_DIR}/families/ctf" "${ROOT_DIR}/families/ml" -mindepth 2 -maxdepth 2 -name SKILL.md -print | sort)
 
-    grep -Eq 'Do not route directly to stub specialist leaves\.' "${ROOT_DIR}/families/routing/task-router/SKILL.md" || fail "router stub guardrail is missing"
     grep -Eq 'Do not use stub specialist leaves as council subagents\.' "${ROOT_DIR}/families/council/interdisciplinary-council/SKILL.md" || fail "council stub guardrail is missing"
     pass "stub guardrails"
 }
@@ -167,17 +162,17 @@ install_uninstall_checks() {
     trap "rm -rf '${tmp_root}'" EXIT
 
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" >"${tmp_root}/install-all.out"
-    assert_symlink_to "${tmp_root}/skills/task-router" "${ROOT_DIR}/families/routing/task-router"
+    assert_symlink_to "${tmp_root}/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
     assert_symlink_to "${tmp_root}/skills/interdisciplinary-council" "${ROOT_DIR}/families/council/interdisciplinary-council"
     assert_symlink_to "${tmp_root}/skills/interview-me" "${ROOT_DIR}/families/collaboration/interview-me"
     assert_symlink_to "${tmp_root}/skills/product-co-design" "${ROOT_DIR}/families/collaboration/product-co-design"
 
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" >"${tmp_root}/install-all-again.out"
-    grep -Eq '\[ok\] task-router already installed' "${tmp_root}/install-all-again.out" || fail "install is not idempotent"
+    grep -Eq '\[ok\] prototype-builder already installed' "${tmp_root}/install-all-again.out" || fail "install is not idempotent"
 
-    MECHA_SKILL_ROOT="${tmp_root}/selected" "${ROOT_DIR}/install.sh" task-router >"${tmp_root}/install-selected.out"
-    assert_symlink_to "${tmp_root}/selected/task-router" "${ROOT_DIR}/families/routing/task-router"
-    assert_not_exists "${tmp_root}/selected/task-clarifier"
+    MECHA_SKILL_ROOT="${tmp_root}/selected" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-selected.out"
+    assert_symlink_to "${tmp_root}/selected/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
+    assert_not_exists "${tmp_root}/selected/interdisciplinary-council"
 
     MECHA_SKILL_ROOT="${tmp_root}/selected-collaboration" "${ROOT_DIR}/install.sh" interview-me product-co-design >"${tmp_root}/install-selected-collaboration.out"
     assert_symlink_to "${tmp_root}/selected-collaboration/interview-me" "${ROOT_DIR}/families/collaboration/interview-me"
@@ -189,35 +184,35 @@ install_uninstall_checks() {
     grep -Eq '\[missing\] not-a-skill is not a skill in this library' "${tmp_root}/install-missing.out" || fail "missing skill output is unclear"
 
     mkdir -p "${tmp_root}/protected"
-    : >"${tmp_root}/protected/task-router"
-    MECHA_SKILL_ROOT="${tmp_root}/protected" "${ROOT_DIR}/install.sh" task-router >"${tmp_root}/install-protected-file.out"
-    [ ! -L "${tmp_root}/protected/task-router" ] || fail "install overwrote unrelated file"
+    : >"${tmp_root}/protected/prototype-builder"
+    MECHA_SKILL_ROOT="${tmp_root}/protected" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-protected-file.out"
+    [ ! -L "${tmp_root}/protected/prototype-builder" ] || fail "install overwrote unrelated file"
     grep -Eq '\[skip\].*not managed' "${tmp_root}/install-protected-file.out" || fail "unrelated file protection output is unclear"
 
     mkdir -p "${tmp_root}/other-target" "${tmp_root}/protected-link"
-    ln -s "${tmp_root}/other-target" "${tmp_root}/protected-link/task-router"
-    MECHA_SKILL_ROOT="${tmp_root}/protected-link" "${ROOT_DIR}/install.sh" task-router >"${tmp_root}/install-protected-link.out"
-    unrelated_target="$(readlink "${tmp_root}/protected-link/task-router")"
+    ln -s "${tmp_root}/other-target" "${tmp_root}/protected-link/prototype-builder"
+    MECHA_SKILL_ROOT="${tmp_root}/protected-link" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-protected-link.out"
+    unrelated_target="$(readlink "${tmp_root}/protected-link/prototype-builder")"
     [ "${unrelated_target}" = "${tmp_root}/other-target" ] || fail "install overwrote unrelated symlink"
     grep -Eq '\[skip\].*unrelated symlink' "${tmp_root}/install-protected-link.out" || fail "unrelated symlink protection output is unclear"
 
-    MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/uninstall.sh" task-router >"${tmp_root}/uninstall-selected.out"
-    assert_not_exists "${tmp_root}/skills/task-router"
-    assert_symlink_to "${tmp_root}/skills/task-clarifier" "${ROOT_DIR}/families/routing/task-clarifier"
+    MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/uninstall.sh" prototype-builder >"${tmp_root}/uninstall-selected.out"
+    assert_not_exists "${tmp_root}/skills/prototype-builder"
+    assert_symlink_to "${tmp_root}/skills/interdisciplinary-council" "${ROOT_DIR}/families/council/interdisciplinary-council"
 
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/uninstall.sh" >"${tmp_root}/uninstall-all.out"
-    assert_not_exists "${tmp_root}/skills/task-clarifier"
+    assert_not_exists "${tmp_root}/skills/prototype-builder"
     assert_not_exists "${tmp_root}/skills/interdisciplinary-council"
     assert_not_exists "${tmp_root}/skills/interview-me"
     assert_not_exists "${tmp_root}/skills/product-co-design"
 
-    MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" "${ROOT_DIR}/install.sh" task-router >"${tmp_root}/install-codex-home.out"
-    assert_symlink_to "${tmp_root}/codex-home/skills/task-router" "${ROOT_DIR}/families/routing/task-router"
-    MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" "${ROOT_DIR}/uninstall.sh" task-router >"${tmp_root}/uninstall-codex-home.out"
-    assert_not_exists "${tmp_root}/codex-home/skills/task-router"
+    MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-codex-home.out"
+    assert_symlink_to "${tmp_root}/codex-home/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
+    MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" "${ROOT_DIR}/uninstall.sh" prototype-builder >"${tmp_root}/uninstall-codex-home.out"
+    assert_not_exists "${tmp_root}/codex-home/skills/prototype-builder"
 
-    MECHA_SKILL_ROOT= CODEX_HOME= HOME="${tmp_root}/home" "${ROOT_DIR}/install.sh" task-router >"${tmp_root}/install-home-default.out"
-    assert_symlink_to "${tmp_root}/home/.codex/skills/task-router" "${ROOT_DIR}/families/routing/task-router"
+    MECHA_SKILL_ROOT= CODEX_HOME= HOME="${tmp_root}/home" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-home-default.out"
+    assert_symlink_to "${tmp_root}/home/.codex/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
 
     pass "install and uninstall behavior"
     rm -rf "${tmp_root}"

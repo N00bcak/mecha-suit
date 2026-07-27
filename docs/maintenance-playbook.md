@@ -6,7 +6,7 @@
 2. Add only the workflow needed for repeated real tasks.
 3. Move passive background material into `references/`.
 4. Add scripts only when they reduce repeated procedural text or improve deterministic reliability.
-5. Keep the `Do Not Use` section current so the router can preserve clean boundaries.
+5. Keep the `Do Not Use` section current so native selection preserves clean boundaries.
 6. Preserve the rule that specialist leaves do not spawn, request, or rely on subagents.
 7. Remove the explicit stub warning only when the skill is genuinely fully authored.
 
@@ -18,10 +18,11 @@ Expansion is complete when the skill can handle its intended task without requir
 2. Start from `templates/leaf-skill.template.md`.
 3. Add `references/` or `scripts/` only when they carry useful content or preserve an existing scaffold shape.
 4. Define trigger boundaries using purpose, use cases, exclusions, needs, and returns.
-5. Update `README.md` and `shared/examples/routing-examples.md`.
-6. Update `task-router` only if the new leaf changes top-level routing decisions.
+5. Update `README.md` and `shared/examples/skill-selection-examples.md`.
+6. Write frontmatter that lets Codex select the leaf directly.
 
-Do not redesign the router for each new leaf. The router should rely on leaf purpose, trigger boundary, and minimum required input.
+Do not add a router for new leaves. Native selection should rely on leaf
+frontmatter and clear boundaries.
 
 Contract-complete stubs must say `This is a stub. NEVER CALL THIS SKILL.` until they are fully authored. Do not let a stub sound executable or production-ready.
 
@@ -70,12 +71,13 @@ Use `shared/rubrics/persistence-yield-rubric.md` for shared language.
 
 ## Choose where future behavior belongs
 
-- Put classification, next-skill choice, and minimal handoff context in `task-router`.
-- Put ambiguity reduction and one focused missing-input question in `task-clarifier`.
+- Leave ordinary ambiguity reduction and focused missing-input questions to the
+  host agent.
 - Put reusable domain execution methods in a specialist leaf.
 - Put controlled cross-domain synthesis in `interdisciplinary-council`.
 
-If the task needs one domain, do not use the council. If the task is merely unclear, use the clarifier before considering the council.
+If the task needs one domain, do not use the council. If the task is merely
+unclear, resolve the ambiguity before considering the council.
 
 ## Govern subagent use
 

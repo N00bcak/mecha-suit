@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-Mecha Suit is a reusable, symlink-installed skill harness for coding agents (Codex-first, Claude Code-portable). It provides global skills for task routing, ambiguity repair, specialist work, and cross-domain council synthesis. Skills are pure markdown + bash with no external dependencies.
+Mecha Suit is a reusable, symlink-installed skill harness for coding agents (Codex-first, Claude Code-portable). It provides global skills for specialist work and cross-domain council synthesis while leaving ordinary selection and clarification to the host agent. Skills are pure markdown + bash with no external dependencies.
 
 ## Commands
 
 ```bash
 ./test.sh                    # Validate harness (syntax, frontmatter, architecture, install behavior)
 ./install.sh                 # Install all skills as symlinks to the Codex skill root
-./install.sh task-router     # Install selected skills only
+./install.sh product-co-design  # Install selected skills only
 ./uninstall.sh               # Remove only managed symlinks
 MECHA_SKILL_ROOT="/path" ./install.sh   # Custom install target
 ```
@@ -22,7 +22,6 @@ Always run `./test.sh` after any harness edit.
 
 ### Skill families (`families/`)
 
-- **`routing/`** — Fully authored. `task-router` (classify and hand off, must stay cheap/narrow/non-subagentic) and `task-clarifier` (ambiguity repair, not a domain solver).
 - **`council/`** — Fully authored. `interdisciplinary-council` is the **only** skill allowed to use subagents. Reserved for genuine multi-specialist work.
 - **`collaboration/`** — Fully authored. `interview-me` (explicit-invocation-only scoped interviewing) and `product-co-design` (conversation-first product concept development and critique).
 - **`engineering/`** — Fully authored. `large-codebase-change` (existing-codebase modifications, integration, migrations) and `prototype-builder` (small greenfield prototypes under ~1kLoC). Both enforce session continuity via scratchpads, code correctness, and asymptotic sanity.
@@ -31,12 +30,12 @@ Always run `./test.sh` after any harness edit.
 
 ### Skill folder structure
 
-Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for `interview-me`, routing, council, and fully authored CTF specialists; `product-co-design`, engineering leaves, and ML stubs rely on frontmatter only.
+Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for `interview-me`, council, and fully authored CTF specialists; `product-co-design`, engineering leaves, and ML stubs rely on frontmatter only.
 
 ### Shared resources
 
 - `shared/rubrics/` — `persistence-yield-rubric.md` (when to keep working vs yield) and `skill-boundary-rubric.md`.
-- `shared/examples/` — Routing scenario examples.
+- `shared/examples/` — Skill-selection examples.
 - `templates/` — Boilerplate for new leaves, subagent contracts, repo-local AGENTS/CLAUDE files, adapter skills.
 - `docs/` — `maintenance-playbook.md`, `platform-notes.md`, example global instructions.
 
@@ -46,7 +45,7 @@ Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optio
 
 ## Key Invariants
 
-1. The top layer is **routing**, not orchestration. No `families/orchestration/` directory.
+1. Native Codex description matching selects skills; the toolbox adds no duplicate router or orchestration layer.
 2. Subagent access is **council-only**. Non-council `SKILL.md` files must not contain subagent authorization language.
 3. Stub skills must keep the exact stub warning until fully authored.
 4. Frontmatter `name:` must match the containing folder name.
@@ -91,6 +90,6 @@ After meaningful changes:
 
 - 4-space indentation.
 - Direct, dense, operational language. No motivational filler.
-- Skill names reflect actual function (e.g. `task-router` not `orchestrator`).
+- Skill names reflect actual function (e.g. `interdisciplinary-council` not a vague orchestration label).
 - Skill descriptions use one constructive sentence, normally around 120 characters, naming the owned action and a positive task or artifact cue.
 - Scripts only when they improve determinism or remove repeated procedural work.

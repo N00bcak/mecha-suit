@@ -30,7 +30,6 @@ set, including `.git/`, `webui/node_modules/`, `webui/dist/`, and
 | --- | --- |
 | `docs.md` | `docs/` maintenance and platform documentation |
 | `families.md` | global skill-family architecture |
-| `families-routing.md` | router and clarifier layer |
 | `families-council.md` | council and subagent boundary |
 | `families-collaboration.md` | explicit interviewing and product co-design |
 | `families-engineering.md` | engineering specialist leaves |

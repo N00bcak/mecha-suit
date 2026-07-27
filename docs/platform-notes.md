@@ -13,7 +13,7 @@
 
 - Codex reads skill frontmatter `name` and `description` for trigger matching.
 - `agents/openai.yaml` is useful for user-facing skill display and default prompts when metadata materially improves routing or invocation.
-- This toolbox currently includes `agents/openai.yaml` for `interview-me`, `task-router`, `task-clarifier`, `interdisciplinary-council`, and fully authored CTF specialists.
+- This toolbox currently includes `agents/openai.yaml` for `interview-me`, `interdisciplinary-council`, and fully authored CTF specialists.
 - `product-co-design`, engineering leaves, and ML stubs currently rely on frontmatter only.
 - Global installation targets `MECHA_SKILL_ROOT` when set, then `CODEX_HOME/skills` when `CODEX_HOME` is set, otherwise `$HOME/.codex/skills`.
 - On Windows, run the Bash scripts from WSL, Git Bash, MSYS, or Cygwin. Git Bash/MSYS/Cygwin default to a Unix-style path for `%USERPROFILE%\.codex\skills` when conversion is available.

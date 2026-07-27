@@ -101,54 +101,26 @@ For non-trivial work:
 Prefer concrete success criteria over vague completion language.
 
 Examples:
-- "Improve router" -> "Tighten trigger boundaries, keep router non-subagentic, update docs/templates if the contract changes, then verify consistency."
+- "Improve skill selection" -> "Tighten frontmatter trigger boundaries, update docs/templates if the contract changes, then verify consistency."
 - "Add a skill" -> "Create skill folder, define boundaries, define output contract, update template/docs if needed, then verify architecture invariants still hold."
 
 ## Core architectural invariants
 
-### 1. The top layer is a routing family, not an orchestration family
-The routing family currently contains:
-- `task-router`
-- `task-clarifier`
+### 1. Native Codex selection and clarification are the top layer
+Codex selects callable skills directly from their frontmatter descriptions and
+handles ordinary ambiguity before invocation.
 
-Do not rename this family to "orchestration" unless the architecture actually changes.
+Do not add a toolbox router, orchestration layer, registry, or duplicate
+selection table. Keep selection cues in leaf descriptions.
 
-### 2. Keep the router narrow
-`task-router` must remain:
-- cheap
-- narrow
-- context-efficient
-- non-specialist
-- non-subagentic
+For ambiguous work:
+- inspect available context before asking
+- separate mixed goals and their dependencies
+- state reversible, low-risk assumptions and proceed
+- ask one focused question only when a missing user-owned decision materially
+  changes the work
 
-It may:
-- classify the task
-- choose a next skill when the fit is clear
-- fall back to `task-clarifier`
-- identify the minimum context needed for the next step
-
-It must NOT:
-- solve the domain task itself
-- do broad planning
-- gather wide context "just in case"
-- embed detailed engineering / CTF / ML tactics
-- use subagents
-
-### 3. `task-clarifier` is a routing repair tool
-`task-clarifier` exists to:
-- resolve ambiguity
-- separate mixed tasks
-- identify missing inputs
-- produce a clearer next-step framing
-- improve routing quality
-
-It is NOT:
-- a generalist domain solver
-- a replacement for specialist leaves
-- a broad planner
-- a subagent user
-
-### 4. Subagent access is council-only
+### 2. Subagent access is council-only
 Only `interdisciplinary-council` may use subagents.
 
 No other skill may:
@@ -163,7 +135,7 @@ If future subagent use is introduced anywhere else, treat that as an architectur
 - template review
 - explicit rationale in the final summary
 
-### 5. Council is for genuine cross-domain work
+### 3. Council is for genuine cross-domain work
 `interdisciplinary-council` is for tasks that genuinely require multiple specialist perspectives.
 
 Do NOT route to council merely because:
@@ -172,10 +144,10 @@ Do NOT route to council merely because:
 - the user gave little context
 - one specialist is probably enough
 
-Use `task-clarifier` for ambiguity.
+Resolve ordinary ambiguity before selecting a skill.
 Use council for multi-specialist reasoning.
 
-### 6. Specialist leaves stay narrow
+### 4. Specialist leaves stay narrow
 Specialist leaves should do one job well.
 
 Current non-council specialist leaves include:
@@ -197,7 +169,7 @@ Current non-council specialist leaves include:
 
 Avoid broad umbrella skills unless there is a clear architectural reason.
 
-### 7. Specialist stubs are contract-complete before they become fully authored
+### 5. Specialist stubs are contract-complete before they become fully authored
 A specialist leaf may begin as a contract-complete stub.
 
 A contract-complete stub must define:
@@ -216,7 +188,7 @@ A contract-complete stub must NOT:
 - include unnecessary scripts
 - include bulky references unless foundational
 
-### 8. Runtime behavior belongs in `SKILL.md`
+### 6. Runtime behavior belongs in `SKILL.md`
 Use:
 - `AGENTS.md` for repo-wide development rules
 - `SKILL.md` for skill runtime behavior
@@ -228,9 +200,6 @@ Use:
 Do not stuff repo-maintenance policy into skill files unless it materially affects runtime behavior.
 
 ## File and folder responsibilities
-
-### `families/routing/`
-Contains the fully authored routing layer.
 
 ### `families/council/`
 Contains the only subagent-enabled skill family.
@@ -310,8 +279,6 @@ Use 4-space indentation consistently.
 ### Naming
 Use names that reflect actual function.
 Examples:
-- `task-router`, not a vague orchestration label
-- `task-clarifier`, not an abstract theory-heavy name
 - `interdisciplinary-council`, not a generic "meta-agent"
 
 ### Skill descriptions
@@ -324,38 +291,6 @@ Descriptions must be good routers.
 - Keep a few diagnostic cues when adjacent categories need them.
 - Treat the length target as editorial guidance, not a validator limit.
 - Use host invocation policy, not warning prose, for manual-only skills.
-
-## Router development rules
-
-When editing `task-router`:
-- keep it focused on selection and handoff
-- make routing decisions based on:
-    - task shape
-    - trigger boundaries
-    - minimum required inputs
-- avoid domain tactics
-- avoid duplicate logic already owned by specialist skills
-- keep the output contract compact
-
-The router should generally choose among:
-- a clear specialist leaf
-- `task-clarifier`
-- `interdisciplinary-council`
-
-## Clarifier development rules
-
-When editing `task-clarifier`:
-- optimize for disambiguation
-- keep outputs compact
-- prefer identifying missing information over speculating
-- frame the next step cleanly
-- avoid becoming a hidden specialist
-
-Good outputs include:
-- clarified task statement
-- missing information
-- best next skill
-- minimum next context set
 
 ## Council development rules
 
@@ -391,7 +326,7 @@ Do not front-load elaborate workflows.
 
 When making meaningful changes:
 1. identify which architectural layer is changing:
-    - routing
+    - skill selection
     - council
     - specialist
     - shared template
@@ -436,7 +371,7 @@ A meaningful change is done when:
 
 Bias toward:
 - narrow skills
-- simple routing
+- native skill selection
 - council-only subagent use
 - contract-complete specialist leaves
 - low context overhead

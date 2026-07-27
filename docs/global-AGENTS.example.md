@@ -4,8 +4,9 @@ Use this file as a compact global instruction layer when this toolbox is install
 
 ## Skill Routing
 
-- Use `$task-router` when the user asks for skill selection or when the next skill is not obvious.
-- Use `$task-clarifier` when the request is ambiguous, mixed, underspecified, or novel.
+- Inspect supplied context before asking about missing facts.
+- Separate mixed goals, state safe assumptions, and ask one focused question
+  only when a user-owned decision materially changes the work.
 - Use `$interview-me` only when the user explicitly invokes it.
 - Use `$product-co-design` when a product concept needs shaping, constructive critique, validation planning, or a specialist-ready brief.
 - Do not call specialist leaves still marked `This is a stub. NEVER CALL THIS SKILL.`
@@ -13,7 +14,6 @@ Use this file as a compact global instruction layer when this toolbox is install
 
 ## Subagent Policy
 
-- `task-router` and `task-clarifier` never use subagents.
 - Specialist leaves never spawn, request, or rely on subagents.
 - Only `$interdisciplinary-council` may use subagents, and only by inheriting from fully authored non-council specialist leaves.
 
