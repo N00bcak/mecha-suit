@@ -143,7 +143,8 @@ The installer is idempotent. Running it twice should report already-installed sk
 Mecha Suit is organized into skill families:
 
 - `families/council/`: controlled multi-specialist synthesis.
-- `families/collaboration/`: explicit interviewing and conversation-first product co-design.
+- `families/collaboration/`: explicit interviewing, low-friction technical
+  communication, and conversation-first product co-design.
 - `families/engineering/`: fully authored leaves for PR-ready changes in
   repositories above roughly 5k maintained source lines and isolated
   greenfield prototypes centered on one outcome.
@@ -187,6 +188,11 @@ the five AI leaves or manage later iteration.
 
 Use `product-co-design` to shape and scrutinize a product, service, workflow,
 experience, or product concept from a fuzzy idea through a coherent brief.
+
+Use `low-friction-collaboration` when a dense or multi-step technical exchange
+must be easy to follow, resume, and act on without reducing reasoning depth or
+precision. It preserves the user's vocabulary, keeps necessary state visible,
+and removes avoidable reading and recall work.
 
 Use `interdisciplinary-council` rarely. It is for tasks that genuinely need
 multiple specialist perspectives, and only when the relevant non-council
@@ -273,7 +279,8 @@ If you installed with `MECHA_SKILL_ROOT`, uninstall with the same value.
 - `agents/`: host metadata only when it materially improves routing or
   invocation behavior. `interview-me`, `ai-pipeline`, council, and fully
   authored CTF specialists currently use Codex metadata; `product-co-design`,
-  engineering leaves, and AI execution leaves rely on frontmatter.
+  `low-friction-collaboration`, engineering leaves, and AI execution leaves
+  rely on frontmatter.
 - `AGENTS.md`: rules for developing this harness itself.
 - `PROMPT.md`: original scaffold prompt, kept as project history.
 

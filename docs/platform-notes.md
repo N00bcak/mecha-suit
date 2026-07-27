@@ -16,8 +16,8 @@
 - This toolbox currently includes `agents/openai.yaml` for `interview-me`,
   `ai-pipeline`, `interdisciplinary-council`, and fully authored CTF
   specialists.
-- `product-co-design`, engineering leaves, and AI execution leaves currently
-  rely on frontmatter only.
+- `product-co-design`, `low-friction-collaboration`, engineering leaves, and AI
+  execution leaves currently rely on frontmatter only.
 - Global installation targets `MECHA_SKILL_ROOT` when set, then `CODEX_HOME/skills` when `CODEX_HOME` is set, otherwise `$HOME/.codex/skills`.
 - On Windows, run the Bash scripts from WSL, Git Bash, MSYS, or Cygwin. Git Bash/MSYS/Cygwin default to a Unix-style path for `%USERPROFILE%\.codex\skills` when conversion is available.
 - Repo-local `AGENTS.md` files should point to global skills and provide only local facts.

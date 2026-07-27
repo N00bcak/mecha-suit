@@ -5,6 +5,9 @@
 - "Help me turn this rough product idea into a coherent concept" -> `product-co-design`
 - "Pressure-test this service idea and identify what we need to validate" -> `product-co-design`
 - "Interview me about what I want from this project" -> `interview-me` (explicit invocation only)
+- "Keep this debugging session direct and remind me what changed after each tool run" -> `low-friction-collaboration`
+- "Give me one clear next step at a time, but do not skip the technical reasoning" -> `low-friction-collaboration`
+- "What port does HTTPS normally use?" -> native Codex (already a low-load answer)
 
 ## Engineering
 

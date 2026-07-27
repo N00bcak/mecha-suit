@@ -66,6 +66,7 @@ frontmatter_checks() {
 architecture_checks() {
     assert_exists "${ROOT_DIR}/families/council/interdisciplinary-council/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/interview-me/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/collaboration/low-friction-collaboration/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/product-co-design/SKILL.md"
     assert_exists "${ROOT_DIR}/families/ai/ai-pipeline/SKILL.md"
     assert_not_exists "${ROOT_DIR}/families/ml"
@@ -126,7 +127,7 @@ council_eligibility_checks() {
     do
         grep -Fq -- "- \`${leaf}\`" "${council_file}" || fail "council eligible leaf is missing: ${leaf}"
     done
-    grep -Fq 'Do not inherit from `interview-me`, `ai-pipeline`, or any stub leaf' "${council_file}" || fail "council non-specialist exclusion is missing"
+    grep -Fq 'Do not inherit from `interview-me`, `low-friction-collaboration`,' "${council_file}" || fail "council communication-mode exclusion is missing"
     if grep -Fq -- '- `ai-pipeline`' "${council_file}"; then
         fail "ai-pipeline must not be council-eligible"
     fi
@@ -136,10 +137,26 @@ council_eligibility_checks() {
 collaboration_checks() {
     local interview_file="${ROOT_DIR}/families/collaboration/interview-me/SKILL.md"
     local interview_metadata="${ROOT_DIR}/families/collaboration/interview-me/agents/openai.yaml"
+    local low_friction_file="${ROOT_DIR}/families/collaboration/low-friction-collaboration/SKILL.md"
+    local low_friction_reference="${ROOT_DIR}/families/collaboration/low-friction-collaboration/references/communication-evidence.md"
 
     grep -Fxq 'description: Interview the user one focused question at a time.' "${interview_file}" || fail "interview-me description is missing"
     assert_exists "${interview_metadata}"
     grep -Fq 'allow_implicit_invocation: false' "${interview_metadata}" || fail "interview-me implicit invocation is not disabled"
+    grep -Fxq 'description: Make complex technical conversations easy to follow and act on without reducing reasoning depth or precision.' "${low_friction_file}" || fail "low-friction-collaboration description drifted"
+    assert_exists "${low_friction_reference}"
+    assert_not_exists "${ROOT_DIR}/families/collaboration/low-friction-collaboration/agents/openai.yaml"
+    grep -Fq 'Think as thoroughly as the task requires before writing.' "${low_friction_file}" || fail "low-friction reasoning safeguard is missing"
+    grep -Fq "Prefer the words the user used" "${low_friction_file}" || fail "low-friction vocabulary continuity is missing"
+    grep -Fq 'Do not coin labels, frameworks, categories, or slogans' "${low_friction_file}" || fail "low-friction invented-term guard is missing"
+    grep -Fq 'Use prose for an argument.' "${low_friction_file}" || fail "low-friction discursive prose guidance is missing"
+    grep -Fq 'Restore this state after interruptions' "${low_friction_file}" || fail "low-friction continuity guidance is missing"
+    grep -Fq 'Do not impose an arbitrary item limit' "${low_friction_file}" || fail "low-friction list discipline is missing"
+    grep -Fq '## Edit The Language' "${low_friction_file}" || fail "low-friction Orwell editing guidance is missing"
+    grep -Fq 'Do not use, spawn, request, or rely on subagents.' "${low_friction_file}" || fail "low-friction subagent boundary is missing"
+    if grep -Eiq 'use (this skill )?(for|on) every message|the reader has ADHD|ADHD brain' "${low_friction_file}"; then
+        fail "low-friction skill contains universal or diagnostic routing"
+    fi
     pass "collaboration routing boundaries"
 }
 
@@ -293,7 +310,7 @@ ai_family_checks() {
 metadata_policy_checks() {
     grep -Fq 'fully authored CTF specialists' "${ROOT_DIR}/CLAUDE.md" || fail "CLAUDE metadata policy does not mention CTF specialist metadata"
     grep -Fq '`ai-pipeline`' "${ROOT_DIR}/README.md" || fail "README metadata policy does not mention ai-pipeline"
-    grep -Fq '`product-co-design`, engineering leaves, and AI execution leaves currently' "${ROOT_DIR}/docs/platform-notes.md" || fail "platform metadata policy is missing"
+    grep -Fq '`product-co-design`, `low-friction-collaboration`, engineering leaves, and AI' "${ROOT_DIR}/docs/platform-notes.md" || fail "platform metadata policy is missing"
     pass "metadata policy"
 }
 
@@ -322,6 +339,7 @@ install_uninstall_checks() {
     assert_symlink_to "${tmp_root}/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
     assert_symlink_to "${tmp_root}/skills/interdisciplinary-council" "${ROOT_DIR}/families/council/interdisciplinary-council"
     assert_symlink_to "${tmp_root}/skills/interview-me" "${ROOT_DIR}/families/collaboration/interview-me"
+    assert_symlink_to "${tmp_root}/skills/low-friction-collaboration" "${ROOT_DIR}/families/collaboration/low-friction-collaboration"
     assert_symlink_to "${tmp_root}/skills/product-co-design" "${ROOT_DIR}/families/collaboration/product-co-design"
     assert_symlink_to "${tmp_root}/skills/ai-pipeline" "${ROOT_DIR}/families/ai/ai-pipeline"
     assert_symlink_to "${tmp_root}/skills/ai-performance" "${ROOT_DIR}/families/ai/ai-performance"
@@ -335,8 +353,9 @@ install_uninstall_checks() {
     assert_symlink_to "${tmp_root}/selected/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
     assert_not_exists "${tmp_root}/selected/interdisciplinary-council"
 
-    MECHA_SKILL_ROOT="${tmp_root}/selected-collaboration" "${ROOT_DIR}/install.sh" interview-me product-co-design >"${tmp_root}/install-selected-collaboration.out"
+    MECHA_SKILL_ROOT="${tmp_root}/selected-collaboration" "${ROOT_DIR}/install.sh" interview-me low-friction-collaboration product-co-design >"${tmp_root}/install-selected-collaboration.out"
     assert_symlink_to "${tmp_root}/selected-collaboration/interview-me" "${ROOT_DIR}/families/collaboration/interview-me"
+    assert_symlink_to "${tmp_root}/selected-collaboration/low-friction-collaboration" "${ROOT_DIR}/families/collaboration/low-friction-collaboration"
     assert_symlink_to "${tmp_root}/selected-collaboration/product-co-design" "${ROOT_DIR}/families/collaboration/product-co-design"
 
     if MECHA_SKILL_ROOT="${tmp_root}/missing" "${ROOT_DIR}/install.sh" not-a-skill >"${tmp_root}/install-missing.out" 2>&1; then
@@ -365,6 +384,7 @@ install_uninstall_checks() {
     assert_not_exists "${tmp_root}/skills/prototype-builder"
     assert_not_exists "${tmp_root}/skills/interdisciplinary-council"
     assert_not_exists "${tmp_root}/skills/interview-me"
+    assert_not_exists "${tmp_root}/skills/low-friction-collaboration"
     assert_not_exists "${tmp_root}/skills/product-co-design"
     assert_not_exists "${tmp_root}/skills/ai-pipeline"
     assert_not_exists "${tmp_root}/skills/ai-performance"

@@ -54,9 +54,9 @@ Currently eligible inherited leaves:
 
 Do not use stub specialist leaves as council subagents.
 
-Do not inherit from `interview-me`, `ai-pipeline`, or any stub leaf. Do not
-create council-specific subagent roles. The council itself is not one of the
-inherited leaves.
+Do not inherit from `interview-me`, `low-friction-collaboration`,
+`ai-pipeline`, or any stub leaf. Do not create council-specific subagent roles.
+The council itself is not one of the inherited leaves.
 
 ## Spawning Policy
 

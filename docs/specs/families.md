@@ -14,6 +14,7 @@ families/
         interdisciplinary-council/
     collaboration/
         interview-me/
+        low-friction-collaboration/
         product-co-design/
     engineering/
         large-codebase-change/
@@ -66,6 +67,7 @@ Each skill folder may contain:
 - Native host behavior owns skill selection and ordinary clarification.
 - Only `interdisciplinary-council` may use subagents.
 - `interview-me` and `ai-pipeline` are explicit-invocation-only.
+- `low-friction-collaboration` is routable but not council-eligible.
 - Specialist leaves do one job well.
 - Runtime behavior belongs in `SKILL.md`.
 - Passive background belongs in `references/`.

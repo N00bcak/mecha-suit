@@ -31,7 +31,7 @@ set, including `.git/`, `webui/node_modules/`, `webui/dist/`, and
 | `docs.md` | `docs/` maintenance and platform documentation |
 | `families.md` | global skill-family architecture |
 | `families-council.md` | council and subagent boundary |
-| `families-collaboration.md` | explicit interviewing and product co-design |
+| `families-collaboration.md` | explicit interviewing, low-friction communication, and product co-design |
 | `families-engineering.md` | engineering specialist leaves |
 | `families-ctf.md` | CTF specialist leaves |
 | `families-ai.md` | AI pipeline manual and execution leaves |
