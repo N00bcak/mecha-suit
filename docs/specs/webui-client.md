@@ -28,6 +28,9 @@ webui/client/
 
 - Render an attention-first CTF task queue and task detail cockpit.
 - Provide separate single-task and batch-intake dialog workflows.
+- Discover the configured local runner image's Codex app-server model catalog
+  when task intake opens, while allowing an omitted model to follow Codex's
+  current default. A host app-server may be used only as a labeled fallback.
 - Send REST requests to task APIs.
 - Subscribe to task events for the read-only Codex transcript and use a
   separate WebSocket only for the explicit runner Shell tab.
@@ -75,6 +78,13 @@ webui/client/
   the interactive Shell stream unchanged.
 - Keep native app-server output read-only in the Codex console; interactive
   keystrokes belong only to the Shell tab.
+- Treat Codex profiles as host configuration, not task intake data. Isolated
+  runners receive explicit task settings and task-local authentication only;
+  they do not inherit host profile files, MCP configuration, or profile model
+  catalogs.
+- Keep the Docker boundary summary beside task settings. `danger-full-access`
+  disables only the inner Codex sandbox; Docker capabilities, mounts, resource
+  limits, network policy, and credential exposure remain the security boundary.
 
 ## Future Work
 
