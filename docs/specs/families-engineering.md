@@ -11,7 +11,6 @@ greenfield prototypes organized around a demonstrable outcome.
 ```text
 families/engineering/
     references/
-        change-discipline.md
         session-continuity.md
         python-practices.md
         typescript-practices.md
@@ -37,7 +36,8 @@ families/engineering/
   lines.
 - Guide isolated greenfield prototypes without a line-count limit.
 - Preserve verification discipline and session continuity.
-- Share anti-bloat discipline and language idioms across both leaves.
+- Apply the toolbox-wide anti-bloat discipline and share language idioms across
+  both leaves.
 
 ## Strengths
 

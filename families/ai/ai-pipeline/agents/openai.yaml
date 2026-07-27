@@ -1,0 +1,6 @@
+interface:
+    display_name: "AI Pipeline"
+    short_description: "Frame an AI problem end to end"
+    default_prompt: "Use $ai-pipeline to interview me and create an initial AI pipeline for this problem."
+policy:
+    allow_implicit_invocation: false

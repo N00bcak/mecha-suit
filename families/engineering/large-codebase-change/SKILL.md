@@ -111,7 +111,7 @@ and before yielding. Follow `../references/session-continuity.md`.
 2. Inspect nearby implementation and test style.
 3. Identify the narrowest relevant change surface.
 4. Preserve unrelated working-tree changes.
-5. Load `../references/change-discipline.md`.
+5. Load `../../../shared/rubrics/change-discipline.md`.
 6. Load only the shared language primers for files likely to change.
 
 Do not survey the whole repository. Count maintained source lines only if the
@@ -217,7 +217,7 @@ one is in use.
 
 ## References
 
-- `../references/change-discipline.md` — anti-bloat and surgical-change gates
+- `../../../shared/rubrics/change-discipline.md` — anti-bloat and surgical-change gates
 - `../references/session-continuity.md` — shared scratchpad protocol
 - `../references/python-practices.md` — Python idioms
 - `../references/typescript-practices.md` — TypeScript idioms

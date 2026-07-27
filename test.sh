@@ -67,9 +67,11 @@ architecture_checks() {
     assert_exists "${ROOT_DIR}/families/council/interdisciplinary-council/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/interview-me/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/product-co-design/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/ai/ai-pipeline/SKILL.md"
+    assert_not_exists "${ROOT_DIR}/families/ml"
     assert_not_exists "${ROOT_DIR}/families/routing"
     assert_not_exists "${ROOT_DIR}/families/orchestration"
-    pass "native selection, council, and collaboration layout"
+    pass "native selection and family layout"
 }
 
 subagent_boundary_checks() {
@@ -115,11 +117,19 @@ council_eligibility_checks() {
         web-ctf \
         forensics-ctf \
         ai-ctf \
-        misc-ctf
+        misc-ctf \
+        ai-data-preparation \
+        ai-insight-development \
+        ai-representation-workbench \
+        ai-problem-modeling \
+        ai-performance
     do
         grep -Fq -- "- \`${leaf}\`" "${council_file}" || fail "council eligible leaf is missing: ${leaf}"
     done
-    grep -Fq 'Do not inherit from `interview-me` or any stub leaf' "${council_file}" || fail "council non-specialist exclusion is missing"
+    grep -Fq 'Do not inherit from `interview-me`, `ai-pipeline`, or any stub leaf' "${council_file}" || fail "council non-specialist exclusion is missing"
+    if grep -Fq -- '- `ai-pipeline`' "${council_file}"; then
+        fail "ai-pipeline must not be council-eligible"
+    fi
     pass "council eligible inherited leaves"
 }
 
@@ -146,8 +156,11 @@ engineering_checks() {
         fail "obsolete prototype line-count trigger remains"
     fi
 
+    assert_exists "${ROOT_DIR}/shared/rubrics/change-discipline.md"
+    grep -Fq '`../../../shared/rubrics/change-discipline.md`' "${large_skill}" || fail "large-codebase-change does not link shared change discipline"
+    grep -Fq '`../../../shared/rubrics/change-discipline.md`' "${prototype_skill}" || fail "prototype-builder does not link shared change discipline"
+
     for reference in \
-        change-discipline.md \
         session-continuity.md \
         python-practices.md \
         typescript-practices.md \
@@ -184,10 +197,103 @@ engineering_checks() {
     pass "engineering routing and shared references"
 }
 
+ai_family_checks() {
+    local family_dir="${ROOT_DIR}/families/ai"
+    local pipeline="${family_dir}/ai-pipeline/SKILL.md"
+    local pipeline_metadata="${family_dir}/ai-pipeline/agents/openai.yaml"
+    local leaf
+    local reference
+
+    grep -Fxq 'description: Frame AI problems from raw evidence through representation, solution design, and evaluation in one initial pass.' "${pipeline}" || fail "ai-pipeline description drifted"
+    grep -Fxq 'description: Inspect, type, clean, convert, and package raw data into a documented analysis-ready artifact.' "${family_dir}/ai-data-preparation/SKILL.md" || fail "ai-data-preparation description drifted"
+    grep -Fxq 'description: Develop evidence-backed insights about data, domain structure, dynamics, labels, and candidate solution signals.' "${family_dir}/ai-insight-development/SKILL.md" || fail "ai-insight-development description drifted"
+    grep -Fxq 'description: Design and validate features, states, constraints, knowledge, embeddings, or heuristics for AI problems.' "${family_dir}/ai-representation-workbench/SKILL.md" || fail "ai-representation-workbench description drifted"
+    grep -Fxq 'description: Formalize AI problems and choose statistical models, neural architectures, symbolic methods, or hybrid solutions.' "${family_dir}/ai-problem-modeling/SKILL.md" || fail "ai-problem-modeling description drifted"
+    grep -Fxq 'description: Construct, optimize, train, and evaluate AI solutions with coupled diagnostics and comparative evidence.' "${family_dir}/ai-performance/SKILL.md" || fail "ai-performance description drifted"
+
+    assert_exists "${pipeline_metadata}"
+    grep -Fq 'allow_implicit_invocation: false' "${pipeline_metadata}" || fail "ai-pipeline implicit invocation is not disabled"
+    grep -Fq 'Write or update `ML_PIPELINE.md` at the project root.' "${pipeline}" || fail "ai-pipeline required artifact is missing"
+    grep -Fq 'Do not manage later experiment iterations or automatically invoke leaves.' "${pipeline}" || fail "ai-pipeline orchestration boundary is missing"
+
+    for reference in \
+        pipeline-contract.md \
+        task-regimes.md \
+        evidence-integrity.md \
+        ai-coding-discipline.md \
+        numerical-performance.md \
+        search-performance.md \
+        data-preparation.md \
+        insight-development.md \
+        representation-workbench.md \
+        problem-modeling.md \
+        performance.md
+    do
+        assert_exists "${family_dir}/references/${reference}"
+    done
+
+    for reference in \
+        pipeline-contract.md \
+        task-regimes.md \
+        evidence-integrity.md \
+        data-preparation.md \
+        insight-development.md \
+        representation-workbench.md \
+        problem-modeling.md \
+        performance.md
+    do
+        grep -Fq "\`../references/${reference}\`" "${pipeline}" || fail "ai-pipeline does not link ${reference}"
+    done
+
+    for section in \
+        '## Problem' \
+        '## Evidence Ledger' \
+        '## Data Preparation' \
+        '## Insight Development' \
+        '## Representation Workbench' \
+        '## Problem Modeling' \
+        '## Candidate Portfolio' \
+        '## Performance' \
+        '## Recommended Execution' \
+        '## Risks and Unknowns'
+    do
+        grep -Fq "${section}" "${family_dir}/references/pipeline-contract.md" || fail "pipeline contract section is missing: ${section}"
+    done
+    for status in observed assumed hypothesized proposed; do
+        grep -Fq -- "- **${status^}:**" "${family_dir}/references/evidence-integrity.md" || fail "evidence status is missing: ${status}"
+    done
+
+    for leaf in \
+        ai-data-preparation \
+        ai-insight-development \
+        ai-representation-workbench \
+        ai-problem-modeling \
+        ai-performance
+    do
+        grep -Fq 'Never require or create it.' "${family_dir}/${leaf}/SKILL.md" || fail "${leaf} pipeline file must be advisory"
+        grep -Fq '`../../../shared/rubrics/change-discipline.md`' "${family_dir}/${leaf}/SKILL.md" || fail "${leaf} does not link shared coding discipline"
+        grep -Fq '`../references/ai-coding-discipline.md`' "${family_dir}/${leaf}/SKILL.md" || fail "${leaf} does not link AI coding discipline"
+        [ ! -e "${family_dir}/${leaf}/agents/openai.yaml" ] || fail "${leaf} has unneeded metadata"
+    done
+
+    for leaf in \
+        ai-representation-workbench \
+        ai-problem-modeling \
+        ai-performance
+    do
+        grep -Fq '`../references/numerical-performance.md`' "${family_dir}/${leaf}/SKILL.md" || fail "${leaf} lacks numerical performance guidance"
+        grep -Fq '`../references/search-performance.md`' "${family_dir}/${leaf}/SKILL.md" || fail "${leaf} lacks search performance guidance"
+    done
+
+    assert_not_exists "${ROOT_DIR}/families/engineering/references/change-discipline.md"
+
+    pass "AI routing, pipeline, coding, and performance contracts"
+}
+
 metadata_policy_checks() {
     grep -Fq 'fully authored CTF specialists' "${ROOT_DIR}/CLAUDE.md" || fail "CLAUDE metadata policy does not mention CTF specialist metadata"
-    grep -Fq 'fully authored CTF specialists currently use Codex metadata' "${ROOT_DIR}/README.md" || fail "README metadata policy does not mention CTF specialist metadata"
-    grep -Fq '`product-co-design`, engineering leaves, and ML stubs currently rely on frontmatter only.' "${ROOT_DIR}/docs/platform-notes.md" || fail "platform metadata policy is missing"
+    grep -Fq '`ai-pipeline`' "${ROOT_DIR}/README.md" || fail "README metadata policy does not mention ai-pipeline"
+    grep -Fq '`product-co-design`, engineering leaves, and AI execution leaves currently' "${ROOT_DIR}/docs/platform-notes.md" || fail "platform metadata policy is missing"
     pass "metadata policy"
 }
 
@@ -199,7 +305,7 @@ stub_skill_checks() {
         if grep -Eq '^## Stub Status$' "${skill_file}"; then
             grep -Fq 'This is a stub. NEVER CALL THIS SKILL.' "${skill_file}" || fail "stub warning is missing in ${skill_file}"
         fi
-    done < <(find "${ROOT_DIR}/families/collaboration" "${ROOT_DIR}/families/engineering" "${ROOT_DIR}/families/ctf" "${ROOT_DIR}/families/ml" -mindepth 2 -maxdepth 2 -name SKILL.md -print | sort)
+    done < <(find "${ROOT_DIR}/families/collaboration" "${ROOT_DIR}/families/engineering" "${ROOT_DIR}/families/ctf" "${ROOT_DIR}/families/ai" -mindepth 2 -maxdepth 2 -name SKILL.md -print | sort)
 
     grep -Eq 'Do not use stub specialist leaves as council subagents\.' "${ROOT_DIR}/families/council/interdisciplinary-council/SKILL.md" || fail "council stub guardrail is missing"
     pass "stub guardrails"
@@ -217,6 +323,10 @@ install_uninstall_checks() {
     assert_symlink_to "${tmp_root}/skills/interdisciplinary-council" "${ROOT_DIR}/families/council/interdisciplinary-council"
     assert_symlink_to "${tmp_root}/skills/interview-me" "${ROOT_DIR}/families/collaboration/interview-me"
     assert_symlink_to "${tmp_root}/skills/product-co-design" "${ROOT_DIR}/families/collaboration/product-co-design"
+    assert_symlink_to "${tmp_root}/skills/ai-pipeline" "${ROOT_DIR}/families/ai/ai-pipeline"
+    assert_symlink_to "${tmp_root}/skills/ai-performance" "${ROOT_DIR}/families/ai/ai-performance"
+    assert_exists "${tmp_root}/skills/ai-performance/../references/performance.md"
+    assert_exists "${tmp_root}/skills/ai-performance/../../../shared/rubrics/change-discipline.md"
 
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" >"${tmp_root}/install-all-again.out"
     grep -Eq '\[ok\] prototype-builder already installed' "${tmp_root}/install-all-again.out" || fail "install is not idempotent"
@@ -256,6 +366,8 @@ install_uninstall_checks() {
     assert_not_exists "${tmp_root}/skills/interdisciplinary-council"
     assert_not_exists "${tmp_root}/skills/interview-me"
     assert_not_exists "${tmp_root}/skills/product-co-design"
+    assert_not_exists "${tmp_root}/skills/ai-pipeline"
+    assert_not_exists "${tmp_root}/skills/ai-performance"
 
     MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-codex-home.out"
     assert_symlink_to "${tmp_root}/codex-home/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
@@ -280,6 +392,7 @@ main() {
     council_eligibility_checks
     collaboration_checks
     engineering_checks
+    ai_family_checks
     metadata_policy_checks
     stub_skill_checks
     install_uninstall_checks

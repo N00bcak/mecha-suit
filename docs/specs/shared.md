@@ -12,6 +12,7 @@ shared/
     examples/
         skill-selection-examples.md
     rubrics/
+        change-discipline.md
         persistence-yield-rubric.md
         skill-boundary-rubric.md
 ```
@@ -19,7 +20,8 @@ shared/
 ## Main Responsibilities
 
 - Provide common examples for native skill selection and invocation.
-- Define shared rubrics for persistence, yielding, and skill boundaries.
+- Define shared rubrics for change discipline, persistence, yielding, and skill
+  boundaries.
 - Keep repeated policy language consistent across skills.
 
 ## Strengths

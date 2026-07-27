@@ -163,9 +163,11 @@ Current non-council specialist leaves include:
 - `forensics-ctf`
 - `ai-ctf`
 - `misc-ctf`
-- `dataset-triage`
-- `classical-ml-baseline`
-- `deep-learning-experiment`
+- `ai-data-preparation`
+- `ai-insight-development`
+- `ai-representation-workbench`
+- `ai-problem-modeling`
+- `ai-performance`
 
 Avoid broad umbrella skills unless there is a clear architectural reason.
 
@@ -208,9 +210,13 @@ Contains the only subagent-enabled skill family.
 Contains conversation-first specialist leaves. `interview-me` is
 explicit-invocation-only. `product-co-design` is routable and council-eligible.
 
-### `families/engineering/`, `families/ctf/`, `families/ml/`
+### `families/engineering/`, `families/ctf/`, `families/ai/`
+
 Contain specialist leaves.
 These should remain narrow and composable.
+
+`families/ai/ai-pipeline` is an explicit-invocation-only conceptual manual, not
+a specialist leaf or council-inherited role.
 
 ### `references/`
 Use for:

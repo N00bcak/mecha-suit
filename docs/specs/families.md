@@ -3,8 +3,8 @@
 ## Purpose
 
 `families/` is the core skill library. It groups runtime skills by architectural
-role: council synthesis, collaboration, engineering work, CTF work, and ML
-stubs.
+role: council synthesis, collaboration, engineering work, CTF work, and AI
+work.
 
 ## Architecture Tree
 
@@ -27,10 +27,13 @@ families/
         forensics-ctf/
         ai-ctf/
         misc-ctf/
-    ml/
-        dataset-triage/
-        classical-ml-baseline/
-        deep-learning-experiment/
+    ai/
+        ai-pipeline/
+        ai-data-preparation/
+        ai-insight-development/
+        ai-representation-workbench/
+        ai-problem-modeling/
+        ai-performance/
 ```
 
 Each skill folder may contain:
@@ -62,7 +65,7 @@ Each skill folder may contain:
 
 - Native host behavior owns skill selection and ordinary clarification.
 - Only `interdisciplinary-council` may use subagents.
-- `interview-me` is explicit-invocation-only.
+- `interview-me` and `ai-pipeline` are explicit-invocation-only.
 - Specialist leaves do one job well.
 - Runtime behavior belongs in `SKILL.md`.
 - Passive background belongs in `references/`.
@@ -79,6 +82,7 @@ Each skill folder may contain:
 
 ## Future Work
 
-- Fully author ML leaves only when their repeated workflow is clear.
+- Keep the adaptive multi-iteration AI controller outside this skill library
+  unless it becomes a separately designed product.
 - Add scripts only for repeated, deterministic tasks.
-- Keep CTF references concise enough that skills remain loadable.
+- Keep specialist references concise enough that skills remain loadable.

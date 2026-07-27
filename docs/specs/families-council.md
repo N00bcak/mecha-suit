@@ -36,7 +36,8 @@ families/council/
 - Council is not a fallback for ambiguity; resolve it before invoking council.
 - Council subagents must inherit from fully authored non-council leaves.
 - `product-co-design` is eligible to provide a product perspective.
-- `interview-me` is never council-eligible.
+- `interview-me` and `ai-pipeline` are never council-eligible.
+- The five callable AI execution leaves are council-eligible.
 - Stub leaves cannot be inherited as council subagents.
 - The council layer synthesizes; subagents do not synthesize each other.
 

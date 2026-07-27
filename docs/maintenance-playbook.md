@@ -24,6 +24,10 @@ Expansion is complete when the skill can handle its intended task without requir
 Do not add a router for new leaves. Native selection should rely on leaf
 frontmatter and clear boundaries.
 
+Explicit-only manuals such as `interview-me` and `ai-pipeline` require
+`agents/openai.yaml` with `allow_implicit_invocation: false`. Keep them out of
+the council inherited-leaf list and do not let them become implicit routers.
+
 Contract-complete stubs must say `This is a stub. NEVER CALL THIS SKILL.` until they are fully authored. Do not let a stub sound executable or production-ready.
 
 Do not add `agents/` metadata to specialist leaves by default. Use host metadata only when it materially improves routing or invocation behavior.
@@ -68,6 +72,11 @@ Open-ended skills must be persistent without flailing.
 "I ran out of ideas" must mean "I exhausted the bounded strategy set," not "I am uncertain." Uncertainty is a signal to narrow the task, inspect evidence, ask a focused question, or yield with a specific blocker after the persistence floor is met.
 
 Use `shared/rubrics/persistence-yield-rubric.md` for shared language.
+
+Use `shared/rubrics/change-discipline.md` as the minimum coding floor when
+multiple families produce code. Add family-specific coding or performance
+guidance when the domain needs materially different tradeoffs rather than
+forcing application-development conventions everywhere.
 
 ## Choose where future behavior belongs
 

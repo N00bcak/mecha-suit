@@ -141,7 +141,7 @@ Then add only:
 - behavior required to observe the core outcome;
 - optional scope that is genuinely cheap and does not create architecture.
 
-Follow `../references/change-discipline.md`. Local duplication is acceptable
+Follow `../../../shared/rubrics/change-discipline.md`. Local duplication is acceptable
 when extracting an abstraction would cost more to understand or change.
 
 ### Phase 4: Calibrate Quality
@@ -203,7 +203,7 @@ information is discoverable and update the scratchpad when one is in use.
 
 ## References
 
-- `../references/change-discipline.md` — anti-bloat and surgical-change gates
+- `../../../shared/rubrics/change-discipline.md` — anti-bloat and surgical-change gates
 - `../references/session-continuity.md` — shared scratchpad protocol
 - `../references/python-practices.md` — Python idioms
 - `../references/typescript-practices.md` — TypeScript idioms

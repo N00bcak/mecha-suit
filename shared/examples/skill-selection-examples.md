@@ -28,15 +28,20 @@
 - "Bypass this LLM chatbot's guardrails to extract the flag" -> `ai-ctf`
 - "Generate an adversarial image that fools this classifier" -> `ai-ctf`
 
-## ML
+## AI
 
-- "I have a dataset and want to predict churn" -> native Codex (ML leaves are still stubs)
-- "Train a simple baseline on this prepared tabular dataset" -> native Codex (classical ML leaf is still a stub)
-- "Run a first image classifier experiment with this dataset" -> native Codex (deep learning leaf is still a stub)
+- "Use ai-pipeline to frame this churn problem end to end" -> `ai-pipeline` (explicit invocation only)
+- "Classify these columns, quantify missingness, and package a clean dataset" -> `ai-data-preparation`
+- "Find and validate meaningful cohort or temporal patterns in this dataset" -> `ai-insight-development`
+- "Build leakage-safe features for these sensor windows" -> `ai-representation-workbench`
+- "Choose between boosted trees, a neural model, and a hybrid for this task" -> `ai-problem-modeling`
+- "Train and compare these candidates under the agreed split and metrics" -> `ai-performance`
+- "Design a state representation and admissible heuristic for this planner" -> `ai-representation-workbench`
+- "Benchmark and tune this constraint solver on representative instances" -> `ai-performance`
 
 ## Native clarification and council
 
 - "Help with my project" -> native clarification; no skill yet
-- "Assess an ML-powered security challenge that needs reverse engineering and modeling judgment" -> `interdisciplinary-council` if both `reverse-ctf` and the relevant ML leaf are fully authored; otherwise native Codex
+- "Assess an ML-powered security challenge that needs reverse engineering and modeling judgment" -> `interdisciplinary-council` using `reverse-ctf` and the relevant AI execution leaf
 - "This web CTF challenge has a backend I need to modify and exploit" -> `web-ctf` (one specialist is sufficient; engineering context is incidental)
 - "Integrate a security audit tool into this codebase and verify it catches the known vuln classes" -> `interdisciplinary-council` (engineering + CTF perspectives both needed)

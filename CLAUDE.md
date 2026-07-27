@@ -26,15 +26,15 @@ Always run `./test.sh` after any harness edit.
 - **`collaboration/`** — Fully authored. `interview-me` (explicit-invocation-only scoped interviewing) and `product-co-design` (conversation-first product concept development and critique).
 - **`engineering/`** — Fully authored. `large-codebase-change` owns PR-ready changes in repositories above roughly 5k maintained source lines; `prototype-builder` owns isolated greenfield work centered on one demonstrable outcome, without a line-count limit. Both share anti-bloat, continuity, and language-idiom references.
 - **`ctf/`** — Fully authored. Specialist leaves for challenge triage, reverse engineering, binary exploitation, cryptography, web exploitation, forensics, AI/ML security, and miscellaneous challenges.
-- **`ml/`** — Contract-complete stubs. Each contains `This is a stub. NEVER CALL THIS SKILL.` and must not be routed to or used as council subagents until fully authored.
+- **`ai/`** — Fully authored. `ai-pipeline` is an explicit-only one-time framing manual; five callable leaves own data preparation, insight development, representations, problem modeling, and performance across ML, deep learning, GOFAI, and hybrid systems.
 
 ### Skill folder structure
 
-Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for `interview-me`, council, and fully authored CTF specialists; `product-co-design`, engineering leaves, and ML stubs rely on frontmatter only.
+Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for `interview-me`, `ai-pipeline`, council, and fully authored CTF specialists; `product-co-design`, engineering leaves, and AI execution leaves rely on frontmatter only.
 
 ### Shared resources
 
-- `shared/rubrics/` — `persistence-yield-rubric.md` (when to keep working vs yield) and `skill-boundary-rubric.md`.
+- `shared/rubrics/` — toolbox-wide change, persistence/yield, and skill-boundary discipline.
 - `shared/examples/` — Skill-selection examples.
 - `templates/` — Boilerplate for new leaves, subagent contracts, repo-local AGENTS/CLAUDE files, adapter skills.
 - `docs/` — `maintenance-playbook.md`, `platform-notes.md`, example global instructions.

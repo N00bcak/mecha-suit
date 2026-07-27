@@ -46,12 +46,17 @@ Currently eligible inherited leaves:
 - `forensics-ctf`
 - `ai-ctf`
 - `misc-ctf`
+- `ai-data-preparation`
+- `ai-insight-development`
+- `ai-representation-workbench`
+- `ai-problem-modeling`
+- `ai-performance`
 
-Do not use stub specialist leaves as council subagents. The current ML specialist leaves are marked `This is a stub. NEVER CALL THIS SKILL.` and therefore must not be inherited until they are fully authored.
+Do not use stub specialist leaves as council subagents.
 
-Do not inherit from `interview-me` or any stub leaf. Do not create
-council-specific subagent roles. The council itself is not one of the inherited
-leaves.
+Do not inherit from `interview-me`, `ai-pipeline`, or any stub leaf. Do not
+create council-specific subagent roles. The council itself is not one of the
+inherited leaves.
 
 ## Spawning Policy
 

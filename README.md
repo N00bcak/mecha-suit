@@ -32,7 +32,7 @@ The basic model:
 3. Put project-specific facts in each project's `AGENTS.md` or in repo-local adapter skills.
 4. Let native Codex handle ordinary selection and clarification while global
    skills provide product collaboration, engineering workflows, CTF workflows,
-   ML workflows, and cross-domain council synthesis.
+   AI workflows, and cross-domain council synthesis.
 
 The harness is designed for Codex first, while keeping the skill documents portable enough to adapt to other agent hosts later.
 
@@ -148,14 +148,14 @@ Mecha Suit is organized into skill families:
   repositories above roughly 5k maintained source lines and isolated
   greenfield prototypes centered on one outcome.
 - `families/ctf/`: fully authored leaves for challenge triage, reverse engineering, binary exploitation, cryptography, web exploitation, forensics, AI/ML security, and miscellaneous challenges.
-- `families/ml/`: stub leaves for dataset triage, classical baselines, and deep learning experiments.
+- `families/ai/`: an explicit-only initial pipeline manual plus callable leaves
+  for data preparation, insight development, representations, problem
+  modeling, and performance across ML, deep learning, GOFAI, and hybrids.
 
 Codex selects callable skills directly from their frontmatter descriptions and
 handles ordinary ambiguity without a generic routing or clarification skill.
 
-Current status: the ML specialist leaves are contract-complete stubs. Each one
-should literally say `This is a stub. NEVER CALL THIS SKILL.` until it is fully
-authored. The collaboration, engineering, and CTF specialist leaves are fully
+The collaboration, engineering, AI, and CTF specialist leaves are fully
 authored.
 
 ## Which Skill Do I Use?
@@ -164,10 +164,10 @@ For ordinary ambiguity, let Codex inspect supplied context, state safe
 assumptions, and ask one focused question only when a user-owned decision
 materially changes the work.
 
-Do not call the current ML specialist leaves directly. They are architecture
-placeholders, not callable skills; native Codex handles ML requests until a
-matching leaf is fully authored. Engineering specialist leaves
-(`large-codebase-change`, `prototype-builder`) and CTF specialist leaves
+Engineering specialist leaves (`large-codebase-change`, `prototype-builder`),
+AI execution leaves (`ai-data-preparation`, `ai-insight-development`,
+`ai-representation-workbench`, `ai-problem-modeling`, `ai-performance`), and
+CTF specialist leaves
 (`ctf-triage`, `reverse-ctf`, `pwn-ctf`, `crypto-ctf`, `web-ctf`,
 `forensics-ctf`, `ai-ctf`, `misc-ctf`) are fully authored and callable.
 
@@ -180,6 +180,10 @@ it has no line-count limit.
 Use `interview-me` only by explicitly naming or invoking it. It conducts a
 scoped, one-question-at-a-time interview and is never an automatic selection
 destination.
+
+Use `ai-pipeline` only by explicitly naming or invoking it. It conducts a
+one-time framing interview and creates `ML_PIPELINE.md`; it does not execute
+the five AI leaves or manage later iteration.
 
 Use `product-co-design` to shape and scrutinize a product, service, workflow,
 experience, or product concept from a fuzzy idea through a coherent brief.
@@ -266,7 +270,10 @@ If you installed with `MECHA_SKILL_ROOT`, uninstall with the same value.
 - `scripts/`: deterministic helpers that remove repeated procedural work.
 - `templates/`: repeatable authoring patterns.
 - `docs/`: human-facing maintenance and platform notes.
-- `agents/`: host metadata only when it materially improves routing or invocation behavior. `interview-me`, routing, council, and fully authored CTF specialists currently use Codex metadata; `product-co-design`, engineering leaves, and ML stubs rely on frontmatter.
+- `agents/`: host metadata only when it materially improves routing or
+  invocation behavior. `interview-me`, `ai-pipeline`, council, and fully
+  authored CTF specialists currently use Codex metadata; `product-co-design`,
+  engineering leaves, and AI execution leaves rely on frontmatter.
 - `AGENTS.md`: rules for developing this harness itself.
 - `PROMPT.md`: original scaffold prompt, kept as project history.
 

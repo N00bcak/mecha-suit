@@ -34,7 +34,7 @@ set, including `.git/`, `webui/node_modules/`, `webui/dist/`, and
 | `families-collaboration.md` | explicit interviewing and product co-design |
 | `families-engineering.md` | engineering specialist leaves |
 | `families-ctf.md` | CTF specialist leaves |
-| `families-ml.md` | ML contract-complete stubs |
+| `families-ai.md` | AI pipeline manual and execution leaves |
 | `shared.md` | shared examples and rubrics |
 | `templates.md` | templates for repo and skill authoring |
 | `webui.md` | WebUI system architecture |
