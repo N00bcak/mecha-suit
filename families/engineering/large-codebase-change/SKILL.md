@@ -1,9 +1,6 @@
 ---
 name: large-codebase-change
-description: >-
-  Guide changes in existing codebases: integration work, migrations, shared
-  contracts, refactors, and test-verified modifications. Enforces session
-  continuity, correctness, and asymptotic sanity. Does not use subagents.
+description: Implement and verify changes to existing codebases, integrations, migrations, shared contracts, or refactors.
 ---
 
 # Large Codebase Change

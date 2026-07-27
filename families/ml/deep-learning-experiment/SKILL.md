@@ -1,6 +1,6 @@
 ---
 name: deep-learning-experiment
-description: Stub for deep learning experiments. This is a stub. NEVER CALL THIS SKILL.
+description: NEVER CALL THIS SKILL.
 ---
 
 # Deep Learning Experiment

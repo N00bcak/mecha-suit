@@ -25,6 +25,8 @@ families/collaboration/
 ## Architectural Invariants
 
 - `interview-me` is explicit-invocation-only and is never selected by the router.
+- `interview-me` enforces explicit invocation with
+  `agents/openai.yaml` and `allow_implicit_invocation: false`.
 - `product-co-design` is routable and council-eligible.
 - Both leaves remain non-subagentic.
 - Collaboration skills are conversation-first but do not omit structured

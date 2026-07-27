@@ -27,15 +27,31 @@ Contract-complete stubs must say `This is a stub. NEVER CALL THIS SKILL.` until 
 
 Do not add `agents/` metadata to specialist leaves by default. Use host metadata only when it materially improves routing or invocation behavior.
 
+Write frontmatter descriptions as one constructive sentence, normally around
+120 characters. Name the owned action and a positive task or artifact cue.
+Avoid contrastive exclusions, workflow summaries, and repeated repo-wide
+policies. Keep a few diagnostic cues only when adjacent skill categories need
+them. Treat this as editorial guidance rather than a validator limit.
+
 ## Verify changes
 
 Run:
 
 ```bash
+uv sync --dev
 ./test.sh
 ```
 
-The test command validates shell syntax, install/uninstall behavior, frontmatter names, routing-family layout, and subagent boundary rules. Add focused checks there when a new executable invariant is introduced.
+`uv sync --dev` creates `.venv` from the committed lockfile. PyYAML is the only
+third-party development dependency because Codex's `skill-creator` validator
+uses it for frontmatter parsing. Do not add Python packages unless a repository
+test or deterministic development tool requires them; runtime skills and the
+install scripts must remain independent of this environment.
+
+The test command validates Codex-compatible YAML frontmatter, shell syntax,
+install/uninstall behavior, frontmatter names, routing-family layout, and
+subagent boundary rules. Add focused checks there when a new executable
+invariant is introduced.
 
 ## Write open-ended skills
 

@@ -1,6 +1,6 @@
 ---
 name: dataset-triage
-description: Stub for ML dataset triage. This is a stub. NEVER CALL THIS SKILL.
+description: NEVER CALL THIS SKILL.
 ---
 
 # Dataset Triage

@@ -1,6 +1,6 @@
 ---
 name: task-router
-description: Classify a user task into this toolbox's next best skill using narrow, cheap routing. Use when selecting between routing, council, engineering, CTF, or ML leaves; do not use to solve the task.
+description: Select the next skill when a task's best specialist is unclear.
 ---
 
 # Task Router

@@ -1,9 +1,6 @@
 ---
 name: prototype-builder
-description: >-
-  Create small greenfield prototypes, demos, tools, or apps under ~1kLoC.
-  Enforces session continuity, correctness, and simplicity over architecture.
-  Does not use subagents.
+description: Build and verify small greenfield prototypes, demos, tools, or apps under about 1kLoC.
 ---
 
 # Prototype Builder

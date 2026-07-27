@@ -1,6 +1,6 @@
 ---
 name: product-co-design
-description: Co-design and critique product concepts from idea to specialist-ready handoff. Does not use subagents.
+description: Shape and pressure-test product concepts from early idea to specialist-ready brief.
 ---
 
 # Product Co-Design

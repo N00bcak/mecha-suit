@@ -1,6 +1,6 @@
 ---
 name: task-clarifier
-description: Clarify ambiguous, mixed, underspecified, or novel tasks enough to route them to the right skill or ask one focused missing-input question. Never solve the domain task.
+description: Clarify ambiguous, mixed, or missing-input tasks until the next step is clear.
 ---
 
 # Task Clarifier

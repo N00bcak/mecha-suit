@@ -1,6 +1,6 @@
 ---
 name: interdisciplinary-council
-description: Coordinate controlled cross-domain specialist analysis when one specialist is insufficient and competing interpretations must be reconciled. This is the only toolbox skill allowed to use subagents.
+description: Synthesize genuinely cross-domain specialist perspectives into one recommendation; may use subagents.
 ---
 
 # Interdisciplinary Council

@@ -1,6 +1,6 @@
 ---
 name: classical-ml-baseline
-description: Stub for simple classical ML baselines. This is a stub. NEVER CALL THIS SKILL.
+description: NEVER CALL THIS SKILL.
 ---
 
 # Classical ML Baseline

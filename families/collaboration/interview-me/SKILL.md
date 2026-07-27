@@ -1,6 +1,6 @@
 ---
 name: interview-me
-description: NEVER CALL THIS SKILL.
+description: Interview the user one focused question at a time.
 ---
 
 # Interview Me
