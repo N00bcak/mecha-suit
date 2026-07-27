@@ -241,8 +241,8 @@ would repeat, and the next recovery step.
 
 - If the change is actually a greenfield prototype, hand off to
   `prototype-builder` with current context.
-- If the change requires ML model work, hand off to the appropriate ML
-  skill or `task-clarifier` if ML skills are stubs.
+- If the change requires ML model work, use a fully authored ML skill when
+  available; otherwise leave this workflow and continue with native Codex.
 - If the task requires genuine multi-specialist judgment across families,
   hand off to `interdisciplinary-council`.
 

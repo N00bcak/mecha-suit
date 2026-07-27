@@ -13,7 +13,8 @@ Assess whether a dataset and task framing are ready for modeling, and choose the
 
 This is a stub. NEVER CALL THIS SKILL.
 
-It exists to preserve architecture, define boundaries, and show what a future fully authored dataset triage leaf should own. Use `task-router` or `task-clarifier` instead until this leaf is fully authored.
+It exists to preserve architecture, define boundaries, and show what a future
+fully authored dataset triage leaf should own.
 
 ## Use When
 

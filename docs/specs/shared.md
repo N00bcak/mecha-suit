@@ -10,7 +10,7 @@ can reference without duplicating language.
 ```text
 shared/
     examples/
-        routing-examples.md
+        skill-selection-examples.md
     rubrics/
         persistence-yield-rubric.md
         skill-boundary-rubric.md
@@ -18,7 +18,7 @@ shared/
 
 ## Main Responsibilities
 
-- Provide common examples for routing and skill invocation.
+- Provide common examples for native skill selection and invocation.
 - Define shared rubrics for persistence, yielding, and skill boundaries.
 - Keep repeated policy language consistent across skills.
 
@@ -33,15 +33,15 @@ shared/
 - Shared files are passive support material.
 - Do not hide active runtime steps here when they belong in `SKILL.md`.
 - Keep rubrics concise and reusable.
-- Update shared examples when visible routing behavior changes.
+- Update shared examples when visible selection behavior changes.
 
 ## Common Workflows
 
-- Add routing examples after adding or changing a visible skill boundary.
+- Add selection examples after adding or changing a visible skill boundary.
 - Update rubrics when a repeated policy concept needs shared wording.
 - Reference shared material from skills only when it saves meaningful context.
 
 ## Future Work
 
-- Add more examples only when they catch real routing ambiguity.
+- Add more examples only when they catch a real selection ambiguity.
 - Avoid turning `shared/` into a registry or taxonomy layer.

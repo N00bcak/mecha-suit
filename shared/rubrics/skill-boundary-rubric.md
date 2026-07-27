@@ -16,7 +16,7 @@ Use this rubric when editing or adding skills.
 - The skill contains repo-specific facts.
 - The skill needs many references loaded before doing basic work.
 - The skill uses subagents outside `interdisciplinary-council`.
-- The router must understand internal tactics to select it.
+- The host must understand internal tactics to select it.
 
 ## Repair
 
@@ -24,4 +24,4 @@ Use this rubric when editing or adding skills.
 - Split unrelated duties into separate leaves.
 - Add exclusions.
 - Tighten the output contract.
-- Route ambiguous cases through `task-clarifier`.
+- Let native Codex resolve ordinary ambiguity before invoking a skill.

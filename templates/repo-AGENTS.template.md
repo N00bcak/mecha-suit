@@ -4,8 +4,9 @@ Use this repo-local file to connect project facts to the global skill toolbox.
 
 ## Global Skills
 
-- Use `$task-router` when the next skill is unclear.
-- Use `$task-clarifier` for underspecified local requests.
+- Inspect local context before asking about discoverable facts.
+- State safe assumptions and ask one focused question only when ambiguity
+  materially changes the work.
 - Do not call specialist leaves still marked `This is a stub. NEVER CALL THIS SKILL.`
 - Use `$interdisciplinary-council` only for genuine cross-domain work when the relevant non-council specialists are fully authored.
 

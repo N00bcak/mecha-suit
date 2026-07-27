@@ -12,6 +12,6 @@ Do not use council mode when:
 - The request is simply unclear.
 - One leaf has a clear primary claim.
 - The user wants a quick first pass.
-- A clarifying question would resolve routing.
+- A clarifying question would resolve the task framing.
 
 Escalation should be rare, explicit, and bounded.

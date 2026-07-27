@@ -201,8 +201,8 @@ would repeat, and the next recovery step.
 
 - If the prototype grows past ~1kLoC and needs integration or
   migration work, hand off to `large-codebase-change`.
-- If the prototype needs ML model training, hand off to the
-  appropriate ML skill or `task-clarifier` if ML skills are stubs.
+- If the prototype needs ML model training, use a fully authored ML skill when
+  available; otherwise leave this workflow and continue with native Codex.
 - If the user redirects to a different stack or scope, update the
   scratchpad if one is in use and continue.
 

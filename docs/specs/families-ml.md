@@ -27,7 +27,8 @@ families/ml/
 ## Strengths
 
 - Stubs make future architecture visible without pretending to be ready.
-- Router can recognize ML-shaped requests and route to clarification safely.
+- Stub descriptions prevent native skill selection from invoking unfinished ML
+  workflows.
 - Contract shape is aligned with the leaf template.
 
 ## Architectural Invariants
@@ -37,15 +38,15 @@ families/ml/
 - Do not add half-authored ML tactics.
 - Do not add bulky references or scripts until a leaf is genuinely being
   authored.
-- Router and council must not select ML stubs directly.
+- Native selection and council must not select ML stubs directly.
 
 ## Common Workflows
 
-- Leave ML requests to `task-clarifier` while leaves are stubs.
+- Handle ML requests with native host capabilities while leaves are stubs.
 - When authoring a leaf, preserve the contract shape unless there is a strong
   reason to change it.
-- Update README, router behavior, council eligibility, and templates if a stub
-  becomes fully authored.
+- Update README, council eligibility, and templates if a stub becomes fully
+  authored.
 
 ## Future Work
 

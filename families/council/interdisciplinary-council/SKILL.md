@@ -22,7 +22,7 @@ This skill is not a general fallback, planner, or router. It is a synthesis laye
 
 - One specialist is clearly sufficient.
 - The task is merely ambiguous or underspecified.
-- Routing can be resolved cheaply by `task-router` or `task-clarifier`.
+- One focused question or an explicit low-risk assumption resolves the ambiguity.
 - The user only wants a simple first-pass answer.
 - The task needs ordinary implementation planning without cross-domain conflict.
 - The relevant non-council specialists are still marked `This is a stub. NEVER CALL THIS SKILL.`
@@ -49,9 +49,9 @@ Currently eligible inherited leaves:
 
 Do not use stub specialist leaves as council subagents. The current ML specialist leaves are marked `This is a stub. NEVER CALL THIS SKILL.` and therefore must not be inherited until they are fully authored.
 
-Do not inherit from `task-router`, `task-clarifier`, `interview-me`, or any stub
-leaf. Do not create council-specific subagent roles. The council itself is not
-one of the inherited leaves.
+Do not inherit from `interview-me` or any stub leaf. Do not create
+council-specific subagent roles. The council itself is not one of the inherited
+leaves.
 
 ## Spawning Policy
 

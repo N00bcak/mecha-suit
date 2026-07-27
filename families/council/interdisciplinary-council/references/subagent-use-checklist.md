@@ -20,5 +20,5 @@ Never:
 
 - Spawn a council-specific role.
 - Ask a subagent to coordinate another subagent.
-- Use subagents for ordinary routing ambiguity.
+- Use subagents for ordinary ambiguity.
 - Use more specialists than the task needs.

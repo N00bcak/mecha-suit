@@ -13,7 +13,8 @@ Design or execute a bounded deep learning experiment with clear assumptions and 
 
 This is a stub. NEVER CALL THIS SKILL.
 
-It exists to preserve architecture, define boundaries, and show what a future fully authored deep learning leaf should own. Use `task-router` or `task-clarifier` instead until this leaf is fully authored.
+It exists to preserve architecture, define boundaries, and show what a future
+fully authored deep learning leaf should own.
 
 ## Use When
 

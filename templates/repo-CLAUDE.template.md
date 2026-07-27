@@ -4,8 +4,9 @@ Use this repo-local file to adapt the global toolbox for Claude Code.
 
 ## Skill Intent
 
-- Route unclear work through `task-router`.
-- Clarify missing goals or artifacts through `task-clarifier`.
+- Inspect local context before asking about discoverable facts.
+- State safe assumptions and ask one focused question only when ambiguity
+  materially changes the work.
 - Keep ordinary implementation in the relevant specialist leaf.
 - Reserve `interdisciplinary-council` for real multi-specialist work.
 

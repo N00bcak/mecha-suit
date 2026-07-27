@@ -3,16 +3,13 @@
 ## Purpose
 
 `families/` is the core skill library. It groups runtime skills by architectural
-role: routing, council synthesis, collaboration, engineering work, CTF work,
-and ML stubs.
+role: council synthesis, collaboration, engineering work, CTF work, and ML
+stubs.
 
 ## Architecture Tree
 
 ```text
 families/
-    routing/
-        task-router/
-        task-clarifier/
     council/
         interdisciplinary-council/
     collaboration/
@@ -63,7 +60,7 @@ Each skill folder may contain:
 
 ## Architectural Invariants
 
-- Top layer is `routing/`, not orchestration.
+- Native host behavior owns skill selection and ordinary clarification.
 - Only `interdisciplinary-council` may use subagents.
 - `interview-me` is explicit-invocation-only.
 - Specialist leaves do one job well.
@@ -75,9 +72,9 @@ Each skill folder may contain:
 ## Common Workflows
 
 - Add a new specialist from `templates/leaf-skill.template.md`.
-- Update `README.md` and `shared/examples/routing-examples.md` when the visible
+- Update `README.md` and `shared/examples/skill-selection-examples.md` when the visible
   skill set changes.
-- Update `task-router` only when top-level routing behavior changes.
+- Keep native selection cues in leaf frontmatter descriptions.
 - Run `./test.sh` after skill changes.
 
 ## Future Work

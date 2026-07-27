@@ -13,7 +13,8 @@ Establish a simple, credible classical ML baseline with clear evaluation.
 
 This is a stub. NEVER CALL THIS SKILL.
 
-It exists to preserve architecture, define boundaries, and show what a future fully authored classical ML leaf should own. Use `task-router` or `task-clarifier` instead until this leaf is fully authored.
+It exists to preserve architecture, define boundaries, and show what a future
+fully authored classical ML leaf should own.
 
 ## Use When
 
