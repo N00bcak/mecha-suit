@@ -54,10 +54,19 @@ The global skills should stay generic. Local facts belong locally.
 From this repository:
 
 ```bash
+uv sync --dev
 ./test.sh
 ```
 
-This verifies the harness before you install anything. It checks script syntax, skill names, routing layout, subagent boundaries, and install/uninstall behavior against a temporary skill root.
+`uv sync --dev` creates the local `.venv` and installs the test-only dependencies.
+The only third-party dependency is PyYAML, which Codex's `skill-creator`
+validator uses to parse skill frontmatter. The skill installer and installed
+skills do not depend on Python or this environment.
+
+`./test.sh` verifies the harness before you install anything. It checks
+Codex-compatible YAML frontmatter, script syntax, skill names, routing layout,
+subagent boundaries, and install/uninstall behavior against a temporary skill
+root.
 
 Install every skill into the default Codex skill root:
 
@@ -238,7 +247,7 @@ Add or edit a global skill:
 3. Keep the skill narrow.
 4. Leave the exact stub warning in place until the leaf is fully authored.
 5. Update routing examples and README when the visible skill set changes.
-6. Run `./test.sh`.
+6. Run `uv sync --dev`, then `./test.sh`.
 
 Uninstall safely:
 
@@ -255,7 +264,7 @@ If you installed with `MECHA_SKILL_ROOT`, uninstall with the same value.
 - `scripts/`: deterministic helpers that remove repeated procedural work.
 - `templates/`: repeatable authoring patterns.
 - `docs/`: human-facing maintenance and platform notes.
-- `agents/`: host metadata only when it materially improves routing or invocation behavior. Routing, council, and fully authored CTF specialists currently use Codex metadata; collaboration and engineering leaves and ML stubs rely on frontmatter.
+- `agents/`: host metadata only when it materially improves routing or invocation behavior. `interview-me`, routing, council, and fully authored CTF specialists currently use Codex metadata; `product-co-design`, engineering leaves, and ML stubs rely on frontmatter.
 - `AGENTS.md`: rules for developing this harness itself.
 - `PROMPT.md`: original scaffold prompt, kept as project history.
 
@@ -271,6 +280,7 @@ Run:
 
 The test harness checks:
 
+- Codex `skill-creator`-compatible YAML frontmatter
 - shell syntax for executable scripts
 - `SKILL.md` frontmatter names against folder names
 - required routing and council layout
@@ -325,6 +335,8 @@ If the task is vague, use `task-router` or `task-clarifier` explicitly.
 
 Read the failing `[fail]` line first. The test harness is intentionally small; failures usually mean one of these changed:
 
+- the uv development environment has not been synchronized
+- skill frontmatter is not valid YAML accepted by Codex's validator
 - a script has invalid shell syntax
 - a skill folder name and frontmatter name diverged
 - routing/council layout changed
@@ -334,6 +346,7 @@ Read the failing `[fail]` line first. The test harness is intentionally small; f
 Fix the cause, then rerun:
 
 ```bash
+uv sync --dev
 ./test.sh
 ```
 

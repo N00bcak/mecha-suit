@@ -32,6 +32,20 @@ When editing this repository:
 - use `CODESTYLE.md` for rationale and high-level development practice
 - if the two conflict, follow `AGENTS.md` because it is tailored to Mecha Suit
 
+## Development environment
+
+- Use `uv` for the repository's Python development environment.
+- Run `uv sync --dev` to create or update `.venv` from `uv.lock`.
+- Run `./test.sh` after synchronization.
+- Keep Python packages in the development dependency group. Do not make them
+  runtime requirements for installed skills or for `install.sh`.
+- Add a dependency only when a repository test or deterministic development
+  tool requires it. PyYAML is currently the sole third-party dependency,
+  matching Codex `skill-creator` frontmatter validation.
+- Commit `uv.lock`; never commit `.venv`.
+- When changing skill frontmatter rules, keep `scripts/validate_skills.py`
+  aligned with Codex's `skill-creator` `quick_validate.py`.
+
 ### 1. Think before coding
 Do not assume silently.
 
@@ -302,10 +316,14 @@ Examples:
 
 ### Skill descriptions
 Descriptions must be good routers.
-Each skill description should make it easy to answer:
-- what is this for?
-- when should it trigger?
-- when should it NOT trigger?
+
+- Use one constructive sentence, normally around 120 characters.
+- Name the owned action and a positive task or artifact cue.
+- Make boundaries clear through task shape, not contrastive phrasing.
+- Omit workflow summaries and repo-wide policies.
+- Keep a few diagnostic cues when adjacent categories need them.
+- Treat the length target as editorial guidance, not a validator limit.
+- Use host invocation policy, not warning prose, for manual-only skills.
 
 ## Router development rules
 

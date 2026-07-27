@@ -1,6 +1,6 @@
 ---
 name: <skill-name>
-description: <one concise trigger description. Include the main task type and boundary. State that this leaf does not use subagents.>
+description: <one constructive sentence of about 120 characters naming the owned action and positive task or artifact cue>
 ---
 
 # <Skill Title>

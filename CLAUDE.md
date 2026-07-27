@@ -31,7 +31,7 @@ Always run `./test.sh` after any harness edit.
 
 ### Skill folder structure
 
-Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for routing, council, and fully authored CTF specialists; collaboration and engineering leaves and ML stubs rely on frontmatter only.
+Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for `interview-me`, routing, council, and fully authored CTF specialists; `product-co-design`, engineering leaves, and ML stubs rely on frontmatter only.
 
 ### Shared resources
 
@@ -92,5 +92,5 @@ After meaningful changes:
 - 4-space indentation.
 - Direct, dense, operational language. No motivational filler.
 - Skill names reflect actual function (e.g. `task-router` not `orchestrator`).
-- Skill descriptions must clearly answer: what is this for, when should it trigger, when should it NOT trigger.
+- Skill descriptions use one constructive sentence, normally around 120 characters, naming the owned action and a positive task or artifact cue.
 - Scripts only when they improve determinism or remove repeated procedural work.

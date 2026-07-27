@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(CDPATH= cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+DEV_PYTHON="${ROOT_DIR}/.venv/bin/python"
 
 fail() {
     printf '[fail] %s\n' "$*" >&2
@@ -38,6 +39,13 @@ syntax_checks() {
     bash -n "${ROOT_DIR}/uninstall.sh"
     bash -n "${ROOT_DIR}/test.sh"
     pass "shell syntax"
+}
+
+development_environment_checks() {
+    if [ ! -x "${DEV_PYTHON}" ]; then
+        fail "development environment is missing; run 'uv sync --dev'"
+    fi
+    "${DEV_PYTHON}" "${ROOT_DIR}/scripts/validate_skills.py"
 }
 
 frontmatter_checks() {
@@ -118,9 +126,12 @@ council_eligibility_checks() {
 
 collaboration_checks() {
     local interview_file="${ROOT_DIR}/families/collaboration/interview-me/SKILL.md"
+    local interview_metadata="${ROOT_DIR}/families/collaboration/interview-me/agents/openai.yaml"
     local router_file="${ROOT_DIR}/families/routing/task-router/SKILL.md"
 
-    grep -Fxq 'description: NEVER CALL THIS SKILL.' "${interview_file}" || fail "interview-me manual-only frontmatter guard is missing"
+    grep -Fxq 'description: Interview the user one focused question at a time.' "${interview_file}" || fail "interview-me description is missing"
+    assert_exists "${interview_metadata}"
+    grep -Fq 'allow_implicit_invocation: false' "${interview_metadata}" || fail "interview-me implicit invocation is not disabled"
     grep -Fq '`interview-me` is explicit-invocation-only. Never select it through routing.' "${router_file}" || fail "router interview-me exclusion is missing"
     grep -Fq '| Product idea, service, workflow, or experience needs concept shaping' "${router_file}" || fail "product-co-design route is missing"
     pass "collaboration routing boundaries"
@@ -129,7 +140,7 @@ collaboration_checks() {
 metadata_policy_checks() {
     grep -Fq 'fully authored CTF specialists' "${ROOT_DIR}/CLAUDE.md" || fail "CLAUDE metadata policy does not mention CTF specialist metadata"
     grep -Fq 'fully authored CTF specialists currently use Codex metadata' "${ROOT_DIR}/README.md" || fail "README metadata policy does not mention CTF specialist metadata"
-    grep -Fq 'Collaboration and engineering leaves, and ML stubs, currently rely on frontmatter only.' "${ROOT_DIR}/docs/platform-notes.md" || fail "platform metadata policy is missing"
+    grep -Fq '`product-co-design`, engineering leaves, and ML stubs currently rely on frontmatter only.' "${ROOT_DIR}/docs/platform-notes.md" || fail "platform metadata policy is missing"
     pass "metadata policy"
 }
 
@@ -215,6 +226,7 @@ install_uninstall_checks() {
 
 main() {
     syntax_checks
+    development_environment_checks
     frontmatter_checks
     architecture_checks
     subagent_boundary_checks
