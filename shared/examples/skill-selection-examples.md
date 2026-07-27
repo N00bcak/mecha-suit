@@ -8,11 +8,12 @@
 
 ## Engineering
 
-- "Add OAuth to this existing app and update tests" -> `large-codebase-change`
-- "Refactor this API to use pagination and update the tests" -> `large-codebase-change`
-- "Migrate the database schema to add a new users table" -> `large-codebase-change`
-- "Build a small CSV viewer web app" -> `prototype-builder`
-- "Create a quick CLI tool that converts JSON to CSV" -> `prototype-builder`
+- "Fix this one-line parsing bug in a 50k-line service" -> `large-codebase-change`
+- "Edit this existing 2k-line utility" -> native Codex
+- "Build a new isolated CSV viewer web app" -> `prototype-builder`
+- "Create a greenfield CLI that converts JSON to CSV" -> `prototype-builder`
+- "Migrate the database schema in this large service" -> `large-codebase-change`; load its migration reference
+- "Update Python and TypeScript callers in this large polyglot repository" -> `large-codebase-change`; load only the Python and TypeScript primers
 
 ## CTF
 

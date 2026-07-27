@@ -133,6 +133,57 @@ collaboration_checks() {
     pass "collaboration routing boundaries"
 }
 
+engineering_checks() {
+    local family_dir="${ROOT_DIR}/families/engineering"
+    local large_skill="${family_dir}/large-codebase-change/SKILL.md"
+    local prototype_skill="${family_dir}/prototype-builder/SKILL.md"
+    local reference
+
+    grep -Fxq 'description: Implement PR-ready changes in codebases above roughly 5kLoC with idiomatic, anti-bloat, and verification discipline.' "${large_skill}" || fail "large-codebase-change description drifted"
+    grep -Fxq 'description: Build and verify isolated greenfield prototypes, demos, tools, or apps around one core outcome.' "${prototype_skill}" || fail "prototype-builder description drifted"
+
+    if grep -REiq '1''kLoC|~1''k|under about 1''k|past ~1''k' "${family_dir}"; then
+        fail "obsolete prototype line-count trigger remains"
+    fi
+
+    for reference in \
+        change-discipline.md \
+        session-continuity.md \
+        python-practices.md \
+        typescript-practices.md \
+        go-practices.md \
+        rust-practices.md \
+        systems-c-cpp-practices.md \
+        java-jvm-practices.md
+    do
+        assert_exists "${family_dir}/references/${reference}"
+        grep -Fq "\`../references/${reference}\`" "${large_skill}" || fail "large-codebase-change does not link shared ${reference}"
+        grep -Fq "\`../references/${reference}\`" "${prototype_skill}" || fail "prototype-builder does not link shared ${reference}"
+    done
+
+    grep -Fq '## Change Surface' "${large_skill}" || fail "large-codebase-change scratchpad contract drifted"
+    grep -Fq '## Decisions' "${large_skill}" || fail "large-codebase-change scratchpad decisions are missing"
+    grep -Fq '## Stack' "${prototype_skill}" || fail "prototype-builder scratchpad contract drifted"
+    grep -Fq '## Features' "${prototype_skill}" || fail "prototype-builder scratchpad features are missing"
+    grep -Fq 'Archive old one (`SCRATCHPAD-<date>.md`), create new' "${family_dir}/references/session-continuity.md" || fail "shared scratchpad archive contract drifted"
+    grep -Fq '**Before ending a session** — mandatory' "${family_dir}/references/session-continuity.md" || fail "shared scratchpad handoff cadence drifted"
+    grep -Fq '### Phase 5: Mandatory Compression Review' "${large_skill}" || fail "large-codebase-change compression review is missing"
+    grep -Fq 'Do not create or switch branches, commit, push, or open a pull request' "${large_skill}" || fail "PR-ready Git publication boundary is missing"
+
+    for reference in \
+        code-correctness.md \
+        complexity-and-optimality.md \
+        refactoring-patterns.md \
+        software-principles.md
+    do
+        assert_not_exists "${family_dir}/large-codebase-change/references/${reference}"
+    done
+    assert_not_exists "${family_dir}/large-codebase-change/references/session-continuity.md"
+    assert_not_exists "${family_dir}/prototype-builder/references/session-continuity.md"
+
+    pass "engineering routing and shared references"
+}
+
 metadata_policy_checks() {
     grep -Fq 'fully authored CTF specialists' "${ROOT_DIR}/CLAUDE.md" || fail "CLAUDE metadata policy does not mention CTF specialist metadata"
     grep -Fq 'fully authored CTF specialists currently use Codex metadata' "${ROOT_DIR}/README.md" || fail "README metadata policy does not mention CTF specialist metadata"
@@ -228,6 +279,7 @@ main() {
     persistence_yield_checks
     council_eligibility_checks
     collaboration_checks
+    engineering_checks
     metadata_policy_checks
     stub_skill_checks
     install_uninstall_checks

@@ -24,7 +24,7 @@ Always run `./test.sh` after any harness edit.
 
 - **`council/`** — Fully authored. `interdisciplinary-council` is the **only** skill allowed to use subagents. Reserved for genuine multi-specialist work.
 - **`collaboration/`** — Fully authored. `interview-me` (explicit-invocation-only scoped interviewing) and `product-co-design` (conversation-first product concept development and critique).
-- **`engineering/`** — Fully authored. `large-codebase-change` (existing-codebase modifications, integration, migrations) and `prototype-builder` (small greenfield prototypes under ~1kLoC). Both enforce session continuity via scratchpads, code correctness, and asymptotic sanity.
+- **`engineering/`** — Fully authored. `large-codebase-change` owns PR-ready changes in repositories above roughly 5k maintained source lines; `prototype-builder` owns isolated greenfield work centered on one demonstrable outcome, without a line-count limit. Both share anti-bloat, continuity, and language-idiom references.
 - **`ctf/`** — Fully authored. Specialist leaves for challenge triage, reverse engineering, binary exploitation, cryptography, web exploitation, forensics, AI/ML security, and miscellaneous challenges.
 - **`ml/`** — Contract-complete stubs. Each contains `This is a stub. NEVER CALL THIS SKILL.` and must not be routed to or used as council subagents until fully authored.
 

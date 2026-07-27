@@ -144,7 +144,9 @@ Mecha Suit is organized into skill families:
 
 - `families/council/`: controlled multi-specialist synthesis.
 - `families/collaboration/`: explicit interviewing and conversation-first product co-design.
-- `families/engineering/`: fully authored leaves for existing-codebase changes and small prototypes.
+- `families/engineering/`: fully authored leaves for PR-ready changes in
+  repositories above roughly 5k maintained source lines and isolated
+  greenfield prototypes centered on one outcome.
 - `families/ctf/`: fully authored leaves for challenge triage, reverse engineering, binary exploitation, cryptography, web exploitation, forensics, AI/ML security, and miscellaneous challenges.
 - `families/ml/`: stub leaves for dataset triage, classical baselines, and deep learning experiments.
 
@@ -168,6 +170,12 @@ matching leaf is fully authored. Engineering specialist leaves
 (`large-codebase-change`, `prototype-builder`) and CTF specialist leaves
 (`ctf-triage`, `reverse-ctf`, `pwn-ctf`, `crypto-ctf`, `web-ctf`,
 `forensics-ctf`, `ai-ctf`, `misc-ctf`) are fully authored and callable.
+
+Use `large-codebase-change` for any requested edit in a clearly large existing
+repository, even when the diff is small. Existing repositories clearly below
+roughly 5k maintained source lines stay with native Codex. Use
+`prototype-builder` for isolated greenfield prototypes, demos, tools, or apps;
+it has no line-count limit.
 
 Use `interview-me` only by explicitly naming or invoking it. It conducts a
 scoped, one-question-at-a-time interview and is never an automatic selection

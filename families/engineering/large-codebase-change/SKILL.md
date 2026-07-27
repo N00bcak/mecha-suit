@@ -1,93 +1,85 @@
 ---
 name: large-codebase-change
-description: Implement and verify changes to existing codebases, integrations, migrations, shared contracts, or refactors.
+description: Implement PR-ready changes in codebases above roughly 5kLoC with idiomatic, anti-bloat, and verification discipline.
 ---
 
 # Large Codebase Change
 
 ## Purpose
 
-Guide changes in an existing codebase where integration behavior, tests,
-shared contracts, or system boundaries matter. Enforces developmental
-continuity across sessions, code correctness with appropriate complexity,
-and asymptotic sanity.
+Implement the smallest idiomatic, verified change that is ready for review in a
+clearly large existing repository.
 
 ## Use When
 
-- The task modifies an existing repository.
-- The change touches shared behavior, APIs, storage, build systems, or
-  migrations.
-- The user needs implementation plus verification.
-- Work may span multiple sessions and requires state continuity.
+- The task changes an existing repository with roughly more than 5k lines of
+  maintained source code.
+- The requested edit is small or large; repository scale is the routing cue.
+- The work may affect integrations, shared contracts, persistence,
+  configuration, migrations, or compatibility boundaries.
+
+Treat 5kLoC as a heuristic. Exclude generated, vendored, dependency, and build
+output. Count only when repository size is genuinely unclear.
 
 ## Do Not Use
 
-- Small greenfield prototypes — use `prototype-builder`.
-- CTF challenges — use the appropriate CTF specialist.
-- ML dataset or modeling work unless the main task is engineering integration.
+- Existing repositories clearly below the boundary — continue with native
+  Codex.
+- Isolated greenfield prototypes — use `prototype-builder`.
+- CTF or ML-specific work unless the primary task is engineering integration.
 - Do not spawn, request, or rely on subagents.
 
 ## Needs
 
 - User goal and acceptance criteria.
-- Repository access or the relevant context.
-- Test or validation commands when available.
-- Constraints on compatibility, migration, or rollout.
+- Repository access and applicable local instructions.
+- Available build, format, lint, and test commands.
+- Compatibility, migration, rollout, or publication constraints.
 
 ## Returns
 
-- Updated or newly created `SCRATCHPAD.md` when durable planning or handoff state is warranted.
-- Scoped implementation with verification evidence.
-- Test results or explicit test gaps.
-- Risks and follow-up items when material.
-- Clear handoff state for the next session.
+- Updated or newly created `SCRATCHPAD.md` when durable continuity is
+  warranted.
+- A minimal, idiomatic, PR-ready diff.
+- Verification evidence and explicit test gaps.
+- Compatibility or rollout risks, deferred work, and suggested review focus.
+
+PR-ready does not mean published. Work on the current branch and preserve user
+changes. Do not create or switch branches, commit, push, or open a pull request
+unless the user explicitly asks.
 
 ## Done Conditions
 
-- The intended change is implemented and verified, or the blocker is explicit.
-- Tests pass or test gaps are documented with rationale.
-- Session state is captured in `SCRATCHPAD.md` when the task warrants durable planning or handoff state.
-- Residual risks and deferred items are captured.
+- The requested behavior is implemented across every affected boundary.
+- The diff contains no speculative or redundant structure.
+- Relevant formatting, static checks, and tests pass, or gaps are explained.
+- Scratchpad state is current when a scratchpad is in use.
+- The handoff identifies outcome, scope, evidence, risks, deferrals, and review
+  focus.
 
 ## Methodology
 
-### Phase 0: Continuity Check — Resume or Decide
+### Phase 0: Continuity Check
 
-Start by checking for existing progress and deciding whether the task needs durable planning state.
+1. Look for `SCRATCHPAD.md` at the repository root or in `.agent/`.
+2. Inspect current Git status and recent history without changing the branch.
+3. Read TODO or FIXME markers only on the relevant change surface.
 
-Check for existing progress artifacts:
+If a scratchpad exists, read it completely and verify its claims against files,
+Git state, and available tests before resuming. If it is stale, update it
+first.
 
-1. Look for `SCRATCHPAD.md` in the repository root or `.agent/` directory.
-2. Check `git log --oneline -20` for recent changes.
-3. Look for TODO/FIXME markers left by prior work.
+If none exists, create one only for multi-session work, broad change surfaces,
+migrations, significant coordination risk, or an explicit user request. Small,
+self-contained changes keep state in the response.
 
-**If a scratchpad exists:**
+Use this structure:
 
-- Read it completely.
-- Verify key claims against current state: do referenced files exist?
-  Do described changes appear in the code? Do tests still pass?
-- If claims are stale, update the scratchpad before proceeding.
-- Resume from the documented next step. Do NOT repeat completed work
-  unless verification fails.
-
-**If no scratchpad exists:**
-
-Create `SCRATCHPAD.md` only when the task benefits from durable planning or handoff state:
-
-- Medium-large codebase changes.
-- Multi-step or multi-session work.
-- Broad change surfaces, migrations, shared contracts, or significant coordination risk.
-- User explicitly asks for planning or handoff state.
-
-For small, self-contained edits, do not create a scratchpad. Keep the plan in the response or final summary instead.
-
-When creating `SCRATCHPAD.md`, use this structure:
-
-```
+```markdown
 # Scratchpad
 
 ## Task
-[What we're building/changing and why]
+[What we're changing and why]
 
 ## Status
 [active | paused | complete | blocked]
@@ -110,154 +102,128 @@ When creating `SCRATCHPAD.md`, use this structure:
 [Explicit next action for the next session]
 ```
 
-When using a scratchpad, update it at every significant decision point:
-after orientation, after planning, after each implementation unit, after
-verification. See `references/session-continuity.md` for the full
-verification and update protocol.
+Update it after orientation, planning, each implementation unit, verification,
+and before yielding. Follow `../references/session-continuity.md`.
 
-### Phase 1: Orient
+### Phase 1: Orient Narrowly
 
-Understand the codebase shape before changing it.
+1. Read applicable instructions, manifests, and repository-native commands.
+2. Inspect nearby implementation and test style.
+3. Identify the narrowest relevant change surface.
+4. Preserve unrelated working-tree changes.
+5. Load `../references/change-discipline.md`.
+6. Load only the shared language primers for files likely to change.
 
-1. **Structure**: project layout, language(s), build system, package manager.
-2. **Contracts**: APIs, shared types, schemas, configuration surfaces.
-3. **Tests**: framework, commands, coverage expectations, existing gaps.
-4. **Style**: naming conventions, patterns, file organization.
+Do not survey the whole repository. Count maintained source lines only if the
+routing boundary remains unclear after inspecting its structure.
 
-Read manifests, entrypoints, and the narrowest slice that reveals the
-change surface. Do not survey the entire codebase. Record findings in
-the scratchpad when using one, otherwise keep them in the response or
-final summary.
+### Phase 2: Map the Change
 
-### Phase 2: Plan the Change Surface
+Trace the requested behavior through affected:
 
-1. Trace from user-facing entry to storage/output.
-2. Identify all touch points: direct changes, ripple effects, test updates.
-3. Assess risk per touch point: is it shared? tested? complex?
-4. Order changes: deepest dependency first, then consumers.
+- callers and entry points;
+- public or shared contracts;
+- persistence and migrations;
+- configuration and deployment surfaces;
+- tests and fixtures;
+- backward-compatibility or rollout boundaries.
 
-When using a scratchpad, record the plan there with explicit file paths
-and expected changes per file. Otherwise keep the plan concise in the
-response or final summary.
+Record explicit file paths and risks. Read
+`references/migration-and-rollout.md` only for data, API, message, or staged
+rollout changes. Read `references/testing-strategy.md` when test selection is
+not obvious.
 
-### Phase 3: Implement
+### Phase 3: Implement Surgically
 
-Execute changes in the planned order. For each unit, enforce three
-constraints in priority order.
+Match local conventions before applying general language guidance. Make the
+deepest necessary change first, then update consumers and tests.
 
-**Correctness first.** Does it do what it claims? Does it preserve
-existing invariants? Does it handle the real input domain?
+Apply these abstraction gates:
 
-Common correctness traps:
+- No single-use helper unless it names a real domain operation or isolates a
+  meaningful boundary.
+- No pass-through wrapper.
+- No speculative interface, factory, parameter, configuration, or extension
+  point.
+- Preserve sequential logic when splitting it would increase navigation cost.
+- Treat SOLID as diagnostic guidance, not a quota for types or functions.
+- Add dependencies only when the requested behavior cannot reasonably use the
+  existing toolchain.
 
-- Off-by-one and boundary conditions.
-- Null/undefined in nullable contexts.
-- Race conditions in concurrent code.
-- Resource leaks: connections, file handles, locks, cursors.
-- Broken contracts: changing a return type, field name, or error shape
-  that callers depend on.
-- Silent data corruption: truncation, lossy casts, timezone mangling.
+Handle errors, resources, concurrency, and types in the repository's idiom.
+Avoid drive-by cleanup; remove only artifacts made obsolete by this change.
 
-When unsure whether behavior is correct, write a test for it before
-moving forward.
+### Phase 4: Verify by Risk
 
-**Appropriate complexity.** Use the simplest structure that correctly
-solves the problem. Three similar lines beat a premature abstraction.
-A direct implementation beats a clever one. Introduce a new abstraction
-only when it eliminates a real, repeated source of bugs or
-inconsistency — not when it merely looks cleaner.
+1. Run the repository-native formatter and static checks for changed files.
+2. Run focused tests that exercise the changed behavior.
+3. Run broader tests when shared contracts or blast radius justify them.
+4. Test a material failure path for new behavior.
+5. Use manual verification when automation cannot observe the relevant path,
+   and record exactly what was checked.
 
-Signs of inappropriate complexity:
+Select verification by failure consequence and change surface, not a fixed
+quota. A pre-existing failure must be demonstrated and reported, not silently
+attributed.
 
-- A wrapper that adds no safety or clarity.
-- A generic solution to a problem that only exists once.
-- An inheritance hierarchy for two concrete types.
-- A configuration system for values that never change.
+### Phase 5: Mandatory Compression Review
 
-**Asymptotic sanity.** No O(n²) where O(n) is straightforward. No
-full-collection scans where index lookups exist. No repeated
-computation where memoization is trivial. No unbounded memory growth
-where streaming is possible.
+Review every new function, type, file, wrapper, option, dependency, and
+configuration value.
 
-Do NOT microoptimize. Constant factors do not matter until profiling
-says they do. Prefer clarity over marginal speedups. But if you are
-nesting a loop inside a loop over the same collection and you do not
-need to, fix it.
+For each one, ask:
 
-Consult language-specific references when working in a language with
-specific idiom or safety requirements.
+- What concrete complexity, duplication, or risk does it reduce?
+- Would inlining or using an existing local pattern be clearer?
+- Is it required by current behavior rather than a hypothetical future?
 
-### Phase 4: Verify
+Remove anything that does not earn its maintenance and navigation cost. Re-run
+affected verification after compression.
 
-1. **Type checking / linting**: run if the project has it configured.
-2. **Existing tests**: must pass. A failure from your change means the
-   change is likely wrong, not the tests — unless the test is genuinely
-   stale and you can demonstrate why.
-3. **New tests**: write for new behavior, fixed bugs, or uncovered
-   critical paths.
-4. **Manual verification**: when automated coverage is insufficient,
-   document exactly what you checked and why.
+### Phase 6: Close
 
-If tests do not exist or are broken pre-change, document this in the
-scratchpad when using one, otherwise in the final summary. Narrow the
-verification scope rather than skipping it.
+If using a scratchpad, update completed work, current verification state,
+deferrals, risks, modified files, and one explicit next step. Set status to
+`complete` only when no required work remains.
 
-### Phase 5: Session Close
+Return a PR-ready handoff:
 
-Before ending any session that uses `SCRATCHPAD.md`, update it with:
+- outcome;
+- concise diff scope;
+- verification evidence;
+- compatibility or rollout risks;
+- intentionally deferred work;
+- suggested reviewer focus.
 
-- What was accomplished this session.
-- Current test/build state.
-- Deferred items with rationale.
-- Explicit next step for the next session.
-- Files modified this session.
-- Open questions or risks.
-
-If the task is complete, set status to `complete` and preserve the
-scratchpad for reference. If no scratchpad is in use, include the same
-state in the final summary.
+Do not publish Git state unless explicitly requested.
 
 ## Persistence And Yield
 
-Useful progress means working code, passing tests, narrowed change
-surface, discovered constraints, or verified assumptions.
+Useful progress means working code, passing tests, narrowed change surface,
+discovered constraints, or verified assumptions.
 
-Before yielding:
-
-- Try the primary implementation path.
-- Try one distinct bounded alternative when the primary path fails.
-- Check whether missing information is discoverable from available context.
-- Confirm the next action would repeat prior work, require unsafe guessing,
-  or leave this skill's boundary.
-
-Do not yield merely because the codebase is large, the task is hard,
-or tests are slow.
-
-When yielding, update the scratchpad if one is in use and return:
-attempts made, useful progress found, specific blocker, why more work
-would repeat, and the next recovery step.
+Before yielding, try the primary path and one distinct bounded alternative,
+check whether missing information is locally discoverable, and confirm further
+work would repeat or require a user-owned decision. Update the scratchpad when
+one is in use.
 
 ## Pivot Rules
 
-- If the change is actually a greenfield prototype, hand off to
-  `prototype-builder` with current context.
-- If the change requires ML model work, use a fully authored ML skill when
-  available; otherwise leave this workflow and continue with native Codex.
-- If the task requires genuine multi-specialist judgment across families,
-  hand off to `interdisciplinary-council`.
+- If the work is an isolated greenfield outcome, use `prototype-builder`.
+- If the repository is clearly below the large-codebase heuristic, continue
+  with native Codex.
+- Use an appropriate domain specialist when engineering integration is not the
+  primary task.
 
-## Reference
+## References
 
-- `references/session-continuity.md` — scratchpad protocol and verification
-- `references/code-correctness.md` — correctness checklist and common bugs
-- `references/complexity-and-optimality.md` — complexity principles and asymptotic sanity
-- `references/testing-strategy.md` — test selection and coverage priorities
-- `references/software-principles.md` — SOLID, KISS, Law of Demeter, and other governing principles
-- `references/refactoring-patterns.md` — safe refactoring techniques
-- `references/migration-and-rollout.md` — migration safety and rollout strategies
-- `references/python-practices.md` — Python idioms, typing, common pitfalls
-- `references/typescript-practices.md` — TypeScript strict mode, async, type safety
-- `references/go-practices.md` — Go error handling, concurrency, interfaces
-- `references/rust-practices.md` — ownership, lifetimes, error handling
-- `references/systems-c-cpp-practices.md` — memory safety, RAII, undefined behavior
-- `references/java-jvm-practices.md` — collections, concurrency, resource management
+- `../references/change-discipline.md` — anti-bloat and surgical-change gates
+- `../references/session-continuity.md` — shared scratchpad protocol
+- `../references/python-practices.md` — Python idioms
+- `../references/typescript-practices.md` — TypeScript idioms
+- `../references/go-practices.md` — Go idioms
+- `../references/rust-practices.md` — Rust idioms
+- `../references/systems-c-cpp-practices.md` — C and C++ idioms
+- `../references/java-jvm-practices.md` — Java and JVM idioms
+- `references/testing-strategy.md` — risk-calibrated test selection
+- `references/migration-and-rollout.md` — migration and rollout decisions

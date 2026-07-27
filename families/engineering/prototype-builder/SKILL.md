@@ -1,84 +1,76 @@
 ---
 name: prototype-builder
-description: Build and verify small greenfield prototypes, demos, tools, or apps under about 1kLoC.
+description: Build and verify isolated greenfield prototypes, demos, tools, or apps around one core outcome.
 ---
 
 # Prototype Builder
 
 ## Purpose
 
-Create small, working first versions of greenfield tools, demos, apps, or
-experiments. Enforces developmental continuity across sessions, correctness
-from the start, and minimal viable complexity.
+Build an isolated greenfield artifact that demonstrates one core outcome
+end-to-end, without introducing production architecture.
 
 ## Use When
 
-- The task starts from little or no existing code.
-- The likely implementation is under about 1kLoC.
-- The user values a working first pass over deep architecture.
-- The user wants a prototype, demo, tool, or experiment.
+- The work starts from little or no existing implementation.
+- The artifact is isolated and organized around one demonstrable outcome.
+- The user wants a prototype, demo, tool, app, or experiment.
+
+There is no line-count limit. Greenfield posture and a single core outcome are
+the routing cues.
 
 ## Do Not Use
 
-- Large existing codebases — use `large-codebase-change`.
-- Production migration or complex integration work — use `large-codebase-change`.
-- CTF or ML-specific analysis — use the appropriate specialist.
+- Changes inside an existing repository that are not an isolated greenfield
+  artifact.
+- Production integration, migration, or compatibility work.
+- CTF or ML-specific analysis unless the primary task is building the
+  prototype.
 - Do not spawn, request, or rely on subagents.
+
+Use `large-codebase-change` for an existing repository only when it also meets
+that skill's large-codebase boundary. Otherwise continue with native Codex.
 
 ## Needs
 
-- Desired user-facing behavior.
-- Preferred platform or runtime if specified.
+- Intended user and observable demonstration.
+- Core hypothesis or outcome.
+- Preferred platform, runtime, libraries, or deployment target when specified.
 - Required inputs, outputs, and constraints.
-- Any assets or external dependencies explicitly required.
 
 ## Returns
 
-- Updated or newly created `SCRATCHPAD.md` when durable planning or handoff state is warranted.
-- Working prototype with clear run instructions.
-- Basic verification evidence.
-- Notes on intentionally deferred hardening.
-- Session handoff state for continuity.
+- Updated or newly created `SCRATCHPAD.md` when durable continuity is
+  warranted.
+- A runnable vertical slice with conventional run instructions.
+- Verification of the primary path and a material failure path.
+- Visible shortcuts, scope deferrals, and promotion signals.
 
 ## Done Conditions
 
-- The prototype runs and demonstrates the core behavior.
-- Run instructions are documented in the scratchpad or a README.
-- Intentionally deferred items are listed.
-- Session state is captured in `SCRATCHPAD.md` when the task warrants durable planning or handoff state.
+- The core outcome is observable end-to-end.
+- The realistic primary path and one material failure path are verified.
+- Run instructions live in the repository's conventional location.
+- Required, optional, and deferred scope is clear.
+- Scratchpad state is current when a scratchpad is in use.
 
 ## Methodology
 
-### Phase 0: Continuity Check — Resume or Decide
+### Phase 0: Continuity Check
 
-Start by checking for existing progress and deciding whether the task needs durable planning state.
+Look for `SCRATCHPAD.md`, partial implementation, relevant TODO markers, and
+recent Git history when a repository exists.
 
-Check for existing progress:
+If a scratchpad exists, read it completely, verify its claims against current
+files and runnable state, and resume from its next step.
 
-1. Look for `SCRATCHPAD.md` in the project root.
-2. Check for partial implementations or TODO markers.
-3. Check `git log --oneline -10` if the project has a repo.
+Create one only for multi-session work, multiple dependencies, significant
+coordination risk, or an explicit user request. Small prototypes keep state in
+the response.
 
-**If a scratchpad exists:**
+Use this structure:
 
-- Read it completely.
-- Verify claims: does the prototype still run? Are referenced files present?
-- Resume from the documented next step.
-
-**If no scratchpad exists:**
-
-Create `SCRATCHPAD.md` only when the prototype benefits from durable planning or handoff state:
-
-- Medium-large prototype work.
-- Multi-step or multi-session work.
-- Many features, external dependencies, or significant coordination risk.
-- User explicitly asks for planning or handoff state.
-
-For small, self-contained prototypes, do not create a scratchpad. Keep the plan and run notes in the response or final summary instead.
-
-When creating `SCRATCHPAD.md`, use this structure:
-
-```
+```markdown
 # Scratchpad
 
 ## Task
@@ -105,109 +97,119 @@ When creating `SCRATCHPAD.md`, use this structure:
 [Explicit next action]
 ```
 
-When using a scratchpad, update it at key decision points: after stack
-selection, after the core loop works, after each feature unit.
+Update it after stack selection, the first working core loop, each feature
+unit, verification, and before yielding. Follow
+`../references/session-continuity.md`.
 
-### Phase 1: Stack Selection
+### Phase 1: Frame the Demonstration
 
-Choose the simplest viable stack.
+Before selecting a stack, state:
 
-1. Use what the user specified if they specified something.
-2. Otherwise, choose by constraint fit: runtime availability, library
-   ecosystem for the task, deployment target.
-3. Prefer boring technology. The prototype proves the idea, not the stack.
-4. Decide in under a minute and move on. The user can redirect.
+- the user;
+- the core hypothesis or outcome;
+- the input-to-output interaction that demonstrates it;
+- what an observer will see when it works.
 
-Record the choice and one-sentence rationale in the scratchpad when
-using one, otherwise keep it in the response or final summary. See
-`references/stack-selection.md` for decision heuristics.
+Maintain a scope budget:
 
-### Phase 2: Core Loop First
+- **Required now:** necessary for the demonstration.
+- **Optional if cheap:** improves observation without changing architecture.
+- **Intentionally deferred:** unrelated hardening or secondary behavior.
 
-Build the primary user-facing behavior before anything else.
+### Phase 2: Choose the Stack
 
-1. Define the core interaction: what does the user do, what happens?
-2. Implement the minimal path from input to output.
-3. Get it running. Verify it works for the happy path.
-4. Do NOT build supporting infrastructure (auth, config systems,
-   logging frameworks) until the core loop works.
+Choose from, in order:
 
-A prototype that runs one thing correctly is more useful than a
-prototype that has good architecture but does nothing.
+1. explicit user preference;
+2. available runtime and repository context;
+3. libraries critical to the hypothesis;
+4. deployment or distribution target;
+5. likely maintainer familiarity.
 
-### Phase 3: Build Out
+Do not shop for frameworks without a constraint. Record the choice and a short
+rationale. Use `references/stack-selection.md`, then load only the shared
+language primers relevant to the chosen stack.
 
-Add secondary features in priority order.
+### Phase 3: Build One Vertical Slice
 
-1. **Error handling for real inputs**: what actually goes wrong? Handle
-   those cases. Not every theoretical error — the ones users will hit.
-2. **Missing core features**: what does the user expect that is not there?
-3. **Polish**: better error messages, edge cases, UI refinement — only
-   if time and scope permit.
+Implement the smallest path from realistic input to observable output. Make it
+run before adding secondary behavior.
 
-For each addition:
+Then add only:
 
-- **Correctness first.** It must work for real inputs.
-- **Simplest correct implementation.** No premature abstraction.
-  Three routes in a flat file beat an over-engineered router
-  framework for a demo.
-- **Asymptotic sanity.** If the prototype reads a file, do not load
-  the entire file into memory if streaming line-by-line works. If it
-  searches a list, do not scan the whole list when a set lookup works.
-  But do not optimize beyond what the expected data size requires.
+- error handling for inputs the demonstration will encounter;
+- behavior required to observe the core outcome;
+- optional scope that is genuinely cheap and does not create architecture.
 
-### Phase 4: Verify and Document
+Follow `../references/change-discipline.md`. Local duplication is acceptable
+when extracting an abstraction would cost more to understand or change.
 
-1. Run the prototype end-to-end with realistic inputs.
-2. Test the golden path and at least one error path.
-3. Document how to run it: dependencies, install steps, run command.
-4. List what was intentionally deferred and why.
+### Phase 4: Calibrate Quality
 
-### Phase 5: Session Close
+Use `references/prototype-quality.md` to decide whether tests, CI, migrations,
+deployment, documentation, authentication, or persistence are material.
+Require them only when the prototype's use, data, or core hypothesis depends on
+them. Make every shortcut visible.
 
-Before ending any session that uses `SCRATCHPAD.md`, update it with:
+Apply repository and language idioms for composition, errors, resources,
+concurrency, and types without building production layers.
 
-- What was built this session.
-- Current runnable state (does it run? what works?).
-- Deferred items.
-- Explicit next step.
-- Files created or modified.
+### Phase 5: Verify and Document
 
-If the prototype is complete, set status to `complete`. If no scratchpad
-is in use, include the same state in the final summary.
+1. Run the complete primary path with realistic input.
+2. Exercise at least one failure that would materially undermine the
+   demonstration.
+3. Run repository-native formatting, linting, and tests that exist or are
+   material to the hypothesis.
+4. Put install and run instructions in the conventional README, help output,
+   example, or equivalent location.
+5. List visible shortcuts and intentionally deferred scope.
+
+### Phase 6: Close and Assess Promotion
+
+Promotion signals include:
+
+- real users depend on it;
+- it handles sensitive or durable data;
+- downtime or incorrect output has consequences;
+- it integrates into production systems;
+- it acquires compatibility obligations.
+
+When a signal appears, identify the hardening work. Hand off to
+`large-codebase-change` only if the resulting existing repository also meets
+the large-codebase heuristic; otherwise continue with native Codex.
+
+If using a scratchpad, update runnable state, verification, files changed,
+deferrals, promotion signals, and the next step.
 
 ## Persistence And Yield
 
-Useful progress means working code, runnable state, validated stack
-choice, discovered constraints, or clearer scope.
+Useful progress means a working slice, validated stack choice, clearer scope,
+or discovered constraints.
 
-Before yielding:
-
-- Try the primary implementation path.
-- Try one distinct bounded simplification: smaller scope, simpler stack,
-  fewer features.
-- Check whether missing information is discoverable.
-- Confirm the next action would repeat prior work, require unsafe
-  guessing, or leave this skill's boundary.
-
-Do not yield merely because the task is ambitious or the stack is
-unfamiliar.
-
-When yielding, update the scratchpad if one is in use and return:
-attempts made, useful progress found, specific blocker, why more work
-would repeat, and the next recovery step.
+Before yielding, try the primary path and one bounded simplification such as a
+smaller scope, simpler stack, or fewer features. Check whether missing
+information is discoverable and update the scratchpad when one is in use.
 
 ## Pivot Rules
 
-- If the prototype grows past ~1kLoC and needs integration or
-  migration work, hand off to `large-codebase-change`.
-- If the prototype needs ML model training, use a fully authored ML skill when
-  available; otherwise leave this workflow and continue with native Codex.
-- If the user redirects to a different stack or scope, update the
-  scratchpad if one is in use and continue.
+- If work moves into an existing repository, route by repository size:
+  `large-codebase-change` for clearly large repositories, native Codex
+  otherwise.
+- If the task becomes domain analysis rather than prototype construction, use
+  the appropriate specialist or native Codex.
+- If the user changes the core outcome, update the scope budget before
+  continuing.
 
-## Reference
+## References
 
-- `references/session-continuity.md` — scratchpad protocol and verification
-- `references/stack-selection.md` — stack choice heuristics by task type
-- `references/prototype-quality.md` — quality bar for prototypes, what to defer
+- `../references/change-discipline.md` — anti-bloat and surgical-change gates
+- `../references/session-continuity.md` — shared scratchpad protocol
+- `../references/python-practices.md` — Python idioms
+- `../references/typescript-practices.md` — TypeScript idioms
+- `../references/go-practices.md` — Go idioms
+- `../references/rust-practices.md` — Rust idioms
+- `../references/systems-c-cpp-practices.md` — C and C++ idioms
+- `../references/java-jvm-practices.md` — Java and JVM idioms
+- `references/stack-selection.md` — constraint-led stack selection
+- `references/prototype-quality.md` — risk-calibrated prototype quality
