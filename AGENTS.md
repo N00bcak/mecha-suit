@@ -155,14 +155,6 @@ Current non-council specialist leaves include:
 - `product-co-design`
 - `large-codebase-change`
 - `prototype-builder`
-- `ctf-triage`
-- `reverse-ctf`
-- `pwn-ctf`
-- `crypto-ctf`
-- `web-ctf`
-- `forensics-ctf`
-- `ai-ctf`
-- `misc-ctf`
 - `ai-data-preparation`
 - `ai-insight-development`
 - `ai-representation-workbench`
@@ -210,7 +202,7 @@ Contains the only subagent-enabled skill family.
 Contains conversation-first specialist leaves. `interview-me` is
 explicit-invocation-only. `product-co-design` is routable and council-eligible.
 
-### `families/engineering/`, `families/ctf/`, `families/ai/`
+### `families/engineering/`, `families/ai/`
 
 Contain specialist leaves.
 These should remain narrow and composable.

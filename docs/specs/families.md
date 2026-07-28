@@ -3,8 +3,7 @@
 ## Purpose
 
 `families/` is the core skill library. It groups runtime skills by architectural
-role: council synthesis, collaboration, engineering work, CTF work, and AI
-work.
+role: council synthesis, collaboration, engineering work, and AI work.
 
 ## Architecture Tree
 
@@ -19,15 +18,6 @@ families/
     engineering/
         large-codebase-change/
         prototype-builder/
-    ctf/
-        ctf-triage/
-        reverse-ctf/
-        pwn-ctf/
-        crypto-ctf/
-        web-ctf/
-        forensics-ctf/
-        ai-ctf/
-        misc-ctf/
     ai/
         ai-pipeline/
         ai-data-preparation/

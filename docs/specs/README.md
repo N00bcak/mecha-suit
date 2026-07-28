@@ -17,12 +17,10 @@ mecha-suit/
     families/      skill families and specialist leaves
     shared/        cross-skill examples and rubrics
     templates/     repeatable authoring templates
-    webui/         local/DigitalOcean Codex task control plane
 ```
 
 Generated, vendor, and cache folders are intentionally excluded from this spec
-set, including `.git/`, `webui/node_modules/`, `webui/dist/`, and
-`webui/cache/`.
+set, including `.git/` and local development environments.
 
 ## Navigation
 
@@ -33,14 +31,9 @@ set, including `.git/`, `webui/node_modules/`, `webui/dist/`, and
 | `families-council.md` | council and subagent boundary |
 | `families-collaboration.md` | explicit interviewing, low-friction communication, and product co-design |
 | `families-engineering.md` | engineering specialist leaves |
-| `families-ctf.md` | CTF specialist leaves |
 | `families-ai.md` | AI pipeline manual and execution leaves |
 | `shared.md` | shared examples and rubrics |
 | `templates.md` | templates for repo and skill authoring |
-| `webui.md` | WebUI system architecture |
-| `webui-server.md` | WebUI backend, providers, Codex bridges |
-| `webui-client.md` | WebUI React client |
-| `webui-runner-config-tests.md` | runner, config, scripts, tests |
 
 ## Architectural Invariants
 

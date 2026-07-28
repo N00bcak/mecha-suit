@@ -31,8 +31,8 @@ The basic model:
 2. Install the skill folders as symlinks into an agent skill directory.
 3. Put project-specific facts in each project's `AGENTS.md` or in repo-local adapter skills.
 4. Let native Codex handle ordinary selection and clarification while global
-   skills provide product collaboration, engineering workflows, CTF workflows,
-   AI workflows, and cross-domain council synthesis.
+   skills provide product collaboration, engineering workflows, AI workflows,
+   and cross-domain council synthesis.
 
 The harness is designed for Codex first, while keeping the skill documents portable enough to adapt to other agent hosts later.
 
@@ -148,7 +148,6 @@ Mecha Suit is organized into skill families:
 - `families/engineering/`: fully authored leaves for PR-ready changes in
   repositories above roughly 5k maintained source lines and isolated
   greenfield prototypes centered on one outcome.
-- `families/ctf/`: fully authored leaves for challenge triage, reverse engineering, binary exploitation, cryptography, web exploitation, forensics, AI/ML security, and miscellaneous challenges.
 - `families/ai/`: an explicit-only initial pipeline manual plus callable leaves
   for data preparation, insight development, representations, problem
   modeling, and performance across ML, deep learning, GOFAI, and hybrids.
@@ -156,8 +155,7 @@ Mecha Suit is organized into skill families:
 Codex selects callable skills directly from their frontmatter descriptions and
 handles ordinary ambiguity without a generic routing or clarification skill.
 
-The collaboration, engineering, AI, and CTF specialist leaves are fully
-authored.
+The collaboration, engineering, and AI specialist leaves are fully authored.
 
 ## Which Skill Do I Use?
 
@@ -167,10 +165,8 @@ materially changes the work.
 
 Engineering specialist leaves (`large-codebase-change`, `prototype-builder`),
 AI execution leaves (`ai-data-preparation`, `ai-insight-development`,
-`ai-representation-workbench`, `ai-problem-modeling`, `ai-performance`), and
-CTF specialist leaves
-(`ctf-triage`, `reverse-ctf`, `pwn-ctf`, `crypto-ctf`, `web-ctf`,
-`forensics-ctf`, `ai-ctf`, `misc-ctf`) are fully authored and callable.
+`ai-representation-workbench`, `ai-problem-modeling`, `ai-performance`) are
+fully authored and callable.
 
 Use `large-codebase-change` for any requested edit in a clearly large existing
 repository, even when the diff is small. Existing repositories clearly below
@@ -277,10 +273,9 @@ If you installed with `MECHA_SKILL_ROOT`, uninstall with the same value.
 - `templates/`: repeatable authoring patterns.
 - `docs/`: human-facing maintenance and platform notes.
 - `agents/`: host metadata only when it materially improves routing or
-  invocation behavior. `interview-me`, `ai-pipeline`, council, and fully
-  authored CTF specialists currently use Codex metadata; `product-co-design`,
-  `low-friction-collaboration`, engineering leaves, and AI execution leaves
-  rely on frontmatter.
+  invocation behavior. `interview-me`, `ai-pipeline`, and council currently use
+  Codex metadata; `product-co-design`, `low-friction-collaboration`,
+  engineering leaves, and AI execution leaves rely on frontmatter.
 - `AGENTS.md`: rules for developing this harness itself.
 - `PROMPT.md`: original scaffold prompt, kept as project history.
 

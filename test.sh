@@ -111,14 +111,6 @@ council_eligibility_checks() {
         product-co-design \
         large-codebase-change \
         prototype-builder \
-        ctf-triage \
-        reverse-ctf \
-        pwn-ctf \
-        crypto-ctf \
-        web-ctf \
-        forensics-ctf \
-        ai-ctf \
-        misc-ctf \
         ai-data-preparation \
         ai-insight-development \
         ai-representation-workbench \
@@ -308,7 +300,7 @@ ai_family_checks() {
 }
 
 metadata_policy_checks() {
-    grep -Fq 'fully authored CTF specialists' "${ROOT_DIR}/CLAUDE.md" || fail "CLAUDE metadata policy does not mention CTF specialist metadata"
+    grep -Fq '`ai-pipeline`' "${ROOT_DIR}/CLAUDE.md" || fail "CLAUDE metadata policy does not mention ai-pipeline"
     grep -Fq '`ai-pipeline`' "${ROOT_DIR}/README.md" || fail "README metadata policy does not mention ai-pipeline"
     grep -Fq '`product-co-design`, `low-friction-collaboration`, engineering leaves, and AI' "${ROOT_DIR}/docs/platform-notes.md" || fail "platform metadata policy is missing"
     pass "metadata policy"
@@ -322,7 +314,7 @@ stub_skill_checks() {
         if grep -Eq '^## Stub Status$' "${skill_file}"; then
             grep -Fq 'This is a stub. NEVER CALL THIS SKILL.' "${skill_file}" || fail "stub warning is missing in ${skill_file}"
         fi
-    done < <(find "${ROOT_DIR}/families/collaboration" "${ROOT_DIR}/families/engineering" "${ROOT_DIR}/families/ctf" "${ROOT_DIR}/families/ai" -mindepth 2 -maxdepth 2 -name SKILL.md -print | sort)
+    done < <(find "${ROOT_DIR}/families/collaboration" "${ROOT_DIR}/families/engineering" "${ROOT_DIR}/families/ai" -mindepth 2 -maxdepth 2 -name SKILL.md -print | sort)
 
     grep -Eq 'Do not use stub specialist leaves as council subagents\.' "${ROOT_DIR}/families/council/interdisciplinary-council/SKILL.md" || fail "council stub guardrail is missing"
     pass "stub guardrails"

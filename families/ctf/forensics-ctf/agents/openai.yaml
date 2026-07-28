@@ -1,6 +1,0 @@
-interface:
-  display_name: "Forensics CTF"
-  short_description: "Digital forensics and steganography for CTF challenges."
-  default_prompt: "Use $forensics-ctf to analyze these forensic artifacts and recover hidden data."
-policy:
-  allow_implicit_invocation: true
