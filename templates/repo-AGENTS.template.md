@@ -8,7 +8,7 @@ Use this repo-local file to connect project facts to the global skill toolbox.
 - State safe assumptions and ask one focused question only when ambiguity
   materially changes the work.
 - Do not call specialist leaves still marked `This is a stub. NEVER CALL THIS SKILL.`
-- Use `$interdisciplinary-council` only for genuine cross-domain work when the relevant non-council specialists are fully authored.
+- Do not authorize subagent use through repository-local instructions.
 
 ## Local Commands
 

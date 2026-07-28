@@ -8,13 +8,13 @@ Use this as a concise Claude Code-facing integration note if adapting this toolb
 - Separate mixed goals, state safe assumptions, and ask one focused question
   only when a user-owned decision materially changes the work.
 - Do not call specialist leaves still marked `This is a stub. NEVER CALL THIS SKILL.`
-- Escalate to `interdisciplinary-council` only for real multi-specialist work with fully authored non-council specialists.
+- Do not authorize subagent use through global instructions.
 
 ## Boundaries
 
 - Native host behavior owns ordinary selection and clarification.
 - Stub specialist leaves are architecture placeholders, not callable skills.
-- Council-style delegation is restricted to `interdisciplinary-council`.
+- No installed skill currently authorizes delegation.
 
 ## Local Adaptation
 

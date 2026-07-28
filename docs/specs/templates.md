@@ -3,14 +3,13 @@
 ## Purpose
 
 `templates/` contains repeatable starting points for skills, repo-local
-instructions, adapters, and council subagent outputs.
+instructions and adapters.
 
 ## Architecture Tree
 
 ```text
 templates/
     leaf-skill.template.md
-    council-subagent.template.md
     repo-AGENTS.template.md
     repo-CLAUDE.template.md
     repo-adapter-skill.template.md
@@ -21,7 +20,6 @@ templates/
 - Preserve the expected shape of new specialist leaves.
 - Provide repo-local instruction scaffolds for downstream projects.
 - Provide adapter scaffolds that connect local context to global skills.
-- Keep council subagent output shape consistent.
 
 ## Strengths
 
@@ -35,7 +33,6 @@ templates/
   that describe the contract.
 - Templates should not include private paths or organization-specific facts.
 - Adapter templates add local context; they do not fork global skill behavior.
-- Council subagent templates must preserve narrow inherited-leaf outputs.
 
 ## Common Workflows
 

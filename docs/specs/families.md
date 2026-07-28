@@ -3,14 +3,12 @@
 ## Purpose
 
 `families/` is the core skill library. It groups runtime skills by architectural
-role: council synthesis, collaboration, engineering work, and AI work.
+role: collaboration, engineering work, and AI work.
 
 ## Architecture Tree
 
 ```text
 families/
-    council/
-        interdisciplinary-council/
     collaboration/
         interview-me/
         low-friction-collaboration/
@@ -50,14 +48,15 @@ Each skill folder may contain:
 - Family boundaries make routing and maintenance cheap.
 - `SKILL.md` frontmatter gives hosts compact trigger metadata.
 - Stub leaves can define future contracts without pretending to be callable.
-- Council-only subagent authority prevents hidden delegation sprawl.
+- The current prohibition on subagent authorization prevents hidden delegation
+  sprawl.
 
 ## Architectural Invariants
 
 - Native host behavior owns skill selection and ordinary clarification.
-- Only `interdisciplinary-council` may use subagents.
+- No active skill may use subagents.
 - `interview-me` and `ai-pipeline` are explicit-invocation-only.
-- `low-friction-collaboration` is routable but not council-eligible.
+- `low-friction-collaboration` is routable.
 - Specialist leaves do one job well.
 - Runtime behavior belongs in `SKILL.md`.
 - Passive background belongs in `references/`.

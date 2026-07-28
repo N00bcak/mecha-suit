@@ -64,12 +64,12 @@ frontmatter_checks() {
 }
 
 architecture_checks() {
-    assert_exists "${ROOT_DIR}/families/council/interdisciplinary-council/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/interview-me/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/low-friction-collaboration/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/product-co-design/SKILL.md"
     assert_exists "${ROOT_DIR}/families/ai/ai-pipeline/SKILL.md"
     assert_not_exists "${ROOT_DIR}/families/ml"
+    assert_not_exists "${ROOT_DIR}/families/council"
     assert_not_exists "${ROOT_DIR}/families/routing"
     assert_not_exists "${ROOT_DIR}/families/orchestration"
     pass "native selection and family layout"
@@ -79,14 +79,8 @@ subagent_boundary_checks() {
     local skill_file
 
     while IFS= read -r skill_file; do
-        case "${skill_file}" in
-            */families/council/interdisciplinary-council/SKILL.md)
-                continue
-                ;;
-        esac
-
         if grep -Eiq 'allowed to use subagents|may use subagents|subagent authority|spawning policy|spawn the fewest' "${skill_file}"; then
-            fail "non-council skill appears to authorize subagents: ${skill_file}"
+            fail "active skill appears to authorize subagents: ${skill_file}"
         fi
     done < <(find "${ROOT_DIR}/families" -mindepth 3 -maxdepth 3 -name SKILL.md -print | sort)
 
@@ -95,35 +89,8 @@ subagent_boundary_checks() {
 
 persistence_yield_checks() {
     assert_exists "${ROOT_DIR}/shared/rubrics/persistence-yield-rubric.md"
-    grep -Eq '^## Council Persistence Contract$' "${ROOT_DIR}/families/council/interdisciplinary-council/SKILL.md" || fail "council persistence contract is missing"
     grep -Eq '^## Persistence And Yield$' "${ROOT_DIR}/templates/leaf-skill.template.md" || fail "leaf template persistence section is missing"
-    grep -Eq 'exhausted_bounded_inquiry' "${ROOT_DIR}/families/council/interdisciplinary-council/SKILL.md" || fail "council exhausted inquiry status is missing"
-    grep -Eq 'next_distinct_attempt' "${ROOT_DIR}/templates/council-subagent.template.md" || fail "council subagent progress field is missing"
     pass "persistence and yield contract"
-}
-
-council_eligibility_checks() {
-    local council_file="${ROOT_DIR}/families/council/interdisciplinary-council/SKILL.md"
-    local leaf
-
-    grep -Eq '^Currently eligible inherited leaves:$' "${council_file}" || fail "council eligible inherited leaf list is missing"
-    for leaf in \
-        product-co-design \
-        large-codebase-change \
-        prototype-builder \
-        ai-data-preparation \
-        ai-insight-development \
-        ai-representation-workbench \
-        ai-problem-modeling \
-        ai-performance
-    do
-        grep -Fq -- "- \`${leaf}\`" "${council_file}" || fail "council eligible leaf is missing: ${leaf}"
-    done
-    grep -Fq 'Do not inherit from `interview-me`, `low-friction-collaboration`,' "${council_file}" || fail "council communication-mode exclusion is missing"
-    if grep -Fq -- '- `ai-pipeline`' "${council_file}"; then
-        fail "ai-pipeline must not be council-eligible"
-    fi
-    pass "council eligible inherited leaves"
 }
 
 collaboration_checks() {
@@ -316,7 +283,6 @@ stub_skill_checks() {
         fi
     done < <(find "${ROOT_DIR}/families/collaboration" "${ROOT_DIR}/families/engineering" "${ROOT_DIR}/families/ai" -mindepth 2 -maxdepth 2 -name SKILL.md -print | sort)
 
-    grep -Eq 'Do not use stub specialist leaves as council subagents\.' "${ROOT_DIR}/families/council/interdisciplinary-council/SKILL.md" || fail "council stub guardrail is missing"
     pass "stub guardrails"
 }
 
@@ -329,7 +295,6 @@ install_uninstall_checks() {
 
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" >"${tmp_root}/install-all.out"
     assert_symlink_to "${tmp_root}/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
-    assert_symlink_to "${tmp_root}/skills/interdisciplinary-council" "${ROOT_DIR}/families/council/interdisciplinary-council"
     assert_symlink_to "${tmp_root}/skills/interview-me" "${ROOT_DIR}/families/collaboration/interview-me"
     assert_symlink_to "${tmp_root}/skills/low-friction-collaboration" "${ROOT_DIR}/families/collaboration/low-friction-collaboration"
     assert_symlink_to "${tmp_root}/skills/product-co-design" "${ROOT_DIR}/families/collaboration/product-co-design"
@@ -343,7 +308,6 @@ install_uninstall_checks() {
 
     MECHA_SKILL_ROOT="${tmp_root}/selected" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-selected.out"
     assert_symlink_to "${tmp_root}/selected/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
-    assert_not_exists "${tmp_root}/selected/interdisciplinary-council"
 
     MECHA_SKILL_ROOT="${tmp_root}/selected-collaboration" "${ROOT_DIR}/install.sh" interview-me low-friction-collaboration product-co-design >"${tmp_root}/install-selected-collaboration.out"
     assert_symlink_to "${tmp_root}/selected-collaboration/interview-me" "${ROOT_DIR}/families/collaboration/interview-me"
@@ -370,11 +334,9 @@ install_uninstall_checks() {
 
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/uninstall.sh" prototype-builder >"${tmp_root}/uninstall-selected.out"
     assert_not_exists "${tmp_root}/skills/prototype-builder"
-    assert_symlink_to "${tmp_root}/skills/interdisciplinary-council" "${ROOT_DIR}/families/council/interdisciplinary-council"
 
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/uninstall.sh" >"${tmp_root}/uninstall-all.out"
     assert_not_exists "${tmp_root}/skills/prototype-builder"
-    assert_not_exists "${tmp_root}/skills/interdisciplinary-council"
     assert_not_exists "${tmp_root}/skills/interview-me"
     assert_not_exists "${tmp_root}/skills/low-friction-collaboration"
     assert_not_exists "${tmp_root}/skills/product-co-design"
@@ -401,7 +363,6 @@ main() {
     architecture_checks
     subagent_boundary_checks
     persistence_yield_checks
-    council_eligibility_checks
     collaboration_checks
     engineering_checks
     ai_family_checks

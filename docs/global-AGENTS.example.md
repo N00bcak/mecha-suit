@@ -13,12 +13,11 @@ Use this file as a compact global instruction layer when this toolbox is install
   direct wording, visible state, and low recall burden without shallower
   reasoning.
 - Do not call specialist leaves still marked `This is a stub. NEVER CALL THIS SKILL.`
-- Use `$interdisciplinary-council` only for genuine cross-domain work where the relevant non-council specialists are fully authored.
+- Do not authorize subagent use through global instructions.
 
 ## Subagent Policy
 
-- Specialist leaves never spawn, request, or rely on subagents.
-- Only `$interdisciplinary-council` may use subagents, and only by inheriting from fully authored non-council specialist leaves.
+- Installed skills never spawn, request, or rely on subagents.
 
 ## Repo-local Context
 

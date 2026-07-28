@@ -1,6 +1,0 @@
-interface:
-    display_name: "Interdisciplinary Council"
-    short_description: "Synthesize focused specialist views"
-    default_prompt: "Use $interdisciplinary-council to reconcile focused specialist analyses for a cross-domain task."
-policy:
-    allow_implicit_invocation: true

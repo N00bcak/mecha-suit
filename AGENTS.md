@@ -120,37 +120,18 @@ For ambiguous work:
 - ask one focused question only when a missing user-owned decision materially
   changes the work
 
-### 2. Subagent access is council-only
-Only `interdisciplinary-council` may use subagents.
+### 2. No active skill may use subagents
 
-No other skill may:
+No skill may:
 - spawn subagents
 - request subagents
 - assume subagents are available
 - defer core behavior to hidden parallel delegates
 
-If future subagent use is introduced anywhere else, treat that as an architectural change requiring:
-- README update
-- maintenance-playbook update
-- template review
-- explicit rationale in the final summary
-
-### 3. Council is for genuine cross-domain work
-`interdisciplinary-council` is for tasks that genuinely require multiple specialist perspectives.
-
-Do NOT route to council merely because:
-- the task is underspecified
-- the task is ambiguous
-- the user gave little context
-- one specialist is probably enough
-
-Resolve ordinary ambiguity before selecting a skill.
-Use council for multi-specialist reasoning.
-
-### 4. Specialist leaves stay narrow
+### 3. Specialist leaves stay narrow
 Specialist leaves should do one job well.
 
-Current non-council specialist leaves include:
+Current specialist leaves include:
 - `interview-me`
 - `product-co-design`
 - `large-codebase-change`
@@ -163,7 +144,7 @@ Current non-council specialist leaves include:
 
 Avoid broad umbrella skills unless there is a clear architectural reason.
 
-### 5. Specialist stubs are contract-complete before they become fully authored
+### 4. Specialist stubs are contract-complete before they become fully authored
 A specialist leaf may begin as a contract-complete stub.
 
 A contract-complete stub must define:
@@ -182,7 +163,7 @@ A contract-complete stub must NOT:
 - include unnecessary scripts
 - include bulky references unless foundational
 
-### 6. Runtime behavior belongs in `SKILL.md`
+### 5. Runtime behavior belongs in `SKILL.md`
 Use:
 - `AGENTS.md` for repo-wide development rules
 - `SKILL.md` for skill runtime behavior
@@ -195,12 +176,9 @@ Do not stuff repo-maintenance policy into skill files unless it materially affec
 
 ## File and folder responsibilities
 
-### `families/council/`
-Contains the only subagent-enabled skill family.
-
 ### `families/collaboration/`
 Contains conversation-first specialist leaves. `interview-me` is
-explicit-invocation-only. `product-co-design` is routable and council-eligible.
+explicit-invocation-only. No current collaboration skill may use subagents.
 
 ### `families/engineering/`, `families/ai/`
 
@@ -208,7 +186,7 @@ Contain specialist leaves.
 These should remain narrow and composable.
 
 `families/ai/ai-pipeline` is an explicit-invocation-only conceptual manual, not
-a specialist leaf or council-inherited role.
+a specialist leaf.
 
 ### `references/`
 Use for:
@@ -277,7 +255,7 @@ Use 4-space indentation consistently.
 ### Naming
 Use names that reflect actual function.
 Examples:
-- `interdisciplinary-council`, not a generic "meta-agent"
+- `product-co-design`, not a generic "product-helper"
 
 ### Skill descriptions
 Descriptions must be good routers.
@@ -289,23 +267,6 @@ Descriptions must be good routers.
 - Keep a few diagnostic cues when adjacent categories need them.
 - Treat the length target as editorial guidance, not a validator limit.
 - Use host invocation policy, not warning prose, for manual-only skills.
-
-## Council development rules
-
-When editing `interdisciplinary-council`:
-- keep it reserved for genuine multi-specialist work
-- use the fewest subagents necessary
-- prefer 2-3 focused specialist perspectives over broad parallelism
-- ensure each subagent question is narrow
-- require synthesis at the council layer, not inside subagents
-
-Council outputs should include:
-- integrated conclusion
-- areas of agreement
-- areas of conflict
-- chosen recommendation
-- verification status
-- remaining uncertainty
 
 ## Specialist development rules
 
@@ -325,7 +286,7 @@ Do not front-load elaborate workflows.
 When making meaningful changes:
 1. identify which architectural layer is changing:
     - skill selection
-    - council
+    - subagent policy
     - specialist
     - shared template
     - docs
@@ -370,7 +331,7 @@ A meaningful change is done when:
 Bias toward:
 - narrow skills
 - native skill selection
-- council-only subagent use
+- no subagent authorization
 - contract-complete specialist leaves
 - low context overhead
 - portable instructions

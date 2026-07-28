@@ -2,8 +2,7 @@
 
 Mecha Suit is a reusable skill harness for Codex-first work. It gives your
 agent a small, opinionated set of global skills for collaborating on product
-ideas, doing specialist work, and escalating only genuinely cross-domain
-problems.
+ideas and doing specialist work.
 
 Authorship note: Mecha Suit was vibe-coded by Codex and human-QC'ed by the maintainer.
 
@@ -31,8 +30,8 @@ The basic model:
 2. Install the skill folders as symlinks into an agent skill directory.
 3. Put project-specific facts in each project's `AGENTS.md` or in repo-local adapter skills.
 4. Let native Codex handle ordinary selection and clarification while global
-   skills provide product collaboration, engineering workflows, AI workflows,
-   and cross-domain council synthesis.
+   skills provide product collaboration, engineering workflows, and AI
+   workflows.
 
 The harness is designed for Codex first, while keeping the skill documents portable enough to adapt to other agent hosts later.
 
@@ -65,7 +64,7 @@ skills do not depend on Python or this environment.
 
 `./test.sh` verifies the harness before you install anything. It checks
 Codex-compatible YAML frontmatter, script syntax, skill names, family layout,
-subagent boundaries, and install/uninstall behavior against a temporary skill
+subagent prohibition, and install/uninstall behavior against a temporary skill
 root.
 
 Install every skill into the default Codex skill root:
@@ -88,7 +87,7 @@ path in common Windows Bash shells when possible.
 Install only selected skills:
 
 ```bash
-./install.sh product-co-design interdisciplinary-council
+./install.sh product-co-design low-friction-collaboration
 ```
 
 Install into a custom skill root:
@@ -142,7 +141,6 @@ The installer is idempotent. Running it twice should report already-installed sk
 
 Mecha Suit is organized into skill families:
 
-- `families/council/`: controlled multi-specialist synthesis.
 - `families/collaboration/`: explicit interviewing, low-friction technical
   communication, and conversation-first product co-design.
 - `families/engineering/`: fully authored leaves for PR-ready changes in
@@ -190,9 +188,7 @@ must be easy to follow, resume, and act on without reducing reasoning depth or
 precision. It preserves the user's vocabulary, keeps necessary state visible,
 and removes avoidable reading and recall work.
 
-Use `interdisciplinary-council` rarely. It is for tasks that genuinely need
-multiple specialist perspectives, and only when the relevant non-council
-leaves are fully authored. It is not a fallback for ordinary ambiguity.
+No installed skill currently authorizes subagents. 
 
 ## Responsible Use
 
@@ -227,7 +223,7 @@ Install all skills:
 Install selected skills:
 
 ```bash
-./install.sh product-co-design interdisciplinary-council
+./install.sh product-co-design low-friction-collaboration
 ```
 
 Use a custom skill root:
@@ -273,9 +269,9 @@ If you installed with `MECHA_SKILL_ROOT`, uninstall with the same value.
 - `templates/`: repeatable authoring patterns.
 - `docs/`: human-facing maintenance and platform notes.
 - `agents/`: host metadata only when it materially improves routing or
-  invocation behavior. `interview-me`, `ai-pipeline`, and council currently use
-  Codex metadata; `product-co-design`, `low-friction-collaboration`,
-  engineering leaves, and AI execution leaves rely on frontmatter.
+  invocation behavior. `interview-me` and `ai-pipeline` currently use Codex
+  metadata; `product-co-design`, `low-friction-collaboration`, engineering
+  leaves, and AI execution leaves rely on frontmatter.
 - `AGENTS.md`: rules for developing this harness itself.
 - `PROMPT.md`: original scaffold prompt, kept as project history.
 
@@ -294,9 +290,9 @@ The test harness checks:
 - Codex `skill-creator`-compatible YAML frontmatter
 - shell syntax for executable scripts
 - `SKILL.md` frontmatter names against folder names
-- required routing and council layout
+- required routing and family layout
 - absence of `families/orchestration/`
-- non-council subagent boundary rules
+- absence of subagent authorization in active skills
 - install behavior against a temporary skill root
 - idempotent reinstall
 - selected-skill install
@@ -351,8 +347,8 @@ Read the failing `[fail]` line first. The test harness is intentionally small; f
 - skill frontmatter is not valid YAML accepted by Codex's validator
 - a script has invalid shell syntax
 - a skill folder name and frontmatter name diverged
-- family/council layout changed
-- a non-council skill appears to authorize subagents
+- family layout changed
+- an active skill appears to authorize subagents
 - install/uninstall safety behavior regressed
 
 Fix the cause, then rerun:
@@ -365,8 +361,7 @@ uv sync --dev
 ## Architectural Rules
 
 - Native Codex owns ordinary skill selection and clarification.
-- Only `interdisciplinary-council` may use subagents.
-- Council is for genuine cross-domain work, not ordinary ambiguity.
+- No active skill may use subagents.
 - Specialist leaves do one job well.
 - Runtime behavior belongs in `SKILL.md`.
 - Repo-maintenance policy belongs in `AGENTS.md` and `docs/`.

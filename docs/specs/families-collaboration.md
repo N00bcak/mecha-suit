@@ -31,9 +31,9 @@ families/collaboration/
 - `interview-me` is explicit-invocation-only and is never selected implicitly.
 - `interview-me` enforces explicit invocation with
   `agents/openai.yaml` and `allow_implicit_invocation: false`.
-- `product-co-design` is routable and council-eligible.
+- `product-co-design` is routable.
 - `low-friction-collaboration` is routable, may shape another leaf's response,
-  and is not council-eligible.
+  and remains a communication-mode specialist.
 - All three leaves remain non-subagentic.
 - Collaboration skills are conversation-first but do not omit structured
   synthesis when it improves continuity or handoff.

@@ -25,8 +25,8 @@ Do not add a router for new leaves. Native selection should rely on leaf
 frontmatter and clear boundaries.
 
 Explicit-only manuals such as `interview-me` and `ai-pipeline` require
-`agents/openai.yaml` with `allow_implicit_invocation: false`. Keep them out of
-the council inherited-leaf list and do not let them become implicit routers.
+`agents/openai.yaml` with `allow_implicit_invocation: false`. Do not let them
+become implicit routers.
 
 Contract-complete stubs must say `This is a stub. NEVER CALL THIS SKILL.` until they are fully authored. Do not let a stub sound executable or production-ready.
 
@@ -83,18 +83,9 @@ forcing application-development conventions everywhere.
 - Leave ordinary ambiguity reduction and focused missing-input questions to the
   host agent.
 - Put reusable domain execution methods in a specialist leaf.
-- Put controlled cross-domain synthesis in `interdisciplinary-council`.
-
-If the task needs one domain, do not use the council. If the task is merely
-unclear, resolve the ambiguity before considering the council.
 
 ## Govern subagent use
 
-- Keep subagent permission exclusive to `interdisciplinary-council`.
-- Council subagents must map to one existing non-council specialist leaf.
-- Do not create council-specific subagent roles outside the inherited leaf set.
-- Prefer two or three focused subagents over broad parallel analysis.
-- Require each subagent to return assumptions, findings, confidence, unresolved risks, and a recommended next action.
-- Make the council synthesize. Subagents must not synthesize each other.
-
-When adding a new specialist that should be council-eligible, update the council's allowed inherited leaf list deliberately.
+- No active skill currently authorizes subagent use.
+- Treat any future subagent authorization as an explicit architecture change
+  requiring matching tests, templates, README, and collaboration specs.

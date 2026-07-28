@@ -28,7 +28,6 @@ set, including `.git/` and local development environments.
 | --- | --- |
 | `docs.md` | `docs/` maintenance and platform documentation |
 | `families.md` | global skill-family architecture |
-| `families-council.md` | council and subagent boundary |
 | `families-collaboration.md` | explicit interviewing, low-friction communication, and product co-design |
 | `families-engineering.md` | engineering specialist leaves |
 | `families-ai.md` | AI pipeline manual and execution leaves |

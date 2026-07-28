@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-Mecha Suit is a reusable, symlink-installed skill harness for coding agents (Codex-first, Claude Code-portable). It provides global skills for specialist work and cross-domain council synthesis while leaving ordinary selection and clarification to the host agent. Skills are pure markdown + bash with no external dependencies.
+Mecha Suit is a reusable, symlink-installed skill harness for coding agents (Codex-first, Claude Code-portable). It provides global skills for specialist work while leaving ordinary selection and clarification to the host agent. Skills are pure markdown + bash with no external dependencies.
 
 ## Commands
 
@@ -22,20 +22,19 @@ Always run `./test.sh` after any harness edit.
 
 ### Skill families (`families/`)
 
-- **`council/`** — Fully authored. `interdisciplinary-council` is the **only** skill allowed to use subagents. Reserved for genuine multi-specialist work.
 - **`collaboration/`** — Fully authored. `interview-me` (explicit-invocation-only scoped interviewing) and `product-co-design` (conversation-first product concept development and critique).
 - **`engineering/`** — Fully authored. `large-codebase-change` owns PR-ready changes in repositories above roughly 5k maintained source lines; `prototype-builder` owns isolated greenfield work centered on one demonstrable outcome, without a line-count limit. Both share anti-bloat, continuity, and language-idiom references.
 - **`ai/`** — Fully authored. `ai-pipeline` is an explicit-only one-time framing manual; five callable leaves own data preparation, insight development, representations, problem modeling, and performance across ML, deep learning, GOFAI, and hybrid systems.
 
 ### Skill folder structure
 
-Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for `interview-me`, `ai-pipeline`, and council; `product-co-design`, engineering leaves, and AI execution leaves rely on frontmatter only.
+Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for `interview-me` and `ai-pipeline`; `product-co-design`, engineering leaves, and AI execution leaves rely on frontmatter only.
 
 ### Shared resources
 
 - `shared/rubrics/` — toolbox-wide change, persistence/yield, and skill-boundary discipline.
 - `shared/examples/` — Skill-selection examples.
-- `templates/` — Boilerplate for new leaves, subagent contracts, repo-local AGENTS/CLAUDE files, adapter skills.
+- `templates/` — Boilerplate for new leaves, repo-local AGENTS/CLAUDE files, and adapter skills.
 - `docs/` — `maintenance-playbook.md`, `platform-notes.md`, example global instructions.
 
 ### Install mechanism
@@ -45,7 +44,7 @@ Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optio
 ## Key Invariants
 
 1. Native Codex description matching selects skills; the toolbox adds no duplicate router or orchestration layer.
-2. Subagent access is **council-only**. Non-council `SKILL.md` files must not contain subagent authorization language.
+2. No active `SKILL.md` may contain subagent authorization language.
 3. Stub skills must keep the exact stub warning until fully authored.
 4. Frontmatter `name:` must match the containing folder name.
 5. Runtime behavior goes in `SKILL.md`; maintenance policy goes in `AGENTS.md` and `docs/`.
@@ -80,7 +79,7 @@ For non-trivial work: (1) state the goal, (2) state assumptions, (3) state the s
 ### Change checklist
 
 After meaningful changes:
-1. Identify which architectural layer changed (routing, council, specialist, shared template, docs, install logic).
+1. Identify which architectural layer changed (routing, subagent policy, specialist, shared template, docs, install logic).
 2. Update nearby templates/docs if the contract changed.
 3. Audit for boundary drift.
 4. Summarize what changed, why, and what remains deferred.
@@ -89,6 +88,6 @@ After meaningful changes:
 
 - 4-space indentation.
 - Direct, dense, operational language. No motivational filler.
-- Skill names reflect actual function (e.g. `interdisciplinary-council` not a vague orchestration label).
+- Skill names reflect actual function (e.g. `product-co-design` not a vague helper label).
 - Skill descriptions use one constructive sentence, normally around 120 characters, naming the owned action and a positive task or artifact cue.
 - Scripts only when they improve determinism or remove repeated procedural work.

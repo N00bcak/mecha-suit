@@ -29,8 +29,8 @@
 - "Design a state representation and admissible heuristic for this planner" -> `ai-representation-workbench`
 - "Benchmark and tune this constraint solver on representative instances" -> `ai-performance`
 
-## Native clarification and council
+## Native clarification
 
 - "Help with my project" -> native clarification; no skill yet
-- "Assess a product concept whose feasibility depends on an unfamiliar ML approach" -> `interdisciplinary-council` using `product-co-design` and the relevant AI execution leaf
+- "Assess a product concept whose feasibility depends on an unfamiliar ML approach" -> choose the primary specialist and consult another only through ordinary main-process work
 - "Integrate a security audit tool into this large codebase and verify it catches known vulnerability classes" -> `large-codebase-change`

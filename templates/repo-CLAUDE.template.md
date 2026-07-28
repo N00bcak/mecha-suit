@@ -8,7 +8,7 @@ Use this repo-local file to adapt the global toolbox for Claude Code.
 - State safe assumptions and ask one focused question only when ambiguity
   materially changes the work.
 - Keep ordinary implementation in the relevant specialist leaf.
-- Reserve `interdisciplinary-council` for real multi-specialist work.
+- Do not authorize subagent use through repository-local instructions.
 
 ## Project Commands
 

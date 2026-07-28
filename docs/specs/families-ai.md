@@ -49,9 +49,8 @@ families/ai/
 ## Architectural Invariants
 
 - Native Codex selects execution leaves directly.
-- `ai-pipeline` is explicit-only and is not council-eligible.
-- All five execution leaves are council-eligible but cannot use subagents
-  themselves.
+- `ai-pipeline` is explicit-only.
+- All five execution leaves cannot use subagents.
 - `ML_PIPELINE.md` is required only for the manual. Leaves use it as optional
   advisory context and never create it.
 - The family supports statistical ML, deep learning, GOFAI, and hybrids without
