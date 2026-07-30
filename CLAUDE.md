@@ -22,13 +22,15 @@ Always run `./test.sh` after any harness edit.
 
 ### Skill families (`families/`)
 
-- **`collaboration/`** — Fully authored. `interview-me` (explicit-invocation-only scoped interviewing) and `product-co-design` (conversation-first product concept development and critique).
+- **`collaboration/`** — Fully authored. Conversation specialists plus
+  `parallel-subagents` for bounded independent delegation and `second-opinion`
+  for independent consequential review.
 - **`engineering/`** — Fully authored. `large-codebase-change` owns PR-ready changes in repositories above roughly 5k maintained source lines; `prototype-builder` owns isolated greenfield work centered on one demonstrable outcome, without a line-count limit. Both share anti-bloat, continuity, and language-idiom references.
 - **`ai/`** — Fully authored. `ai-pipeline` is an explicit-only one-time framing manual; five callable leaves own data preparation, insight development, representations, problem modeling, and performance across ML, deep learning, GOFAI, and hybrid systems.
 
 ### Skill folder structure
 
-Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for `interview-me` and `ai-pipeline`; `product-co-design`, engineering leaves, and AI execution leaves rely on frontmatter only.
+Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for `interview-me` and `ai-pipeline`; other collaboration leaves, engineering leaves, and AI execution leaves rely on frontmatter only.
 
 ### Shared resources
 
@@ -44,7 +46,8 @@ Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optio
 ## Key Invariants
 
 1. Native Codex description matching selects skills; the toolbox adds no duplicate router or orchestration layer.
-2. No active `SKILL.md` may contain subagent authorization language.
+2. Only `parallel-subagents` and `second-opinion` may authorize subagent use;
+   both preserve main-process ownership and prohibit nested delegation.
 3. Stub skills must keep the exact stub warning until fully authored.
 4. Frontmatter `name:` must match the containing folder name.
 5. Runtime behavior goes in `SKILL.md`; maintenance policy goes in `AGENTS.md` and `docs/`.

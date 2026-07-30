@@ -12,12 +12,17 @@ Use this file as a compact global instruction layer when this toolbox is install
 - Use `$low-friction-collaboration` when a dense technical exchange needs
   direct wording, visible state, and low recall burden without shallower
   reasoning.
+- Use `$parallel-subagents` for independent, non-overlapping bounded work.
+- Use `$second-opinion` for one non-leading review of a consequential artifact
+  or conclusion.
 - Do not call specialist leaves still marked `This is a stub. NEVER CALL THIS SKILL.`
-- Do not authorize subagent use through global instructions.
+- Do not authorize subagent use outside these two dedicated skills.
 
 ## Subagent Policy
 
-- Installed skills never spawn, request, or rely on subagents.
+- Only `$parallel-subagents` and `$second-opinion` may authorize subagent use.
+- The main process retains permissions, decisions, integration, verification,
+  and final-response ownership.
 
 ## Repo-local Context
 

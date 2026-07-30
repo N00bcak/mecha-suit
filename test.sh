@@ -66,7 +66,9 @@ frontmatter_checks() {
 architecture_checks() {
     assert_exists "${ROOT_DIR}/families/collaboration/interview-me/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/low-friction-collaboration/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/collaboration/parallel-subagents/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/product-co-design/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/collaboration/second-opinion/SKILL.md"
     assert_exists "${ROOT_DIR}/families/ai/ai-pipeline/SKILL.md"
     assert_not_exists "${ROOT_DIR}/families/ml"
     assert_not_exists "${ROOT_DIR}/families/council"
@@ -77,14 +79,37 @@ architecture_checks() {
 
 subagent_boundary_checks() {
     local skill_file
+    local parallel="${ROOT_DIR}/families/collaboration/parallel-subagents/SKILL.md"
+    local second_opinion="${ROOT_DIR}/families/collaboration/second-opinion/SKILL.md"
+    local examples="${ROOT_DIR}/shared/examples/skill-selection-examples.md"
 
     while IFS= read -r skill_file; do
-        if grep -Eiq 'allowed to use subagents|may use subagents|subagent authority|spawning policy|spawn the fewest' "${skill_file}"; then
+        if [ "${skill_file}" != "${parallel}" ] && \
+           [ "${skill_file}" != "${second_opinion}" ] && \
+           grep -Eiq 'allowed to use subagents|may use subagents|subagent authority|spawning policy|spawn the fewest|spawn exactly|authorize subagent use|run two or more independent subtasks concurrently|obtain one independent critique' "${skill_file}"; then
             fail "active skill appears to authorize subagents: ${skill_file}"
         fi
     done < <(find "${ROOT_DIR}/families" -mindepth 3 -maxdepth 3 -name SKILL.md -print | sort)
 
-    pass "subagent boundaries"
+    grep -Fq 'The main process returns the integrated outcome' "${parallel}" || fail "parallel-subagents main-process ownership is missing"
+    grep -Fq 'Subagents must not spawn or request subagents.' "${parallel}" || fail "parallel-subagents nested delegation prohibition is missing"
+    grep -Fq 'Require each subagent to return:' "${parallel}" || fail "parallel-subagents structured evidence return is missing"
+    grep -Fq 'independent artifact or change surface' "${parallel}" || fail "parallel-subagents independence boundary is missing"
+    grep -Fq 'distinct owner and non-overlapping boundary' "${parallel}" || fail "parallel-subagents ownership boundary is missing"
+
+    grep -Fq 'The main process reports whether it accepted, rejected, or qualified' "${second_opinion}" || fail "second-opinion adjudication is missing"
+    grep -Fq 'Subagents must not spawn or request subagents.' "${second_opinion}" || fail "second-opinion nested delegation prohibition is missing"
+    grep -Fq 'Require the reviewer to return:' "${second_opinion}" || fail "second-opinion structured evidence return is missing"
+    grep -Fq 'non-leading' "${second_opinion}" || fail "second-opinion non-leading review packet is missing"
+
+    grep -Fq 'Check that the host exposes subagent capability.' "${parallel}" || fail "parallel-subagents host capability check is missing"
+    grep -Fq 'Check that the host exposes subagent capability.' "${second_opinion}" || fail "second-opinion host capability check is missing"
+    grep -Fq 'Update the independent Python and TypeScript packages in parallel' "${examples}" || fail "polyglot parallel selection example is missing"
+    grep -Fq 'Research these two unrelated source sets' "${examples}" || fail "independent research selection example is missing"
+    grep -Fq 'Independently review this production migration plan' "${examples}" || fail "non-leading review selection example is missing"
+    grep -Fq 'Run the migration first, then update callers based on its output' "${examples}" || fail "sequential refusal selection example is missing"
+
+    pass "subagent allowlist and contracts"
 }
 
 persistence_yield_checks() {
@@ -98,6 +123,8 @@ collaboration_checks() {
     local interview_metadata="${ROOT_DIR}/families/collaboration/interview-me/agents/openai.yaml"
     local low_friction_file="${ROOT_DIR}/families/collaboration/low-friction-collaboration/SKILL.md"
     local low_friction_reference="${ROOT_DIR}/families/collaboration/low-friction-collaboration/references/communication-evidence.md"
+    local parallel="${ROOT_DIR}/families/collaboration/parallel-subagents/SKILL.md"
+    local second_opinion="${ROOT_DIR}/families/collaboration/second-opinion/SKILL.md"
 
     grep -Fxq 'description: Interview the user one focused question at a time.' "${interview_file}" || fail "interview-me description is missing"
     assert_exists "${interview_metadata}"
@@ -113,6 +140,10 @@ collaboration_checks() {
     grep -Fq 'Do not impose an arbitrary item limit' "${low_friction_file}" || fail "low-friction list discipline is missing"
     grep -Fq '## Edit The Language' "${low_friction_file}" || fail "low-friction Orwell editing guidance is missing"
     grep -Fq 'Do not use, spawn, request, or rely on subagents.' "${low_friction_file}" || fail "low-friction subagent boundary is missing"
+    grep -Fxq 'description: Delegate independent bounded subtasks concurrently and integrate their evidence into one verified outcome.' "${parallel}" || fail "parallel-subagents description drifted"
+    grep -Fxq 'description: Obtain an independent evidence-backed critique of a consequential conclusion, diagnosis, plan, or diff.' "${second_opinion}" || fail "second-opinion description drifted"
+    assert_not_exists "${ROOT_DIR}/families/collaboration/parallel-subagents/agents/openai.yaml"
+    assert_not_exists "${ROOT_DIR}/families/collaboration/second-opinion/agents/openai.yaml"
     if grep -Eiq 'use (this skill )?(for|on) every message|the reader has ADHD|ADHD brain' "${low_friction_file}"; then
         fail "low-friction skill contains universal or diagnostic routing"
     fi
@@ -297,7 +328,9 @@ install_uninstall_checks() {
     assert_symlink_to "${tmp_root}/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
     assert_symlink_to "${tmp_root}/skills/interview-me" "${ROOT_DIR}/families/collaboration/interview-me"
     assert_symlink_to "${tmp_root}/skills/low-friction-collaboration" "${ROOT_DIR}/families/collaboration/low-friction-collaboration"
+    assert_symlink_to "${tmp_root}/skills/parallel-subagents" "${ROOT_DIR}/families/collaboration/parallel-subagents"
     assert_symlink_to "${tmp_root}/skills/product-co-design" "${ROOT_DIR}/families/collaboration/product-co-design"
+    assert_symlink_to "${tmp_root}/skills/second-opinion" "${ROOT_DIR}/families/collaboration/second-opinion"
     assert_symlink_to "${tmp_root}/skills/ai-pipeline" "${ROOT_DIR}/families/ai/ai-pipeline"
     assert_symlink_to "${tmp_root}/skills/ai-performance" "${ROOT_DIR}/families/ai/ai-performance"
     assert_exists "${tmp_root}/skills/ai-performance/../references/performance.md"
@@ -309,10 +342,12 @@ install_uninstall_checks() {
     MECHA_SKILL_ROOT="${tmp_root}/selected" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-selected.out"
     assert_symlink_to "${tmp_root}/selected/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
 
-    MECHA_SKILL_ROOT="${tmp_root}/selected-collaboration" "${ROOT_DIR}/install.sh" interview-me low-friction-collaboration product-co-design >"${tmp_root}/install-selected-collaboration.out"
+    MECHA_SKILL_ROOT="${tmp_root}/selected-collaboration" "${ROOT_DIR}/install.sh" interview-me low-friction-collaboration parallel-subagents product-co-design second-opinion >"${tmp_root}/install-selected-collaboration.out"
     assert_symlink_to "${tmp_root}/selected-collaboration/interview-me" "${ROOT_DIR}/families/collaboration/interview-me"
     assert_symlink_to "${tmp_root}/selected-collaboration/low-friction-collaboration" "${ROOT_DIR}/families/collaboration/low-friction-collaboration"
+    assert_symlink_to "${tmp_root}/selected-collaboration/parallel-subagents" "${ROOT_DIR}/families/collaboration/parallel-subagents"
     assert_symlink_to "${tmp_root}/selected-collaboration/product-co-design" "${ROOT_DIR}/families/collaboration/product-co-design"
+    assert_symlink_to "${tmp_root}/selected-collaboration/second-opinion" "${ROOT_DIR}/families/collaboration/second-opinion"
 
     if MECHA_SKILL_ROOT="${tmp_root}/missing" "${ROOT_DIR}/install.sh" not-a-skill >"${tmp_root}/install-missing.out" 2>&1; then
         fail "missing skill install should fail"
@@ -339,7 +374,9 @@ install_uninstall_checks() {
     assert_not_exists "${tmp_root}/skills/prototype-builder"
     assert_not_exists "${tmp_root}/skills/interview-me"
     assert_not_exists "${tmp_root}/skills/low-friction-collaboration"
+    assert_not_exists "${tmp_root}/skills/parallel-subagents"
     assert_not_exists "${tmp_root}/skills/product-co-design"
+    assert_not_exists "${tmp_root}/skills/second-opinion"
     assert_not_exists "${tmp_root}/skills/ai-pipeline"
     assert_not_exists "${tmp_root}/skills/ai-performance"
 

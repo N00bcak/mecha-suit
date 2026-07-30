@@ -28,7 +28,7 @@ set, including `.git/` and local development environments.
 | --- | --- |
 | `docs.md` | `docs/` maintenance and platform documentation |
 | `families.md` | global skill-family architecture |
-| `families-collaboration.md` | explicit interviewing, low-friction communication, and product co-design |
+| `families-collaboration.md` | interviewing, communication, product co-design, parallel delegation, and independent review |
 | `families-engineering.md` | engineering specialist leaves |
 | `families-ai.md` | AI pipeline manual and execution leaves |
 | `shared.md` | shared examples and rubrics |

@@ -7,6 +7,11 @@
 - "Interview me about what I want from this project" -> `interview-me` (explicit invocation only)
 - "Keep this debugging session direct and remind me what changed after each tool run" -> `low-friction-collaboration`
 - "Give me one clear next step at a time, but do not skip the technical reasoning" -> `low-friction-collaboration`
+- "Update the independent Python and TypeScript packages in parallel; they share no files" -> `parallel-subagents`
+- "Research these two unrelated source sets and return separate evidence summaries" -> `parallel-subagents`
+- "Run the migration first, then update callers based on its output" -> native sequential work; do not delegate in parallel
+- "Independently review this production migration plan before I approve it" -> `second-opinion`
+- "Check whether this local formatting change is correct" -> routine verification; do not request a second opinion
 - "What port does HTTPS normally use?" -> native Codex (already a low-load answer)
 
 ## Engineering
@@ -32,5 +37,5 @@
 ## Native clarification
 
 - "Help with my project" -> native clarification; no skill yet
-- "Assess a product concept whose feasibility depends on an unfamiliar ML approach" -> choose the primary specialist and consult another only through ordinary main-process work
+- "Assess a product concept whose feasibility depends on an unfamiliar ML approach" -> choose the primary specialist; use `second-opinion` only when an independent consequential review is warranted
 - "Integrate a security audit tool into this large codebase and verify it catches known vulnerability classes" -> `large-codebase-change`

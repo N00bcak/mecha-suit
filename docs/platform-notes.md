@@ -7,7 +7,8 @@
 - Passive context belongs in `references/`.
 - Scripts are optional and should exist only when they improve repeatability.
 - Routing depends on leaf boundaries and minimum required inputs, not specialist internals.
-- No active skill currently authorizes subagent use.
+- Only `parallel-subagents` and `second-opinion` authorize subagent use, and
+  only when the host exposes the required capability.
 
 ## Codex-specific notes
 
@@ -32,6 +33,6 @@
 
 - Native global skill installation paths
 - Host-specific metadata schemas
-- Subagent permission and naming models
+- Changes to host subagent permission, cancellation, and naming models
 - Whether repo-local wrappers should be skills, markdown instructions, or host-native configuration
 - Validation tooling for skill trigger descriptions and context size

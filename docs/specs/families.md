@@ -12,7 +12,9 @@ families/
     collaboration/
         interview-me/
         low-friction-collaboration/
+        parallel-subagents/
         product-co-design/
+        second-opinion/
     engineering/
         large-codebase-change/
         prototype-builder/
@@ -48,13 +50,14 @@ Each skill folder may contain:
 - Family boundaries make routing and maintenance cheap.
 - `SKILL.md` frontmatter gives hosts compact trigger metadata.
 - Stub leaves can define future contracts without pretending to be callable.
-- The current prohibition on subagent authorization prevents hidden delegation
-  sprawl.
+- The two-skill subagent allowlist prevents hidden delegation sprawl.
 
 ## Architectural Invariants
 
 - Native host behavior owns skill selection and ordinary clarification.
-- No active skill may use subagents.
+- Only `parallel-subagents` and `second-opinion` may authorize subagent use.
+- Authorized delegation preserves main-process ownership, structured evidence,
+  and a prohibition on nested delegation.
 - `interview-me` and `ai-pipeline` are explicit-invocation-only.
 - `low-friction-collaboration` is routable.
 - Specialist leaves do one job well.

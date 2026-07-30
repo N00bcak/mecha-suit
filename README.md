@@ -64,8 +64,8 @@ skills do not depend on Python or this environment.
 
 `./test.sh` verifies the harness before you install anything. It checks
 Codex-compatible YAML frontmatter, script syntax, skill names, family layout,
-subagent prohibition, and install/uninstall behavior against a temporary skill
-root.
+the exact subagent-authorization allowlist, and install/uninstall behavior
+against a temporary skill root.
 
 Install every skill into the default Codex skill root:
 
@@ -87,7 +87,7 @@ path in common Windows Bash shells when possible.
 Install only selected skills:
 
 ```bash
-./install.sh product-co-design low-friction-collaboration
+./install.sh parallel-subagents second-opinion
 ```
 
 Install into a custom skill root:
@@ -141,8 +141,8 @@ The installer is idempotent. Running it twice should report already-installed sk
 
 Mecha Suit is organized into skill families:
 
-- `families/collaboration/`: explicit interviewing, low-friction technical
-  communication, and conversation-first product co-design.
+- `families/collaboration/`: interviewing, low-friction communication, product
+  co-design, bounded parallel delegation, and independent review.
 - `families/engineering/`: fully authored leaves for PR-ready changes in
   repositories above roughly 5k maintained source lines and isolated
   greenfield prototypes centered on one outcome.
@@ -188,7 +188,14 @@ must be easy to follow, resume, and act on without reducing reasoning depth or
 precision. It preserves the user's vocabulary, keeps necessary state visible,
 and removes avoidable reading and recall work.
 
-No installed skill currently authorizes subagents. 
+Use `parallel-subagents` when two or more bounded assignments are genuinely
+independent, have non-overlapping ownership, and can be reconciled by the main
+process. Use `second-opinion` for one non-leading independent critique of a
+consequential conclusion, diagnosis, plan, or diff.
+
+Only those two skills authorize subagent use. The main process retains scope,
+permissions, decisions, integration, verification, and final-response
+ownership; nested delegation is prohibited.
 
 ## Responsible Use
 
@@ -270,8 +277,8 @@ If you installed with `MECHA_SKILL_ROOT`, uninstall with the same value.
 - `docs/`: human-facing maintenance and platform notes.
 - `agents/`: host metadata only when it materially improves routing or
   invocation behavior. `interview-me` and `ai-pipeline` currently use Codex
-  metadata; `product-co-design`, `low-friction-collaboration`, engineering
-  leaves, and AI execution leaves rely on frontmatter.
+  metadata; other collaboration leaves, engineering leaves, and AI execution
+  leaves rely on frontmatter.
 - `AGENTS.md`: rules for developing this harness itself.
 - `PROMPT.md`: original scaffold prompt, kept as project history.
 
@@ -292,7 +299,9 @@ The test harness checks:
 - `SKILL.md` frontmatter names against folder names
 - required routing and family layout
 - absence of `families/orchestration/`
-- absence of subagent authorization in active skills
+- subagent authorization limited to `parallel-subagents` and `second-opinion`
+- main-process ownership, structured evidence, and no nested delegation in
+  both authorized skills
 - install behavior against a temporary skill root
 - idempotent reinstall
 - selected-skill install
@@ -348,7 +357,8 @@ Read the failing `[fail]` line first. The test harness is intentionally small; f
 - a script has invalid shell syntax
 - a skill folder name and frontmatter name diverged
 - family layout changed
-- an active skill appears to authorize subagents
+- a skill outside the two-skill allowlist appears to authorize subagents
+- an authorized collaboration skill loses an ownership or evidence guardrail
 - install/uninstall safety behavior regressed
 
 Fix the cause, then rerun:
@@ -361,7 +371,7 @@ uv sync --dev
 ## Architectural Rules
 
 - Native Codex owns ordinary skill selection and clarification.
-- No active skill may use subagents.
+- Only `parallel-subagents` and `second-opinion` may authorize subagent use.
 - Specialist leaves do one job well.
 - Runtime behavior belongs in `SKILL.md`.
 - Repo-maintenance policy belongs in `AGENTS.md` and `docs/`.

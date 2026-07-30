@@ -120,20 +120,23 @@ For ambiguous work:
 - ask one focused question only when a missing user-owned decision materially
   changes the work
 
-### 2. No active skill may use subagents
+### 2. Subagent authorization is limited to two collaboration skills
 
-No skill may:
-- spawn subagents
-- request subagents
-- assume subagents are available
-- defer core behavior to hidden parallel delegates
+Only `parallel-subagents` and `second-opinion` may authorize subagent use.
+Every other skill must not spawn, request, assume, or depend on subagents.
+
+The two authorized skills must preserve main-process ownership, prohibit nested
+delegation, require structured evidence returns, and check host capability
+before promising delegation.
 
 ### 3. Specialist leaves stay narrow
 Specialist leaves should do one job well.
 
 Current specialist leaves include:
 - `interview-me`
+- `parallel-subagents`
 - `product-co-design`
+- `second-opinion`
 - `large-codebase-change`
 - `prototype-builder`
 - `ai-data-preparation`
@@ -178,7 +181,8 @@ Do not stuff repo-maintenance policy into skill files unless it materially affec
 
 ### `families/collaboration/`
 Contains conversation-first specialist leaves. `interview-me` is
-explicit-invocation-only. No current collaboration skill may use subagents.
+explicit-invocation-only. Only `parallel-subagents` and `second-opinion` may
+authorize subagent use.
 
 ### `families/engineering/`, `families/ai/`
 
@@ -331,7 +335,7 @@ A meaningful change is done when:
 Bias toward:
 - narrow skills
 - native skill selection
-- no subagent authorization
+- subagent authorization limited to `parallel-subagents` and `second-opinion`
 - contract-complete specialist leaves
 - low context overhead
 - portable instructions

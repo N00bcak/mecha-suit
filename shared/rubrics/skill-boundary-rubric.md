@@ -15,7 +15,8 @@ Use this rubric when editing or adding skills.
 - The skill can solve nearly any task.
 - The skill contains repo-specific facts.
 - The skill needs many references loaded before doing basic work.
-- The skill authorizes subagent use.
+- The skill authorizes subagent use but is not `parallel-subagents` or
+  `second-opinion`.
 - The host must understand internal tactics to select it.
 
 ## Repair

@@ -7,7 +7,8 @@
 3. Move passive background material into `references/`.
 4. Add scripts only when they reduce repeated procedural text or improve deterministic reliability.
 5. Keep the `Do Not Use` section current so native selection preserves clean boundaries.
-6. Preserve the rule that specialist leaves do not spawn, request, or rely on subagents.
+6. Preserve the rule that only `parallel-subagents` and `second-opinion` may
+   authorize subagent use.
 7. Remove the explicit stub warning only when the skill is genuinely fully authored.
 
 Expansion is complete when the skill can handle its intended task without requiring repo-specific facts and without becoming a broad generalist.
@@ -86,6 +87,9 @@ forcing application-development conventions everywhere.
 
 ## Govern subagent use
 
-- No active skill currently authorizes subagent use.
-- Treat any future subagent authorization as an explicit architecture change
-  requiring matching tests, templates, README, and collaboration specs.
+- Only `parallel-subagents` and `second-opinion` may authorize subagent use.
+- Both must preserve main-process ownership, prohibit nested delegation, check
+  host capability, and require structured evidence returns.
+- All other skills must not spawn, request, assume, or depend on subagents.
+- Any change to this allowlist is an explicit architecture change requiring
+  matching tests, templates, README, and collaboration specs.

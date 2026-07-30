@@ -25,7 +25,8 @@ Replace this section only when the skill becomes fully authored. Until then, use
 
 - <Exclusion.>
 - <Exclusion.>
-- Do not spawn, request, or rely on subagents.
+- Do not spawn, request, or rely on subagents. Only the dedicated
+  `parallel-subagents` and `second-opinion` skills may authorize delegation.
 
 ## Needs
 
