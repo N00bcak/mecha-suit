@@ -27,10 +27,13 @@ Always run `./test.sh` after any harness edit.
   for independent consequential review.
 - **`engineering/`** — Fully authored. `large-codebase-change` owns PR-ready changes in repositories above roughly 5k maintained source lines; `prototype-builder` owns isolated greenfield work centered on one demonstrable outcome, without a line-count limit. Both share anti-bloat, continuity, and language-idiom references.
 - **`ai/`** — Fully authored. `ai-pipeline` is an explicit-only one-time framing manual; five callable leaves own data preparation, insight development, representations, problem modeling, and performance across ML, deep learning, GOFAI, and hybrid systems.
+- **`writing/`** — Fully authored. `humanizer` owns long-form prose authoring
+  and revision; `blogpost-writing` owns VitePress-ready posts and CTF writeups
+  in N00bcak's voice.
 
 ### Skill folder structure
 
-Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for `interview-me` and `ai-pipeline`; other collaboration leaves, engineering leaves, and AI execution leaves rely on frontmatter only.
+Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for `interview-me` and `ai-pipeline`; other collaboration, engineering, AI execution, and writing leaves rely on frontmatter only.
 
 ### Shared resources
 

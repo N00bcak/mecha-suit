@@ -34,6 +34,16 @@
 - "Design a state representation and admissible heuristic for this planner" -> `ai-representation-workbench`
 - "Benchmark and tune this constraint solver on representative instances" -> `ai-performance`
 
+## Writing
+
+- "Write an essay from these notes without flattening my argument" -> `humanizer`
+- "Humanize this report while preserving its citations and qualifications" -> `humanizer`
+- "Rewrite these API docs and code comments" -> native Codex, not `humanizer`
+- "Write a generic long-form blog article" -> `humanizer`
+- "Draft a technical post for n00bcak.github.io" -> `blogpost-writing`
+- "Turn these challenge notes into a CTF writeup in my site style" -> `blogpost-writing`
+- "Tell me whether AI wrote this essay" -> no authorship verdict
+
 ## Native clarification
 
 - "Help with my project" -> native clarification; no skill yet

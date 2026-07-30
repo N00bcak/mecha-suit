@@ -70,6 +70,8 @@ architecture_checks() {
     assert_exists "${ROOT_DIR}/families/collaboration/product-co-design/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/second-opinion/SKILL.md"
     assert_exists "${ROOT_DIR}/families/ai/ai-pipeline/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/writing/humanizer/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/writing/blogpost-writing/SKILL.md"
     assert_not_exists "${ROOT_DIR}/families/ml"
     assert_not_exists "${ROOT_DIR}/families/council"
     assert_not_exists "${ROOT_DIR}/families/routing"
@@ -297,6 +299,43 @@ ai_family_checks() {
     pass "AI routing, pipeline, coding, and performance contracts"
 }
 
+writing_family_checks() {
+    local family_dir="${ROOT_DIR}/families/writing"
+    local humanizer="${family_dir}/humanizer/SKILL.md"
+    local blogpost="${family_dir}/blogpost-writing/SKILL.md"
+    local examples="${ROOT_DIR}/shared/examples/skill-selection-examples.md"
+
+    grep -Fxq 'description: Write and revise long-form prose with a natural, genre-aware voice while preserving meaning, evidence, and authorial intent.' "${humanizer}" || fail "humanizer description drifted"
+    grep -Fxq "description: Author VitePress-ready blog posts and CTF writeups in N00bcak's evidence-grounded, adaptable personal voice." "${blogpost}" || fail "blogpost-writing description drifted"
+
+    assert_exists "${family_dir}/humanizer/references/revision-patterns.md"
+    assert_exists "${family_dir}/blogpost-writing/references/n00bcak-voice.md"
+    grep -Fq '`references/revision-patterns.md`' "${humanizer}" || fail "humanizer revision reference is not linked"
+    grep -Fq '`references/n00bcak-voice.md`' "${blogpost}" || fail "blogpost-writing voice reference is not linked"
+    grep -Fq 'When revising or auditing substantial prose' "${humanizer}" || fail "humanizer progressive loading boundary is missing"
+    grep -Fq 'Read `references/n00bcak-voice.md` before drafting' "${blogpost}" || fail "blogpost-writing voice loading rule is missing"
+
+    assert_not_exists "${family_dir}/humanizer/agents/openai.yaml"
+    assert_not_exists "${family_dir}/blogpost-writing/agents/openai.yaml"
+    assert_not_exists "${family_dir}/humanizer/scripts"
+    assert_not_exists "${family_dir}/blogpost-writing/scripts"
+
+    grep -Fq 'Technical documentation, API references, code comments' "${humanizer}" || fail "humanizer technical-writing boundary is missing"
+    grep -Fq 'Style is not proof of' "${humanizer}" || fail "humanizer authorship boundary is missing"
+    grep -Fq 'title: "<post title>"' "${blogpost}" || fail "blogpost-writing title frontmatter is missing"
+    grep -Fq 'date: YYYY-MM-DD' "${blogpost}" || fail "blogpost-writing date frontmatter is missing"
+    grep -Fq 'Publishing, committing, or deploying' "${blogpost}" || fail "blogpost-writing publication boundary is missing"
+    grep -Fq 'Do not use, spawn, request, or rely on subagents.' "${humanizer}" || fail "humanizer subagent boundary is missing"
+    grep -Fq 'Do not use, spawn, request, or rely on subagents.' "${blogpost}" || fail "blogpost-writing subagent boundary is missing"
+
+    grep -Fq 'Write an essay from these notes' "${examples}" || fail "humanizer authoring selection example is missing"
+    grep -Fq 'Rewrite these API docs and code comments' "${examples}" || fail "humanizer exclusion example is missing"
+    grep -Fq 'Draft a technical post for n00bcak.github.io' "${examples}" || fail "blogpost-writing selection example is missing"
+    grep -Fq 'Tell me whether AI wrote this essay' "${examples}" || fail "authorship refusal example is missing"
+
+    pass "writing routing, progressive disclosure, and output contracts"
+}
+
 metadata_policy_checks() {
     grep -Fq '`ai-pipeline`' "${ROOT_DIR}/CLAUDE.md" || fail "CLAUDE metadata policy does not mention ai-pipeline"
     grep -Fq '`ai-pipeline`' "${ROOT_DIR}/README.md" || fail "README metadata policy does not mention ai-pipeline"
@@ -312,7 +351,7 @@ stub_skill_checks() {
         if grep -Eq '^## Stub Status$' "${skill_file}"; then
             grep -Fq 'This is a stub. NEVER CALL THIS SKILL.' "${skill_file}" || fail "stub warning is missing in ${skill_file}"
         fi
-    done < <(find "${ROOT_DIR}/families/collaboration" "${ROOT_DIR}/families/engineering" "${ROOT_DIR}/families/ai" -mindepth 2 -maxdepth 2 -name SKILL.md -print | sort)
+    done < <(find "${ROOT_DIR}/families/collaboration" "${ROOT_DIR}/families/engineering" "${ROOT_DIR}/families/ai" "${ROOT_DIR}/families/writing" -mindepth 2 -maxdepth 2 -name SKILL.md -print | sort)
 
     pass "stub guardrails"
 }
@@ -333,6 +372,8 @@ install_uninstall_checks() {
     assert_symlink_to "${tmp_root}/skills/second-opinion" "${ROOT_DIR}/families/collaboration/second-opinion"
     assert_symlink_to "${tmp_root}/skills/ai-pipeline" "${ROOT_DIR}/families/ai/ai-pipeline"
     assert_symlink_to "${tmp_root}/skills/ai-performance" "${ROOT_DIR}/families/ai/ai-performance"
+    assert_symlink_to "${tmp_root}/skills/humanizer" "${ROOT_DIR}/families/writing/humanizer"
+    assert_symlink_to "${tmp_root}/skills/blogpost-writing" "${ROOT_DIR}/families/writing/blogpost-writing"
     assert_exists "${tmp_root}/skills/ai-performance/../references/performance.md"
     assert_exists "${tmp_root}/skills/ai-performance/../../../shared/rubrics/change-discipline.md"
 
@@ -348,6 +389,10 @@ install_uninstall_checks() {
     assert_symlink_to "${tmp_root}/selected-collaboration/parallel-subagents" "${ROOT_DIR}/families/collaboration/parallel-subagents"
     assert_symlink_to "${tmp_root}/selected-collaboration/product-co-design" "${ROOT_DIR}/families/collaboration/product-co-design"
     assert_symlink_to "${tmp_root}/selected-collaboration/second-opinion" "${ROOT_DIR}/families/collaboration/second-opinion"
+
+    MECHA_SKILL_ROOT="${tmp_root}/selected-writing" "${ROOT_DIR}/install.sh" humanizer blogpost-writing >"${tmp_root}/install-selected-writing.out"
+    assert_symlink_to "${tmp_root}/selected-writing/humanizer" "${ROOT_DIR}/families/writing/humanizer"
+    assert_symlink_to "${tmp_root}/selected-writing/blogpost-writing" "${ROOT_DIR}/families/writing/blogpost-writing"
 
     if MECHA_SKILL_ROOT="${tmp_root}/missing" "${ROOT_DIR}/install.sh" not-a-skill >"${tmp_root}/install-missing.out" 2>&1; then
         fail "missing skill install should fail"
@@ -379,6 +424,8 @@ install_uninstall_checks() {
     assert_not_exists "${tmp_root}/skills/second-opinion"
     assert_not_exists "${tmp_root}/skills/ai-pipeline"
     assert_not_exists "${tmp_root}/skills/ai-performance"
+    assert_not_exists "${tmp_root}/skills/humanizer"
+    assert_not_exists "${tmp_root}/skills/blogpost-writing"
 
     MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-codex-home.out"
     assert_symlink_to "${tmp_root}/codex-home/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
@@ -403,6 +450,7 @@ main() {
     collaboration_checks
     engineering_checks
     ai_family_checks
+    writing_family_checks
     metadata_policy_checks
     stub_skill_checks
     install_uninstall_checks

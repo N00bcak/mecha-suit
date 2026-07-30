@@ -31,6 +31,7 @@ set, including `.git/` and local development environments.
 | `families-collaboration.md` | interviewing, communication, product co-design, parallel delegation, and independent review |
 | `families-engineering.md` | engineering specialist leaves |
 | `families-ai.md` | AI pipeline manual and execution leaves |
+| `families-writing.md` | long-form prose and site-specific blog writing leaves |
 | `shared.md` | shared examples and rubrics |
 | `templates.md` | templates for repo and skill authoring |
 

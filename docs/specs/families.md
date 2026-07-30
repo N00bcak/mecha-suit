@@ -3,7 +3,7 @@
 ## Purpose
 
 `families/` is the core skill library. It groups runtime skills by architectural
-role: collaboration, engineering work, and AI work.
+role: collaboration, engineering work, AI work, and writing.
 
 ## Architecture Tree
 
@@ -25,6 +25,9 @@ families/
         ai-representation-workbench/
         ai-problem-modeling/
         ai-performance/
+    writing/
+        humanizer/
+        blogpost-writing/
 ```
 
 Each skill folder may contain:

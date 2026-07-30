@@ -149,11 +149,13 @@ Mecha Suit is organized into skill families:
 - `families/ai/`: an explicit-only initial pipeline manual plus callable leaves
   for data preparation, insight development, representations, problem
   modeling, and performance across ML, deep learning, GOFAI, and hybrids.
+- `families/writing/`: long-form prose authoring and revision plus
+  VitePress-ready posts and CTF writeups in N00bcak's voice.
 
 Codex selects callable skills directly from their frontmatter descriptions and
 handles ordinary ambiguity without a generic routing or clarification skill.
 
-The collaboration, engineering, and AI specialist leaves are fully authored.
+The collaboration, engineering, AI, and writing specialist leaves are fully authored.
 
 ## Which Skill Do I Use?
 
@@ -187,6 +189,10 @@ Use `low-friction-collaboration` when a dense or multi-step technical exchange
 must be easy to follow, resume, and act on without reducing reasoning depth or
 precision. It preserves the user's vocabulary, keeps necessary state visible,
 and removes avoidable reading and recall work.
+
+Use `humanizer` to write or revise long-form papers, essays, reports, articles,
+speeches, and ordinary blog posts. Use `blogpost-writing` for VitePress-ready
+posts or CTF writeups intended for N00bcak's site or voice.
 
 Use `parallel-subagents` when two or more bounded assignments are genuinely
 independent, have non-overlapping ownership, and can be reconciled by the main
