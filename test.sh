@@ -69,6 +69,15 @@ architecture_checks() {
     assert_exists "${ROOT_DIR}/families/collaboration/parallel-subagents/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/product-co-design/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/second-opinion/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/collaboration/product-research/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/collaboration/domain-modeling/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/collaboration/decision-mapping/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/collaboration/portable-handoff/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/engineering/technical-research/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/engineering/implementation-spec/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/engineering/work-slicing/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/engineering/diagnosing-bugs/SKILL.md"
+    assert_exists "${ROOT_DIR}/families/engineering/code-review/SKILL.md"
     assert_exists "${ROOT_DIR}/families/ai/ai-pipeline/SKILL.md"
     assert_exists "${ROOT_DIR}/families/writing/humanizer/SKILL.md"
     assert_exists "${ROOT_DIR}/families/writing/blogpost-writing/SKILL.md"
@@ -127,6 +136,10 @@ collaboration_checks() {
     local low_friction_reference="${ROOT_DIR}/families/collaboration/low-friction-collaboration/references/communication-evidence.md"
     local parallel="${ROOT_DIR}/families/collaboration/parallel-subagents/SKILL.md"
     local second_opinion="${ROOT_DIR}/families/collaboration/second-opinion/SKILL.md"
+    local product_research="${ROOT_DIR}/families/collaboration/product-research/SKILL.md"
+    local domain_modeling="${ROOT_DIR}/families/collaboration/domain-modeling/SKILL.md"
+    local decision_mapping="${ROOT_DIR}/families/collaboration/decision-mapping/SKILL.md"
+    local portable_handoff="${ROOT_DIR}/families/collaboration/portable-handoff/SKILL.md"
 
     grep -Fxq 'description: Interview the user one focused question at a time.' "${interview_file}" || fail "interview-me description is missing"
     assert_exists "${interview_metadata}"
@@ -144,8 +157,16 @@ collaboration_checks() {
     grep -Fq 'Do not use, spawn, request, or rely on subagents.' "${low_friction_file}" || fail "low-friction subagent boundary is missing"
     grep -Fxq 'description: Delegate independent bounded subtasks concurrently and integrate their evidence into one verified outcome.' "${parallel}" || fail "parallel-subagents description drifted"
     grep -Fxq 'description: Obtain an independent evidence-backed critique of a consequential conclusion, diagnosis, plan, or diff.' "${second_opinion}" || fail "second-opinion description drifted"
+    grep -Fxq 'description: Develop evidence-backed findings about users, workflows, terminology, alternatives, and product or domain assumptions.' "${product_research}" || fail "product-research description drifted"
+    grep -Fxq 'description: Sharpen domain terminology and record durable decisions against concrete scenarios, existing code, and evidence.' "${domain_modeling}" || fail "domain-modeling description drifted"
+    grep -Fxq 'description: Map and resolve decisions blocking a long-horizon effort until its destination is ready for implementation specification.' "${decision_mapping}" || fail "decision-mapping description drifted"
+    grep -Fxq 'description: Package verified work state into a redacted portable handoff for another session, machine, agent, or collaborator.' "${portable_handoff}" || fail "portable-handoff description drifted"
     assert_not_exists "${ROOT_DIR}/families/collaboration/parallel-subagents/agents/openai.yaml"
     assert_not_exists "${ROOT_DIR}/families/collaboration/second-opinion/agents/openai.yaml"
+    assert_not_exists "${ROOT_DIR}/families/collaboration/product-research/agents/openai.yaml"
+    assert_not_exists "${ROOT_DIR}/families/collaboration/domain-modeling/agents/openai.yaml"
+    assert_not_exists "${ROOT_DIR}/families/collaboration/decision-mapping/agents/openai.yaml"
+    assert_not_exists "${ROOT_DIR}/families/collaboration/portable-handoff/agents/openai.yaml"
     if grep -Eiq 'use (this skill )?(for|on) every message|the reader has ADHD|ADHD brain' "${low_friction_file}"; then
         fail "low-friction skill contains universal or diagnostic routing"
     fi
@@ -156,10 +177,20 @@ engineering_checks() {
     local family_dir="${ROOT_DIR}/families/engineering"
     local large_skill="${family_dir}/large-codebase-change/SKILL.md"
     local prototype_skill="${family_dir}/prototype-builder/SKILL.md"
+    local technical_research="${family_dir}/technical-research/SKILL.md"
+    local implementation_spec="${family_dir}/implementation-spec/SKILL.md"
+    local work_slicing="${family_dir}/work-slicing/SKILL.md"
+    local diagnosing_bugs="${family_dir}/diagnosing-bugs/SKILL.md"
+    local code_review="${family_dir}/code-review/SKILL.md"
     local reference
 
     grep -Fxq 'description: Implement PR-ready changes in codebases above roughly 5kLoC with idiomatic, anti-bloat, and verification discipline.' "${large_skill}" || fail "large-codebase-change description drifted"
     grep -Fxq 'description: Build and verify isolated greenfield prototypes, demos, tools, or apps around one core outcome.' "${prototype_skill}" || fail "prototype-builder description drifted"
+    grep -Fxq 'description: Resolve software and architecture questions through primary technical sources, repository evidence, and reproducible checks.' "${technical_research}" || fail "technical-research description drifted"
+    grep -Fxq 'description: Turn settled intent and evidence into an accepted implementation contract with criteria, constraints, and non-goals.' "${implementation_spec}" || fail "implementation-spec description drifted"
+    grep -Fxq 'description: Decompose an accepted implementation contract into verifiable vertical slices with explicit dependency edges.' "${work_slicing}" || fail "work-slicing description drifted"
+    grep -Fxq 'description: Diagnose difficult bugs and regressions through a tight reproducer, falsifiable hypotheses, and regression evidence.' "${diagnosing_bugs}" || fail "diagnosing-bugs description drifted"
+    grep -Fxq 'description: Review changes for intent fidelity, behavioral correctness and evidence, and maintainability against a fixed point.' "${code_review}" || fail "code-review description drifted"
 
     if grep -REiq '1''kLoC|~1''k|under about 1''k|past ~1''k' "${family_dir}"; then
         fail "obsolete prototype line-count trigger remains"
@@ -183,12 +214,16 @@ engineering_checks() {
         grep -Fq "\`../references/${reference}\`" "${prototype_skill}" || fail "prototype-builder does not link shared ${reference}"
     done
 
-    grep -Fq '## Change Surface' "${large_skill}" || fail "large-codebase-change scratchpad contract drifted"
-    grep -Fq '## Decisions' "${large_skill}" || fail "large-codebase-change scratchpad decisions are missing"
-    grep -Fq '## Stack' "${prototype_skill}" || fail "prototype-builder scratchpad contract drifted"
-    grep -Fq '## Features' "${prototype_skill}" || fail "prototype-builder scratchpad features are missing"
-    grep -Fq 'Archive old one (`SCRATCHPAD-<date>.md`), create new' "${family_dir}/references/session-continuity.md" || fail "shared scratchpad archive contract drifted"
-    grep -Fq '**Before ending a session** — mandatory' "${family_dir}/references/session-continuity.md" || fail "shared scratchpad handoff cadence drifted"
+    for reference in behavior-first-development.md design-decision-discipline.md; do
+        assert_exists "${family_dir}/references/${reference}"
+        grep -Fq "\`../references/${reference}\`" "${large_skill}" || fail "large-codebase-change does not link shared ${reference}"
+    done
+
+    grep -Fq 'Do not create a new scratchpad' "${family_dir}/references/session-continuity.md" || fail "legacy scratchpad boundary drifted"
+    grep -Fq '`../../../shared/rubrics/lifecycle-contract.md`' "${large_skill}" || fail "large-codebase-change lifecycle contract is missing"
+    grep -Fq '`../../../shared/rubrics/lifecycle-contract.md`' "${prototype_skill}" || fail "prototype-builder lifecycle contract is missing"
+    grep -Fq '`../references/behavior-first-development.md`' "${large_skill}" || fail "large-codebase-change behavior-first guidance is missing"
+    grep -Fq '`../references/design-decision-discipline.md`' "${large_skill}" || fail "large-codebase-change design guidance is missing"
     grep -Fq '### Phase 5: Mandatory Compression Review' "${large_skill}" || fail "large-codebase-change compression review is missing"
     grep -Fq 'Do not create or switch branches, commit, push, or open a pull request' "${large_skill}" || fail "PR-ready Git publication boundary is missing"
 
@@ -203,7 +238,92 @@ engineering_checks() {
     assert_not_exists "${family_dir}/large-codebase-change/references/session-continuity.md"
     assert_not_exists "${family_dir}/prototype-builder/references/session-continuity.md"
 
+    for skill_file in "${technical_research}" "${implementation_spec}" "${work_slicing}" "${diagnosing_bugs}" "${code_review}"; do
+        assert_not_exists "$(dirname "${skill_file}")/agents/openai.yaml"
+    done
+
     pass "engineering routing and shared references"
+}
+
+lifecycle_checks() {
+    local contract="${ROOT_DIR}/shared/rubrics/lifecycle-contract.md"
+    local template="${ROOT_DIR}/templates/work-index.template.md"
+    local examples="${ROOT_DIR}/shared/examples/skill-selection-examples.md"
+    local skill_file
+
+    assert_exists "${contract}"
+    assert_exists "${ROOT_DIR}/shared/rubrics/research-integrity.md"
+    assert_exists "${template}"
+    grep -Fq '`continuity`' "${contract}" || fail "continuity mode is missing"
+    grep -Fq '`lifecycle`' "${contract}" || fail "lifecycle mode is missing"
+    grep -Fq 'A semantic change requires explicit user authorization.' "${contract}" || fail "intent authority is missing"
+    grep -Fq 'Skill selection alone is not permission to create durable state.' "${contract}" || fail "implicit lifecycle mutation boundary is missing"
+    grep -Fq 'Ad-Hoc Compatibility' "${contract}" || fail "ad-hoc compatibility is missing"
+    grep -Fq 'three-axis code review' "${contract}" || fail "lifecycle review gate is missing"
+    grep -Fq 'supersession note' "${contract}" || fail "legacy scratchpad supersession rule is missing"
+    grep -Fq '## Acceptance Criteria' "${template}" || fail "work-index acceptance criteria are missing"
+    grep -Fq 'Review fixed point:' "${template}" || fail "work-index review fixed point is missing"
+    grep -Fq '## Revision History' "${template}" || fail "work-index revision history is missing"
+    grep -Fq '.mecha/' "${ROOT_DIR}/.gitignore" || fail ".mecha ignore rule is missing"
+
+    for skill_file in \
+        "${ROOT_DIR}/families/collaboration/interview-me/SKILL.md" \
+        "${ROOT_DIR}/families/collaboration/low-friction-collaboration/SKILL.md" \
+        "${ROOT_DIR}/families/collaboration/parallel-subagents/SKILL.md" \
+        "${ROOT_DIR}/families/collaboration/product-co-design/SKILL.md" \
+        "${ROOT_DIR}/families/collaboration/product-research/SKILL.md" \
+        "${ROOT_DIR}/families/collaboration/domain-modeling/SKILL.md" \
+        "${ROOT_DIR}/families/collaboration/decision-mapping/SKILL.md" \
+        "${ROOT_DIR}/families/collaboration/portable-handoff/SKILL.md" \
+        "${ROOT_DIR}/families/collaboration/second-opinion/SKILL.md" \
+        "${ROOT_DIR}/families/engineering/technical-research/SKILL.md" \
+        "${ROOT_DIR}/families/engineering/implementation-spec/SKILL.md" \
+        "${ROOT_DIR}/families/engineering/work-slicing/SKILL.md" \
+        "${ROOT_DIR}/families/engineering/large-codebase-change/SKILL.md" \
+        "${ROOT_DIR}/families/engineering/prototype-builder/SKILL.md" \
+        "${ROOT_DIR}/families/engineering/diagnosing-bugs/SKILL.md" \
+        "${ROOT_DIR}/families/engineering/code-review/SKILL.md"
+    do
+        grep -Fq 'lifecycle-contract.md' "${skill_file}" || fail "lifecycle contract link is missing in ${skill_file}"
+    done
+
+    if grep -R -Fq 'matching lifecycle record' "${ROOT_DIR}/families/collaboration" "${ROOT_DIR}/families/engineering"; then
+        fail "work-record participation is incorrectly limited to lifecycle mode"
+    fi
+
+    for skill_file in \
+        "${ROOT_DIR}/families/collaboration/product-research/SKILL.md" \
+        "${ROOT_DIR}/families/collaboration/domain-modeling/SKILL.md" \
+        "${ROOT_DIR}/families/collaboration/decision-mapping/SKILL.md" \
+        "${ROOT_DIR}/families/collaboration/portable-handoff/SKILL.md" \
+        "${ROOT_DIR}/families/engineering/technical-research/SKILL.md" \
+        "${ROOT_DIR}/families/engineering/implementation-spec/SKILL.md" \
+        "${ROOT_DIR}/families/engineering/work-slicing/SKILL.md" \
+        "${ROOT_DIR}/families/engineering/diagnosing-bugs/SKILL.md" \
+        "${ROOT_DIR}/families/engineering/code-review/SKILL.md"
+    do
+        grep -Fq 'Do not spawn, request, or rely on subagents.' "${skill_file}" || fail "new leaf subagent prohibition is missing in ${skill_file}"
+        grep -Fq 'Persistence And Yield' "${skill_file}" || fail "new leaf persistence contract is missing in ${skill_file}"
+    done
+
+    grep -Fq '`../../../shared/rubrics/research-integrity.md`' "${ROOT_DIR}/families/collaboration/product-research/SKILL.md" || fail "product research integrity link is missing"
+    grep -Fq '`../../../shared/rubrics/research-integrity.md`' "${ROOT_DIR}/families/engineering/technical-research/SKILL.md" || fail "technical research integrity link is missing"
+    grep -Fq 'Implicit selection alone does not authorize filesystem writes' "${ROOT_DIR}/families/collaboration/decision-mapping/SKILL.md" || fail "decision-mapping persistence boundary is missing"
+    grep -Fq 'product-research' "${ROOT_DIR}/AGENTS.md" || fail "authoritative specialist inventory is stale"
+    grep -Fq 'code-review' "${ROOT_DIR}/AGENTS.md" || fail "authoritative specialist inventory is stale"
+    grep -Fq 'Keep native skill-selection cues in leaf frontmatter' "${ROOT_DIR}/docs/global-AGENTS.example.md" || fail "global example duplicates routing instead of deferring to frontmatter"
+    grep -Fq 'unrelated ad-hoc, AI, and writing work remains' "${ROOT_DIR}/templates/repo-AGENTS.template.md" || fail "repo template leaks lifecycle behavior into other families"
+
+    if find "${ROOT_DIR}/families/ai" "${ROOT_DIR}/families/writing" -name SKILL.md -exec grep -El 'lifecycle-contract|\.mecha/work' {} + | grep -q .; then
+        fail "lifecycle behavior leaked into AI or writing leaves"
+    fi
+
+    grep -Fq 'Rename this local variable' "${examples}" || fail "ad-hoc lifecycle selection example is missing"
+    grep -Fq 'Turn the decisions in this conversation' "${examples}" || fail "implementation-spec selection example is missing"
+    grep -Fq 'Break this accepted implementation contract' "${examples}" || fail "work-slicing selection example is missing"
+    grep -Fq 'Review the changes since main' "${examples}" || fail "code-review selection example is missing"
+
+    pass "optional lifecycle, intent authority, and routing contracts"
 }
 
 ai_family_checks() {
@@ -370,6 +490,15 @@ install_uninstall_checks() {
     assert_symlink_to "${tmp_root}/skills/parallel-subagents" "${ROOT_DIR}/families/collaboration/parallel-subagents"
     assert_symlink_to "${tmp_root}/skills/product-co-design" "${ROOT_DIR}/families/collaboration/product-co-design"
     assert_symlink_to "${tmp_root}/skills/second-opinion" "${ROOT_DIR}/families/collaboration/second-opinion"
+    assert_symlink_to "${tmp_root}/skills/product-research" "${ROOT_DIR}/families/collaboration/product-research"
+    assert_symlink_to "${tmp_root}/skills/domain-modeling" "${ROOT_DIR}/families/collaboration/domain-modeling"
+    assert_symlink_to "${tmp_root}/skills/decision-mapping" "${ROOT_DIR}/families/collaboration/decision-mapping"
+    assert_symlink_to "${tmp_root}/skills/portable-handoff" "${ROOT_DIR}/families/collaboration/portable-handoff"
+    assert_symlink_to "${tmp_root}/skills/technical-research" "${ROOT_DIR}/families/engineering/technical-research"
+    assert_symlink_to "${tmp_root}/skills/implementation-spec" "${ROOT_DIR}/families/engineering/implementation-spec"
+    assert_symlink_to "${tmp_root}/skills/work-slicing" "${ROOT_DIR}/families/engineering/work-slicing"
+    assert_symlink_to "${tmp_root}/skills/diagnosing-bugs" "${ROOT_DIR}/families/engineering/diagnosing-bugs"
+    assert_symlink_to "${tmp_root}/skills/code-review" "${ROOT_DIR}/families/engineering/code-review"
     assert_symlink_to "${tmp_root}/skills/ai-pipeline" "${ROOT_DIR}/families/ai/ai-pipeline"
     assert_symlink_to "${tmp_root}/skills/ai-performance" "${ROOT_DIR}/families/ai/ai-performance"
     assert_symlink_to "${tmp_root}/skills/humanizer" "${ROOT_DIR}/families/writing/humanizer"
@@ -422,6 +551,15 @@ install_uninstall_checks() {
     assert_not_exists "${tmp_root}/skills/parallel-subagents"
     assert_not_exists "${tmp_root}/skills/product-co-design"
     assert_not_exists "${tmp_root}/skills/second-opinion"
+    assert_not_exists "${tmp_root}/skills/product-research"
+    assert_not_exists "${tmp_root}/skills/domain-modeling"
+    assert_not_exists "${tmp_root}/skills/decision-mapping"
+    assert_not_exists "${tmp_root}/skills/portable-handoff"
+    assert_not_exists "${tmp_root}/skills/technical-research"
+    assert_not_exists "${tmp_root}/skills/implementation-spec"
+    assert_not_exists "${tmp_root}/skills/work-slicing"
+    assert_not_exists "${tmp_root}/skills/diagnosing-bugs"
+    assert_not_exists "${tmp_root}/skills/code-review"
     assert_not_exists "${tmp_root}/skills/ai-pipeline"
     assert_not_exists "${tmp_root}/skills/ai-performance"
     assert_not_exists "${tmp_root}/skills/humanizer"
@@ -449,6 +587,7 @@ main() {
     persistence_yield_checks
     collaboration_checks
     engineering_checks
+    lifecycle_checks
     ai_family_checks
     writing_family_checks
     metadata_policy_checks

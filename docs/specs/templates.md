@@ -10,6 +10,7 @@ instructions and adapters.
 ```text
 templates/
     leaf-skill.template.md
+    work-index.template.md
     repo-AGENTS.template.md
     repo-CLAUDE.template.md
     repo-adapter-skill.template.md
@@ -18,6 +19,8 @@ templates/
 ## Main Responsibilities
 
 - Preserve the expected shape of new specialist leaves.
+- Preserve the fallback two-mode work-index shape used across lifecycle-aware
+  leaves.
 - Provide repo-local instruction scaffolds for downstream projects.
 - Provide adapter scaffolds that connect local context to global skills.
 
@@ -31,6 +34,8 @@ templates/
 
 - If specialist leaf contract shape changes, update the template and all docs
   that describe the contract.
+- If lifecycle state changes, update `work-index.template.md`, the lifecycle
+  rubric, participating leaves, and focused tests together.
 - Templates should not include private paths or organization-specific facts.
 - Adapter templates add local context; they do not fork global skill behavior.
 

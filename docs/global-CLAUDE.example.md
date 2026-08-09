@@ -10,6 +10,8 @@ Use this as a concise Claude Code-facing integration note if adapting this toolb
 - Do not call specialist leaves still marked `This is a stub. NEVER CALL THIS SKILL.`
 - Do not authorize subagent use outside `parallel-subagents` and
   `second-opinion`.
+- A matching `.mecha/work/<slug>/index.md` may provide host-neutral continuity.
+  Automatic Claude Code planning-mode activation remains unspecified.
 
 ## Boundaries
 

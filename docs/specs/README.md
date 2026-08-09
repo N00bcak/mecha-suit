@@ -19,8 +19,9 @@ mecha-suit/
     templates/     repeatable authoring templates
 ```
 
-Generated, vendor, and cache folders are intentionally excluded from this spec
-set, including `.git/` and local development environments.
+Generated, vendor, ignored work-state, and cache folders are intentionally
+excluded from this spec set, including `.git/`, `.mecha/`, and local
+development environments.
 
 ## Navigation
 
@@ -28,7 +29,7 @@ set, including `.git/` and local development environments.
 | --- | --- |
 | `docs.md` | `docs/` maintenance and platform documentation |
 | `families.md` | global skill-family architecture |
-| `families-collaboration.md` | interviewing, communication, product co-design, parallel delegation, and independent review |
+| `families-collaboration.md` | interviewing, communication, product research and design, domain decisions, handoff, and bounded delegation |
 | `families-engineering.md` | engineering specialist leaves |
 | `families-ai.md` | AI pipeline manual and execution leaves |
 | `families-writing.md` | long-form prose and site-specific blog writing leaves |

@@ -4,6 +4,11 @@
 
 - "Help me turn this rough product idea into a coherent concept" -> `product-co-design`
 - "Pressure-test this service idea and identify what we need to validate" -> `product-co-design`
+- "Research how dispatchers currently handle failed deliveries and what competing tools support" -> `product-research`
+- "Decide which delivery workflow we should build from these findings" -> `product-co-design`, using the research as evidence
+- "Our code and docs use account, customer, and user inconsistently; help us define them" -> `domain-modeling`
+- "This migration is too large to plan in one session; map the decisions we must resolve first" -> `decision-mapping`
+- "Package the verified state of this work so I can continue on another machine" -> `portable-handoff`
 - "Interview me about what I want from this project" -> `interview-me` (explicit invocation only)
 - "Keep this debugging session direct and remind me what changed after each tool run" -> `low-friction-collaboration`
 - "Give me one clear next step at a time, but do not skip the technical reasoning" -> `low-friction-collaboration`
@@ -16,12 +21,28 @@
 
 ## Engineering
 
+- "Check the official API and source to determine whether this SDK supports streaming retries" -> `technical-research`
+- "Turn the decisions in this conversation into accepted behavior, constraints, and acceptance criteria" -> `implementation-spec`
+- "Break this accepted implementation contract into independently verifiable vertical slices" -> `work-slicing`
 - "Fix this one-line parsing bug in a 50k-line service" -> `large-codebase-change`
 - "Edit this existing 2k-line utility" -> native Codex
 - "Build a new isolated CSV viewer web app" -> `prototype-builder`
 - "Create a greenfield CLI that converts JSON to CSV" -> `prototype-builder`
 - "Migrate the database schema in this large service" -> `large-codebase-change`; load its migration reference
 - "Update Python and TypeScript callers in this large polyglot repository" -> `large-codebase-change`; load only the Python and TypeScript primers
+- "This intermittent cache corruption has resisted two fixes; diagnose it" -> `diagnosing-bugs`
+- "Investigate and fix this intermittent failure in a 50k-line service" -> `diagnosing-bugs` for the uncertain cause, then `large-codebase-change` for the supported repair
+- "Review the changes since main against the accepted specification" -> `code-review`
+- "Independently challenge this code review conclusion" -> `second-opinion`, not `code-review`
+- "Find out why this documented API behaves differently in version 4" -> `technical-research` when the main question is the external contract; `diagnosing-bugs` when the main question is a failing local behavior
+
+## Optional lifecycle
+
+- "Rename this local variable" -> native Codex; create no `.mecha` record
+- "Keep durable state for this multi-session refactor" -> the applicable engineering leaf with a continuity-mode work record
+- "Use planning mode to make this feature decision-complete" -> `implementation-spec`, plus `work-slicing` when multiple implementation units are needed
+- "Continue the accepted checkout lifecycle in `.mecha/work/checkout/index.md`" -> the leaf matching the recorded next task shape
+- "Review this lifecycle implementation and close it if it is ready" -> `code-review`; completion requires all three axes or an explicit user waiver
 
 ## AI
 

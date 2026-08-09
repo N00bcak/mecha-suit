@@ -167,6 +167,14 @@ another applicable specialist.
 - The wording does not demand avoidable recall, decoding, or prioritization.
 - The response introduces no unnecessary terminology or structure.
 
+## Lifecycle Participation
+
+When a matching continuity or lifecycle record exists, read only the compact
+index and artifacts necessary to restore the current outcome, verified state,
+and next action. Follow `../../../shared/rubrics/lifecycle-contract.md`. State
+when new evidence changes a prior assumption or plan. Do not create a work
+record merely to improve one response, and do not rewrite accepted intent.
+
 ## Persistence And Yield
 
 Useful progress means making the underlying task more correct or making its

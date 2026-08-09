@@ -13,15 +13,17 @@ shared/
         skill-selection-examples.md
     rubrics/
         change-discipline.md
+        lifecycle-contract.md
         persistence-yield-rubric.md
+        research-integrity.md
         skill-boundary-rubric.md
 ```
 
 ## Main Responsibilities
 
 - Provide common examples for native skill selection and invocation.
-- Define shared rubrics for change discipline, persistence, yielding, and skill
-  boundaries.
+- Define shared rubrics for lifecycle state, research integrity, change
+  discipline, persistence, yielding, and skill boundaries.
 - Keep repeated policy language consistent across skills.
 
 ## Strengths
@@ -34,6 +36,8 @@ shared/
 
 - Shared files are passive support material.
 - Do not hide active runtime steps here when they belong in `SKILL.md`.
+- `lifecycle-contract.md` defines common state and authority; each participating
+  leaf still owns and states its active transition behavior.
 - Keep rubrics concise and reusable.
 - Update shared examples when visible selection behavior changes.
 

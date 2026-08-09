@@ -26,6 +26,9 @@ output. Count only when repository size is genuinely unclear.
 - Existing repositories clearly below the boundary — continue with native
   Codex.
 - Isolated greenfield prototypes — use `prototype-builder`.
+- Uncertain-cause bugs whose primary work is reproduction and diagnosis — use
+  `diagnosing-bugs` first, then apply this skill's implementation discipline
+  after the cause or repair is supported.
 - CTF or ML-specific work unless the primary task is engineering integration.
 - Do not spawn, request, or rely on subagents.
 
@@ -38,8 +41,7 @@ output. Count only when repository size is genuinely unclear.
 
 ## Returns
 
-- Updated or newly created `SCRATCHPAD.md` when durable continuity is
-  warranted.
+- Updated `.mecha/work/<slug>/index.md` when durable continuity is warranted.
 - A minimal, idiomatic, PR-ready diff.
 - Verification evidence and explicit test gaps.
 - Compatibility or rollout risks, deferred work, and suggested review focus.
@@ -53,7 +55,7 @@ unless the user explicitly asks.
 - The requested behavior is implemented across every affected boundary.
 - The diff contains no speculative or redundant structure.
 - Relevant formatting, static checks, and tests pass, or gaps are explained.
-- Scratchpad state is current when a scratchpad is in use.
+- Work-record state is current when durable continuity is in use.
 - The handoff identifies outcome, scope, evidence, risks, deferrals, and review
   focus.
 
@@ -61,49 +63,24 @@ unless the user explicitly asks.
 
 ### Phase 0: Continuity Check
 
-1. Look for `SCRATCHPAD.md` at the repository root or in `.agent/`.
+1. Look for a matching `.mecha/work/<slug>/index.md`, then for a legacy
+   `SCRATCHPAD.md` at the repository root or in `.agent/`.
 2. Inspect current Git status and recent history without changing the branch.
 3. Read TODO or FIXME markers only on the relevant change surface.
 
-If a scratchpad exists, read it completely and verify its claims against files,
-Git state, and available tests before resuming. If it is stale, update it
-first.
+If a work record exists, read it completely and verify its claims against
+files, Git state, and available tests before resuming. Correct stale
+implementation state before new work while preserving accepted intent.
 
-If none exists, create one only for multi-session work, broad change surfaces,
-migrations, significant coordination risk, or an explicit user request. Small,
-self-contained changes keep state in the response.
+If only a legacy scratchpad exists, read and verify it. Offer to reconcile its
+useful state into the work record; do not move or delete it without explicit
+authorization.
 
-Use this structure:
-
-```markdown
-# Scratchpad
-
-## Task
-[What we're changing and why]
-
-## Status
-[active | paused | complete | blocked]
-
-## Change Surface
-- [ ] path/to/file — [what changes and why]
-
-## Decisions
-- [decision]: [rationale]
-
-## Progress
-### [session identifier or date]
-- [what was accomplished]
-- [files changed]
-
-## Deferred
-- [item]: [why deferred]
-
-## Next
-[Explicit next action for the next session]
-```
-
-Update it after orientation, planning, each implementation unit, verification,
-and before yielding. Follow `../references/session-continuity.md`.
+If no durable state exists, create a continuity-mode work record only for
+multi-session work, broad change surfaces, migrations, significant coordination
+risk, or an explicit user request. Small self-contained changes keep state in
+the response. Follow `../references/session-continuity.md` and
+`../../../shared/rubrics/lifecycle-contract.md`.
 
 ### Phase 1: Orient Narrowly
 
@@ -133,6 +110,10 @@ Record explicit file paths and risks. Read
 rollout changes. Read `references/testing-strategy.md` when test selection is
 not obvious.
 
+In lifecycle mode, map the change surface and verification to the accepted
+`AC-*` criteria. Surface implementation evidence that contradicts locked intent
+instead of silently revising the contract.
+
 ### Phase 3: Implement Surgically
 
 Match local conventions before applying general language guidance. Make the
@@ -152,6 +133,12 @@ Apply these abstraction gates:
 
 Handle errors, resources, concurrency, and types in the repository's idiom.
 Avoid drive-by cleanup; remove only artifacts made obsolete by this change.
+
+Read `../references/behavior-first-development.md` when the user requests
+test-first work, a regression needs a durable guard, or a meaningful automated
+check can observe the new behavior before implementation. Read
+`../references/design-decision-discipline.md` when introducing or moving a
+consequential interface, seam, persistence contract, or compatibility boundary.
 
 ### Phase 4: Verify by Risk
 
@@ -182,9 +169,14 @@ affected verification after compression.
 
 ### Phase 6: Close
 
-If using a scratchpad, update completed work, current verification state,
+If using a work record, update completed work, current verification state,
 deferrals, risks, modified files, and one explicit next step. Set status to
 `complete` only when no required work remains.
+
+In lifecycle mode, implementation completion is not lifecycle completion.
+Record the fixed point, diff scope, criterion evidence, and review-ready state,
+then name three-axis review as the next task shape. Keep lifecycle state
+in-progress until `code-review` passes or the user records an explicit waiver.
 
 Return a PR-ready handoff:
 
@@ -204,7 +196,7 @@ discovered constraints, or verified assumptions.
 
 Before yielding, try the primary path and one distinct bounded alternative,
 check whether missing information is locally discoverable, and confirm further
-work would repeat or require a user-owned decision. Update the scratchpad when
+work would repeat or require a user-owned decision. Update the work record when
 one is in use.
 
 ## Pivot Rules
@@ -218,7 +210,10 @@ one is in use.
 ## References
 
 - `../../../shared/rubrics/change-discipline.md` — anti-bloat and surgical-change gates
-- `../references/session-continuity.md` — shared scratchpad protocol
+- `../../../shared/rubrics/lifecycle-contract.md` — optional durable work and intent contract
+- `../references/session-continuity.md` — engineering continuity protocol
+- `../references/behavior-first-development.md` — conditional red-green vertical development
+- `../references/design-decision-discipline.md` — conditional interface and seam decisions
 - `../references/python-practices.md` — Python idioms
 - `../references/typescript-practices.md` — TypeScript idioms
 - `../references/go-practices.md` — Go idioms

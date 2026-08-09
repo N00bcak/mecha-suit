@@ -13,6 +13,18 @@
 
 Expansion is complete when the skill can handle its intended task without requiring repo-specific facts and without becoming a broad generalist.
 
+## Maintain lifecycle-aware leaves
+
+- Keep native selection in leaf descriptions; the work index never routes or
+  invokes skills.
+- State each leaf's own lifecycle participation in its `SKILL.md` and point to
+  `shared/rubrics/lifecycle-contract.md` for shared state and authority rules.
+- Preserve ad-hoc behavior when no matching work record exists.
+- Update `templates/work-index.template.md`, lifecycle tests, README, platform
+  notes, and collaboration or engineering specs when the state contract changes.
+- Keep accepted intent user-authoritative and detailed phase output behind
+  artifact pointers.
+
 ## Add a new specialist leaf
 
 1. Create `families/<family>/<skill-name>/SKILL.md`.

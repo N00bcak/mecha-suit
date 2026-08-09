@@ -56,6 +56,14 @@ material finding and why.
 - The main process adjudicates the review rather than treating it as a vote.
 - Any safe, in-scope decisive check is run.
 
+## Lifecycle Participation
+
+When separately invoked for work with a matching work record, read
+`../../../shared/rubrics/lifecycle-contract.md`. Build the non-leading review
+packet from the frozen artifact, accepted constraints, and raw evidence. The
+main process records its adjudication and any decisive check; the reviewer may
+not revise intent or lifecycle state.
+
 ## Workflow
 
 1. Check that the host exposes subagent capability. If not, continue with

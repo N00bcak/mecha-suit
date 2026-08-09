@@ -10,6 +10,8 @@ Use this repo-local file to adapt the global toolbox for Claude Code.
 - Keep ordinary implementation in the relevant specialist leaf.
 - Do not authorize subagent use outside the global `parallel-subagents` and
   `second-opinion` skill contracts.
+- Treat `.mecha/work/<slug>/index.md` as optional host-neutral continuity when
+  it clearly matches the task; do not assume automatic planning-mode support.
 
 ## Project Commands
 

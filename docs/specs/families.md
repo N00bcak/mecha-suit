@@ -12,12 +12,21 @@ families/
     collaboration/
         interview-me/
         low-friction-collaboration/
+        product-research/
+        domain-modeling/
+        decision-mapping/
+        portable-handoff/
         parallel-subagents/
         product-co-design/
         second-opinion/
     engineering/
+        technical-research/
+        implementation-spec/
+        work-slicing/
         large-codebase-change/
         prototype-builder/
+        diagnosing-bugs/
+        code-review/
     ai/
         ai-pipeline/
         ai-data-preparation/
@@ -63,6 +72,10 @@ Each skill folder may contain:
   and a prohibition on nested delegation.
 - `interview-me` and `ai-pipeline` are explicit-invocation-only.
 - `low-friction-collaboration` is routable.
+- Collaboration and engineering leaves may share matching `.mecha` work state
+  without selecting or invoking one another.
+- Accepted lifecycle intent remains user-authoritative; each leaf owns only its
+  own phase transition.
 - Specialist leaves do one job well.
 - Runtime behavior belongs in `SKILL.md`.
 - Passive background belongs in `references/`.

@@ -76,6 +76,18 @@ artifact only when the user requests one.
 - Inferences and unresolved tensions remain visibly distinct from settled facts.
 - The user has a clear next action, decision, or handoff.
 
+## Lifecycle Participation
+
+When the explicitly requested interview belongs to a matching work record,
+read `../../../shared/rubrics/lifecycle-contract.md`. Use existing intent,
+evidence, decisions, and open questions to avoid repetition. At a meaningful
+transition, record the compact synthesis and next task shape without changing
+accepted intent semantics.
+
+Lifecycle context does not relax the one-question-at-a-time rule or authorize
+questions about discoverable facts. Without a matching record, preserve the
+conversation-first persistence default.
+
 ## Persistence And Yield
 
 Useful progress means learning something that changes the shared model, rules

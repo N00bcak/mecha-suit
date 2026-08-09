@@ -10,6 +10,10 @@ Use this repo-local file to connect project facts to the global skill toolbox.
 - Do not call specialist leaves still marked `This is a stub. NEVER CALL THIS SKILL.`
 - Do not authorize subagent use outside the global `parallel-subagents` and
   `second-opinion` skill contracts.
+- When a collaboration or engineering leaf declares lifecycle participation
+  and a matching `.mecha/work/<slug>/index.md` exists, follow that leaf's
+  work-record contract; unrelated ad-hoc, AI, and writing work remains
+  unaffected.
 
 ## Local Commands
 

@@ -116,6 +116,18 @@ requires a durable artifact.
 - Validation targets the riskiest relevant assumptions.
 - The next specialist can proceed without reconstructing the product intent.
 
+## Lifecycle Participation
+
+When a matching work record exists, read
+`../../../shared/rubrics/lifecycle-contract.md`. In lifecycle mode, use accepted
+intent as the authority boundary. Link product research, domain, prototype, or
+decision artifacts, and update the current working model and next task shape.
+
+Before intent acceptance, keep user statements, agent interpretations, and
+proposals distinct. After acceptance, propose semantic revisions instead of
+editing goal, criteria, constraints, or non-goals silently. Without a matching
+record, keep the brief in the conversation unless the user requests persistence.
+
 ## Persistence And Yield
 
 Useful progress means a sharper hypothesis, a meaningful alternative, a

@@ -40,8 +40,7 @@ that skill's large-codebase boundary. Otherwise continue with native Codex.
 
 ## Returns
 
-- Updated or newly created `SCRATCHPAD.md` when durable continuity is
-  warranted.
+- Updated `.mecha/work/<slug>/index.md` when durable continuity is warranted.
 - A runnable vertical slice with conventional run instructions.
 - Verification of the primary path and a material failure path.
 - Visible shortcuts, scope deferrals, and promotion signals.
@@ -52,54 +51,28 @@ that skill's large-codebase boundary. Otherwise continue with native Codex.
 - The realistic primary path and one material failure path are verified.
 - Run instructions live in the repository's conventional location.
 - Required, optional, and deferred scope is clear.
-- Scratchpad state is current when a scratchpad is in use.
+- Work-record state is current when durable continuity is in use.
 
 ## Methodology
 
 ### Phase 0: Continuity Check
 
-Look for `SCRATCHPAD.md`, partial implementation, relevant TODO markers, and
-recent Git history when a repository exists.
+Look for a matching `.mecha/work/<slug>/index.md`, partial implementation,
+relevant TODO markers, and recent Git history when a repository exists. Check
+for a legacy `SCRATCHPAD.md` only to reconcile existing state safely.
 
-If a scratchpad exists, read it completely, verify its claims against current
-files and runnable state, and resume from its next step.
+If a work record exists, read it completely, verify its claims against current
+files and runnable state, and resume from its next step. Preserve accepted
+intent when correcting stale implementation state.
 
-Create one only for multi-session work, multiple dependencies, significant
-coordination risk, or an explicit user request. Small prototypes keep state in
-the response.
+If a legacy scratchpad matches, read and verify it, then offer to reconcile its
+useful state. Do not move or delete it without explicit authorization.
 
-Use this structure:
-
-```markdown
-# Scratchpad
-
-## Task
-[What we're building and for whom]
-
-## Status
-[active | paused | complete | blocked]
-
-## Stack
-[Language/framework and why]
-
-## Features
-- [x] [completed feature]
-- [ ] [planned feature]
-
-## Progress
-### [session identifier or date]
-- [what was built]
-
-## Deferred
-- [item]: [why deferred, when to revisit]
-
-## Next
-[Explicit next action]
-```
-
-Update it after stack selection, the first working core loop, each feature
-unit, verification, and before yielding. Follow
-`../references/session-continuity.md`.
+Create a continuity-mode work record only for multi-session work, multiple
+dependencies, significant coordination risk, or an explicit user request.
+Small prototypes keep state in the response. Follow
+`../references/session-continuity.md` and
+`../../../shared/rubrics/lifecycle-contract.md`.
 
 ### Phase 1: Frame the Demonstration
 
@@ -179,8 +152,13 @@ When a signal appears, identify the hardening work. Hand off to
 `large-codebase-change` only if the resulting existing repository also meets
 the large-codebase heuristic; otherwise continue with native Codex.
 
-If using a scratchpad, update runnable state, verification, files changed,
+If using a work record, update runnable state, verification, files changed,
 deferrals, promotion signals, and the next step.
+
+In lifecycle mode, link the prototype as evidence for the decision it tests and
+record the observed answer separately from interpretation. Prototype completion
+does not complete lifecycle code work; retain the review or explicit-waiver
+gate when the prototype itself is the requested code deliverable.
 
 ## Persistence And Yield
 
@@ -189,7 +167,7 @@ or discovered constraints.
 
 Before yielding, try the primary path and one bounded simplification such as a
 smaller scope, simpler stack, or fewer features. Check whether missing
-information is discoverable and update the scratchpad when one is in use.
+information is discoverable and update the work record when one is in use.
 
 ## Pivot Rules
 
@@ -204,7 +182,8 @@ information is discoverable and update the scratchpad when one is in use.
 ## References
 
 - `../../../shared/rubrics/change-discipline.md` — anti-bloat and surgical-change gates
-- `../references/session-continuity.md` — shared scratchpad protocol
+- `../../../shared/rubrics/lifecycle-contract.md` — optional durable work and intent contract
+- `../references/session-continuity.md` — engineering continuity protocol
 - `../references/python-practices.md` — Python idioms
 - `../references/typescript-practices.md` — TypeScript idioms
 - `../references/go-practices.md` — Go idioms

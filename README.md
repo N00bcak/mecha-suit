@@ -142,10 +142,11 @@ The installer is idempotent. Running it twice should report already-installed sk
 Mecha Suit is organized into skill families:
 
 - `families/collaboration/`: interviewing, low-friction communication, product
-  co-design, bounded parallel delegation, and independent review.
-- `families/engineering/`: fully authored leaves for PR-ready changes in
-  repositories above roughly 5k maintained source lines and isolated
-  greenfield prototypes centered on one outcome.
+  co-design and research, domain modeling, decision mapping, portable handoff,
+  bounded parallel delegation, and independent review.
+- `families/engineering/`: technical research, accepted implementation
+  specifications, work slicing, PR-ready large-repository changes, isolated
+  greenfield prototypes, bug diagnosis, and three-axis code review.
 - `families/ai/`: an explicit-only initial pipeline manual plus callable leaves
   for data preparation, insight development, representations, problem
   modeling, and performance across ML, deep learning, GOFAI, and hybrids.
@@ -157,16 +158,58 @@ handles ordinary ambiguity without a generic routing or clarification skill.
 
 The collaboration, engineering, AI, and writing specialist leaves are fully authored.
 
+## Optional Work Lifecycle
+
+Mecha Suit can connect collaboration and engineering leaves through a matching
+work record without adding a router. Small ad-hoc tasks create no record.
+Durable work uses `.mecha/work/<slug>/index.md` in one of two modes:
+
+- `continuity` keeps verified multi-session state and one next action.
+- `lifecycle` adds user-authoritative intent, stable acceptance criteria,
+  linked research and decisions, work slices, evidence, and review state.
+
+The first fallback record adds `.mecha/` to the repository's `.gitignore`.
+Existing project conventions take precedence. Accepted intent changes only with
+user authorization; implementation evidence may challenge it but not silently
+rewrite it.
+
+An explicitly requested durable plan or an accepted planning-mode output may
+activate lifecycle planning. Skill selection alone does not authorize durable
+state. When the host forbids writes during planning, the plan remains in the
+conversation and is materialized on the first execution turn.
+
 ## Which Skill Do I Use?
 
 For ordinary ambiguity, let Codex inspect supplied context, state safe
 assumptions, and ask one focused question only when a user-owned decision
 materially changes the work.
 
-Engineering specialist leaves (`large-codebase-change`, `prototype-builder`),
-AI execution leaves (`ai-data-preparation`, `ai-insight-development`,
+Engineering specialist leaves and AI execution leaves
+(`ai-data-preparation`, `ai-insight-development`,
 `ai-representation-workbench`, `ai-problem-modeling`, `ai-performance`) are
 fully authored and callable.
+
+Use `product-research` for evidence about users, workflows, alternatives, and
+domain assumptions. Use `technical-research` for software, API, architecture,
+standards, compatibility, or feasibility questions grounded in primary sources
+and reproducible repository evidence.
+
+Use `domain-modeling` to sharpen terminology, test invariants against scenarios
+and code, and preserve authorized durable decisions. Use `decision-mapping` for
+long-horizon efforts whose path to an implementation specification is still
+unclear.
+
+Use `implementation-spec` to create accepted intent with stable criteria,
+constraints, and non-goals. Use `work-slicing` to derive verifiable vertical
+slices and dependency edges without changing that intent.
+
+Use `diagnosing-bugs` for difficult bugs and regressions that need a tight
+reproducer and falsifiable hypotheses. Use `code-review` to review a bounded
+change separately for intent fidelity, behavioral correctness and evidence,
+and maintainability.
+
+Use `portable-handoff` when verified state must cross a session, machine,
+checkout, agent, or collaborator boundary.
 
 Use `large-codebase-change` for any requested edit in a clearly large existing
 repository, even when the diff is small. Existing repositories clearly below

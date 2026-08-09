@@ -56,6 +56,14 @@ verification performed, and unresolved risks.
 - The main process inspects material outputs and reconciles conflicts.
 - Final verification covers the integrated state.
 
+## Lifecycle Participation
+
+When separately invoked for work with a matching work record, read
+`../../../shared/rubrics/lifecycle-contract.md`. Give subagents only the
+task-local artifacts and accepted constraints their assignments require. The
+main process links accepted evidence, reconciles conflicts, and updates current
+state; subagents never edit lifecycle intent or own phase transitions.
+
 ## Workflow
 
 1. Check that the host exposes subagent capability. If not, continue without

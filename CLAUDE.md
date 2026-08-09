@@ -23,9 +23,13 @@ Always run `./test.sh` after any harness edit.
 ### Skill families (`families/`)
 
 - **`collaboration/`** — Fully authored. Conversation specialists plus
-  `parallel-subagents` for bounded independent delegation and `second-opinion`
+  product research, domain modeling, decision mapping, portable handoff,
+  `parallel-subagents` for bounded independent delegation, and `second-opinion`
   for independent consequential review.
-- **`engineering/`** — Fully authored. `large-codebase-change` owns PR-ready changes in repositories above roughly 5k maintained source lines; `prototype-builder` owns isolated greenfield work centered on one demonstrable outcome, without a line-count limit. Both share anti-bloat, continuity, and language-idiom references.
+- **`engineering/`** — Fully authored. Technical research, accepted
+  specifications, work slicing, large-repository changes, greenfield
+  prototypes, bug diagnosis, and three-axis code review share lifecycle,
+  anti-bloat, behavior-first, design, and language-idiom references.
 - **`ai/`** — Fully authored. `ai-pipeline` is an explicit-only one-time framing manual; five callable leaves own data preparation, insight development, representations, problem modeling, and performance across ML, deep learning, GOFAI, and hybrid systems.
 - **`writing/`** — Fully authored. `humanizer` owns long-form prose authoring
   and revision; `blogpost-writing` owns VitePress-ready posts and CTF writeups
@@ -37,7 +41,8 @@ Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optio
 
 ### Shared resources
 
-- `shared/rubrics/` — toolbox-wide change, persistence/yield, and skill-boundary discipline.
+- `shared/rubrics/` — toolbox-wide lifecycle, research, change,
+  persistence/yield, and skill-boundary discipline.
 - `shared/examples/` — Skill-selection examples.
 - `templates/` — Boilerplate for new leaves, repo-local AGENTS/CLAUDE files, and adapter skills.
 - `docs/` — `maintenance-playbook.md`, `platform-notes.md`, example global instructions.
@@ -55,6 +60,8 @@ Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optio
 4. Frontmatter `name:` must match the containing folder name.
 5. Runtime behavior goes in `SKILL.md`; maintenance policy goes in `AGENTS.md` and `docs/`.
 6. If you change the specialist leaf contract shape, update `templates/leaf-skill.template.md`, README, and `docs/maintenance-playbook.md`.
+7. Optional durable state lives under `.mecha/work/<slug>/`; it connects leaves
+   through artifacts and never selects or orchestrates them.
 
 ## Development Practices
 

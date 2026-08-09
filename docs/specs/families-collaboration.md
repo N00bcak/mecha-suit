@@ -2,9 +2,9 @@
 
 ## Purpose
 
-`families/collaboration/` contains conversation-first specialist leaves for
-eliciting user-owned context, reducing communication effort, co-designing
-product concepts, and using bounded subagent collaboration.
+`families/collaboration/` contains conversation-first leaves for eliciting
+intent, developing product and domain evidence, preserving shared language,
+mapping decisions, communicating clearly, and transferring verified context.
 
 ## Architecture Tree
 
@@ -12,51 +12,46 @@ product concepts, and using bounded subagent collaboration.
 families/collaboration/
     interview-me/
     low-friction-collaboration/
-    parallel-subagents/
     product-co-design/
+    product-research/
+    domain-modeling/
+    decision-mapping/
+    portable-handoff/
+    parallel-subagents/
     second-opinion/
 ```
 
 ## Main Responsibilities
 
-- Conduct an explicitly requested, one-question-at-a-time interview.
-- Make complex technical exchanges easy to follow, resume, and act on without
-  reducing their reasoning depth.
-- Shape and scrutinize product concepts through collaborative conversation.
-- Delegate independent, non-overlapping subtasks when parallel work is useful.
-- Obtain an independent critique of a consequential artifact or conclusion.
-- Preserve facts, assumptions, preferences, tensions, and decisions in compact
-  working syntheses.
-- Produce a structured interview synthesis or product brief at a useful
-  stopping point.
+- Conduct an explicitly requested one-question-at-a-time interview.
+- Make complex exchanges easy to follow without reducing reasoning depth.
+- Shape product concepts and develop evidence about users, workflows, domains,
+  alternatives, and assumptions.
+- Sharpen domain language and preserve authorized durable decisions.
+- Map long-horizon decision dependencies before implementation planning.
+- Package verified state for another session, machine, agent, or collaborator.
+- Provide bounded parallel delegation and independent second opinions.
 
 ## Architectural Invariants
 
-- `interview-me` is explicit-invocation-only and is never selected implicitly.
-- `interview-me` enforces explicit invocation with
-  `agents/openai.yaml` and `allow_implicit_invocation: false`.
-- `product-co-design` is routable.
-- `low-friction-collaboration` is routable, may shape another leaf's response,
-  and remains a communication-mode specialist.
+- `interview-me` remains explicit-invocation-only.
+- Every other collaboration leaf relies on native frontmatter selection.
 - Only `parallel-subagents` and `second-opinion` authorize subagent use.
-- Both preserve main-process ownership, prohibit nested delegation, require
-  structured evidence, and check host capability before promising delegation.
-- All other collaboration leaves remain non-subagentic.
-- Collaboration skills are conversation-first but do not omit structured
-  synthesis when it improves continuity or handoff.
-- Implementation, dedicated research, and visual execution remain with their
-  respective specialists.
+- Product research develops evidence; product co-design owns product judgment.
+- Decision mapping produces decisions, not implementation deliverables.
+- Portable handoff crosses context boundaries; each phase owns routine
+  transition updates.
+- Collaboration leaves participate in a matching work record without
+  creating a router or silently changing accepted intent.
 
 ## Common Workflows
 
-- Invoke `interview-me` by name with a topic and desired outcome.
-- Use `low-friction-collaboration` for direct, low-load communication in dense
-  or multi-step technical exchanges.
-- Use `product-co-design` for product framing, concept alternatives,
-  constructive critique, validation planning, and specialist handoff.
-- Use `parallel-subagents` for two or more independent bounded assignments with
-  non-overlapping ownership.
-- Use `second-opinion` for one non-leading independent review of a
-  consequential conclusion, plan, diagnosis, or diff.
-- Add a new collaboration leaf only after a distinct repeated workflow has
-  demonstrated that neither existing leaf owns it cleanly.
+- Use `product-research` to investigate product or domain evidence, then
+  `product-co-design` to make the product judgment.
+- Use `domain-modeling` when terminology, invariants, or durable decisions need
+  active clarification.
+- Use `decision-mapping` when the path to a specification exceeds one credible
+  planning session.
+- Use `portable-handoff` when verified work state must cross a context boundary.
+- Add another collaboration leaf only after a distinct repeated workflow shows
+  that no existing leaf owns it cleanly.
