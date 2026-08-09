@@ -11,19 +11,43 @@ Build an accurate shared understanding of a user-owned topic through a focused
 interview, then return a concise synthesis that can guide the next conversation
 or specialist.
 
+## Use When
+
+- The user explicitly requests a focused interview about a user-owned topic.
+- Accurate elicitation matters more than producing an immediate answer.
+
+## Do Not Use
+
+- Do not infer this loop from ordinary ambiguity or a vague request for help.
+- Do not use it to ask for facts available in supplied context or safe local
+  inspection.
+- Do not use, spawn, request, or rely on subagents.
+
 ## Hard Rules
 
-- Use this skill only after the user explicitly invokes or names `interview-me`.
 - Ask one focused question at a time and wait for the answer.
 - Do not ask the user for facts that supplied context or safe inspection can answer.
 - Distinguish the user's statements from your interpretations.
-- Do not use, spawn, request, or rely on subagents.
 
 ## Needs
 
 - A topic to explore.
 - The outcome the user wants from the interview, or permission to clarify it first.
 - Any time, depth, privacy, or output constraints the user provides.
+
+## Interactive Loop Contract
+
+- Activate only after the user explicitly invokes `interview-me` or directly
+  asks to use it in the current session.
+- Own the primary exchange until synthesis is complete, the user pauses or
+  cancels, or the user explicitly switches to another loop.
+- Keep at most one interactive loop active. If a request names this skill and
+  `product-co-design` without choosing priority, ask which loop should govern
+  before activating either.
+- When the user explicitly switches loops, preserve the current synthesis,
+  pause this loop, and continue under the requested loop.
+- Allow bounded task skills to contribute discoverable evidence without taking
+  ownership of the interview exchange.
 
 ## Interview Procedure
 
@@ -87,6 +111,11 @@ accepted intent semantics.
 Lifecycle context does not relax the one-question-at-a-time rule or authorize
 questions about discoverable facts. Without a matching record, preserve the
 conversation-first persistence default.
+
+While this loop remains active with a matching durable record, add
+`interview-me` to `Resume candidates`. Keep it while paused. Remove it when the
+loop completes or the user cancels it. Recorded state never activates the loop
+in another session.
 
 ## Persistence And Yield
 

@@ -2,9 +2,10 @@
 
 ## Status
 
-This is a design plan, not runtime behavior. No installed skill currently
-authorizes subagent use. Implement the proposal only as an explicit
-architecture change with matching tests and documentation.
+This is the historical design record, not runtime behavior. The implemented
+contracts live in `families/collaboration/parallel-subagents/` and
+`families/collaboration/second-opinion/`; current authorization policy lives in
+`AGENTS.md` and focused tests.
 
 ## Goal
 
@@ -94,7 +95,7 @@ verification performed, and unresolved risks.
 - Conflicting edits or conclusions are reconciled explicitly.
 - Final verification covers the integrated state.
 
-### Designer Notes
+### Design Boundaries
 
 - Prefer two or three subagents. More requires a concrete coverage argument.
 - Spawn only work that can proceed independently alongside useful main-process
@@ -104,7 +105,7 @@ verification performed, and unresolved risks.
 - Do not use a generic specialist-role registry. Describe the actual bounded
   assignment.
 
-### Future Workflow Outline
+### Workflow Outline
 
 1. Partition the task by independent artifact or change surface.
 2. State shared constraints once, then create minimal per-subagent packets.
@@ -168,7 +169,7 @@ and why.
 - The main process adjudicates the review rather than treating it as a vote.
 - Any decisive recommended check is run when it is safe and in scope.
 
-### Designer Notes
+### Design Boundaries
 
 - Use exactly one reviewer by default.
 - Default to read-only access and no external mutations.
@@ -176,7 +177,7 @@ and why.
 - A second opinion complements verification; it does not replace tests,
   authoritative sources, or user decisions.
 
-### Future Workflow Outline
+### Workflow Outline
 
 1. Freeze or identify the artifact to review.
 2. Prepare a context-minimal, non-leading review packet.

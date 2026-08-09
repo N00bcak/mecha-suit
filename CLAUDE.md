@@ -37,14 +37,15 @@ Always run `./test.sh` after any harness edit.
 
 ### Skill folder structure
 
-Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current `agents/openai.yaml` files exist for `interview-me` and `ai-pipeline`; other collaboration, engineering, AI execution, and writing leaves rely on frontmatter only.
+Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optional `references/` (passive checklists), optional `scripts/` (deterministic helpers), and optional `agents/` (host metadata only when it materially improves routing or invocation). Current explicit-only `agents/openai.yaml` files exist for `interview-me`, `product-co-design`, `low-friction-collaboration`, and `ai-pipeline`; other collaboration, engineering, AI execution, and writing leaves rely on frontmatter only.
 
 ### Shared resources
 
 - `shared/rubrics/` — toolbox-wide lifecycle, research, change,
   persistence/yield, and skill-boundary discipline.
 - `shared/examples/` — Skill-selection examples.
-- `templates/` — Boilerplate for new leaves, repo-local AGENTS/CLAUDE files, and adapter skills.
+- `templates/` — Task, session-overlay, and interactive-loop authoring
+  contracts plus repo-local AGENTS/CLAUDE files and adapter skills.
 - `docs/` — `maintenance-playbook.md`, `platform-notes.md`, example global instructions.
 
 ### Install mechanism
@@ -56,11 +57,15 @@ Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optio
 1. Native Codex description matching selects skills; the toolbox adds no duplicate router or orchestration layer.
 2. Only `parallel-subagents` and `second-opinion` may authorize subagent use;
    both preserve main-process ownership and prohibit nested delegation.
-3. Stub skills must keep the exact stub warning until fully authored.
-4. Frontmatter `name:` must match the containing folder name.
-5. Runtime behavior goes in `SKILL.md`; maintenance policy goes in `AGENTS.md` and `docs/`.
-6. If you change the specialist leaf contract shape, update `templates/leaf-skill.template.md`, README, and `docs/maintenance-playbook.md`.
-7. Optional durable state lives under `.mecha/work/<slug>/`; it connects leaves
+3. Every skill uses the task, session-overlay, or interactive-loop authoring
+   contract; future ideas remain in specs until callable.
+4. Session overlays and interactive loops are explicit-invocation-only, and at
+   most one interactive loop is active at a time.
+5. Frontmatter `name:` must match the containing folder name.
+6. Runtime behavior goes in `SKILL.md`; maintenance policy goes in `AGENTS.md` and `docs/`.
+7. If you change a skill contract shape, update the applicable template, README,
+   maintenance playbook, subsystem specs, and focused tests.
+8. Optional durable state lives under `.mecha/work/<slug>/`; it connects leaves
    through artifacts and never selects or orchestrates them.
 
 ## Development Practices

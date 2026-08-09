@@ -69,7 +69,7 @@ bundled profile when the site has evolved.
 7. Review for caricature, invented personality, generic AI phrasing, and
    unexplained jumps in the technical argument.
 
-## Output Contract
+## Returns
 
 Return VitePress-ready Markdown beginning with:
 

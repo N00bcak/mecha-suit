@@ -35,6 +35,10 @@ Update at natural boundaries:
 Keep `Current Evidence` concrete and `Next` immediately actionable. Point to
 detailed logs, plans, and reviews instead of expanding the index indefinitely.
 
+Treat `Resume candidates` as advisory context for explicit session overlays and
+interactive loops. Never interpret a recorded candidate as current-session
+activation authority.
+
 ## Legacy `SCRATCHPAD.md`
 
 Read and verify an existing scratchpad when it matches the task. Offer to

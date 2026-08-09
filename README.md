@@ -158,6 +158,17 @@ handles ordinary ambiguity without a generic routing or clarification skill.
 
 The collaboration, engineering, AI, and writing specialist leaves are fully authored.
 
+Every skill uses one interaction-lifetime contract:
+
+- A task skill owns a bounded outcome and is the default.
+- A session overlay changes how the active task or loop is conducted.
+- An interactive loop owns a multi-turn exchange until it completes, pauses,
+  is cancelled, or is explicitly replaced.
+
+Overlays and loops require explicit invocation in each session. At most one
+loop is active; an overlay may compose with the active task or loop. The
+templates for all three contracts live under `templates/`.
+
 ## Optional Work Lifecycle
 
 Mecha Suit can connect collaboration and engineering leaves through a matching
@@ -177,6 +188,11 @@ An explicitly requested durable plan or an accepted planning-mode output may
 activate lifecycle planning. Skill selection alone does not authorize durable
 state. When the host forbids writes during planning, the plan remains in the
 conversation and is materialized on the first execution turn.
+
+A matching work record may preserve advisory resume candidates for an explicit
+overlay or unfinished loop. They never activate automatically in a new
+session: an unfinished loop prompts before its work resumes, while an overlay
+is mentioned without blocking the requested task.
 
 ## Which Skill Do I Use?
 
@@ -217,21 +233,21 @@ roughly 5k maintained source lines stay with native Codex. Use
 `prototype-builder` for isolated greenfield prototypes, demos, tools, or apps;
 it has no line-count limit.
 
-Use `interview-me` only by explicitly naming or invoking it. It conducts a
-scoped, one-question-at-a-time interview and is never an automatic selection
-destination.
+Use `interview-me` only by explicitly invoking it or directly asking to use it.
+It conducts a scoped, one-question-at-a-time interview and is never an
+automatic selection destination.
 
 Use `ai-pipeline` only by explicitly naming or invoking it. It conducts a
 one-time framing interview and creates `ML_PIPELINE.md`; it does not execute
 the five AI leaves or manage later iteration.
 
-Use `product-co-design` to shape and scrutinize a product, service, workflow,
-experience, or product concept from a fuzzy idea through a coherent brief.
+Explicitly invoke `product-co-design` to enter its product-shaping loop for a
+service, workflow, experience, or product concept and continue until the
+concept is ready, paused, or cancelled.
 
-Use `low-friction-collaboration` when a dense or multi-step technical exchange
-must be easy to follow, resume, and act on without reducing reasoning depth or
-precision. It preserves the user's vocabulary, keeps necessary state visible,
-and removes avoidable reading and recall work.
+Explicitly invoke `low-friction-collaboration` to overlay a dense or multi-step
+technical session with communication that is easy to follow, resume, and act
+on without reducing reasoning depth or precision.
 
 Use `humanizer` to write or revise long-form papers, essays, reports, articles,
 speeches, and ordinary blog posts. Use `blogpost-writing` for VitePress-ready
@@ -303,9 +319,10 @@ Create a repo-local adapter skill:
 Add or edit a global skill:
 
 1. Read `AGENTS.md` in this repository.
-2. Start specialist leaves from `templates/leaf-skill.template.md`.
+2. Choose `task-skill.template.md`, `session-overlay.template.md`, or
+   `interactive-loop.template.md` from the skill's interaction lifetime.
 3. Keep the skill narrow.
-4. Leave the exact stub warning in place until the leaf is fully authored.
+4. Create the skill directory only when its runtime contract is callable.
 5. Update routing examples and README when the visible skill set changes.
 6. Run `uv sync --dev`, then `./test.sh`.
 
@@ -325,13 +342,16 @@ If you installed with `MECHA_SKILL_ROOT`, uninstall with the same value.
 - `templates/`: repeatable authoring patterns.
 - `docs/`: human-facing maintenance and platform notes.
 - `agents/`: host metadata only when it materially improves routing or
-  invocation behavior. `interview-me` and `ai-pipeline` currently use Codex
-  metadata; other collaboration leaves, engineering leaves, and AI execution
-  leaves rely on frontmatter.
+  invocation behavior. `interview-me`, `product-co-design`,
+  `low-friction-collaboration`, and `ai-pipeline` currently use explicit-only
+  Codex metadata; other leaves rely on frontmatter.
 - `AGENTS.md`: rules for developing this harness itself.
 - `PROMPT.md`: original scaffold prompt, kept as project history.
 
-Do not hide active runtime instructions in `references/`. Do not add scripts unless they improve repeatability. Do not add `agents/` metadata to specialist leaves by default; add it only when a fully authored leaf materially benefits from host display or invocation metadata. Do not remove `This is a stub. NEVER CALL THIS SKILL.` until a leaf is fully authored.
+Do not hide active runtime instructions in `references/`. Do not add scripts
+unless they improve repeatability. Do not add `agents/` metadata to task skills
+by default; explicit overlays and loops require it. Keep future skill concepts
+in specs until their runtime behavior is fully authored.
 
 ## Verify Changes
 

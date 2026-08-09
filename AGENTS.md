@@ -156,24 +156,27 @@ Current specialist leaves include:
 
 Avoid broad umbrella skills unless there is a clear architectural reason.
 
-### 4. Specialist stubs are contract-complete before they become fully authored
-A specialist leaf may begin as a contract-complete stub.
+### 4. Interaction lifetime determines the authoring contract
 
-A contract-complete stub must define:
-1. Purpose
-2. Use when
-3. Do not use
-4. Needs
-5. Returns
-6. Done conditions
-7. Designer notes
-8. Future workflow outline
+Every skill uses exactly one interaction model:
 
-A contract-complete stub must NOT:
-- pretend to be fully implemented
-- contain a half-baked domain playbook
-- include unnecessary scripts
-- include bulky references unless foundational
+- A task skill owns a bounded outcome. It may span turns or sessions but does
+  not retain conversational control after returning.
+- A session overlay changes how another active task or loop is conducted. It
+  does not own the underlying outcome.
+- An interactive loop owns a multi-turn exchange until it completes, pauses,
+  is cancelled, or is explicitly replaced.
+
+Task skills are the default. Overlays declare `Session Overlay Contract` and
+loops declare `Interactive Loop Contract` in `SKILL.md`; do not add a registry
+or custom frontmatter field.
+
+Overlays and loops are explicit-invocation-only. At most one loop may be active;
+overlays may compose with one task or loop. Invocation state is session-local.
+Durable work state may offer a resume candidate but never activates a skill.
+
+Create skill directories only for fully authored, callable runtime contracts.
+Keep future skill concepts in specs until then.
 
 ### 5. Runtime behavior belongs in `SKILL.md`
 Use:
@@ -189,9 +192,10 @@ Do not stuff repo-maintenance policy into skill files unless it materially affec
 ## File and folder responsibilities
 
 ### `families/collaboration/`
-Contains conversation-first specialist leaves. `interview-me` is
-explicit-invocation-only. Only `parallel-subagents` and `second-opinion` may
-authorize subagent use.
+Contains conversation-first specialist leaves. `interview-me` and
+`product-co-design` are explicit interactive loops, and
+`low-friction-collaboration` is an explicit session overlay. Only
+`parallel-subagents` and `second-opinion` may authorize subagent use.
 
 ### `families/engineering/`, `families/ai/`
 
@@ -221,7 +225,8 @@ Avoid scripts that merely wrap trivial prose.
 
 ### `agents/`
 Only add metadata files when they materially improve routing or invocation behavior.
-Do not add metadata by default.
+Do not add metadata to task skills by default. Session overlays and interactive
+loops require explicit-invocation metadata.
 
 ## Change policy
 
@@ -235,6 +240,8 @@ When multiple designs are possible, prefer:
 - fewer scripts
 
 Do not introduce registries, score matrices, capability taxonomies, or other control layers unless the current structure has clearly broken down.
+The three interaction-lifetime contracts are local authoring shapes, not a
+capability taxonomy or selection mechanism.
 
 ### Preserve portability
 Do not introduce:
@@ -249,10 +256,10 @@ Do not create structures that make a small skill edit require touching many unre
 
 ### Keep templates aligned
 If you change the contract shape of specialist leaves, update:
-- `templates/leaf-skill.template.md`
+- the applicable template under `templates/`
 - README
 - maintenance-playbook
-- any example stub that should reflect the new standard
+- focused contract tests and relevant subsystem specs
 
 ## Authoring standards
 
@@ -283,13 +290,14 @@ Descriptions must be good routers.
 
 ## Specialist development rules
 
-When turning a specialist stub into a full skill:
-1. preserve the existing contract shape unless there is a strong reason to change it
-2. write the smallest useful playbook first
-3. add references only if they improve repeated execution
-4. add scripts only if they improve determinism
-5. keep trigger boundaries explicit
-6. keep "do not use" boundaries explicit
+When authoring or expanding a specialist:
+1. choose the task, session-overlay, or interactive-loop template from its
+   interaction lifetime
+2. preserve the common contract and add only domain-specific active sections
+3. write the smallest useful playbook first
+4. add references only if they improve repeated execution
+5. add scripts only if they improve determinism
+6. keep trigger and exclusion boundaries explicit
 
 A specialist should earn additional complexity.
 Do not front-load elaborate workflows.
@@ -345,7 +353,7 @@ Bias toward:
 - narrow skills
 - native skill selection
 - subagent authorization limited to `parallel-subagents` and `second-opinion`
-- contract-complete specialist leaves
+- fully authored specialist leaves
 - low context overhead
 - portable instructions
 - future editability

@@ -1,17 +1,24 @@
 # Maintenance Playbook
 
-## Expand a specialist stub into a full skill
+## Choose an interaction contract
 
-1. Keep the existing contract sections intact.
-2. Add only the workflow needed for repeated real tasks.
-3. Move passive background material into `references/`.
-4. Add scripts only when they reduce repeated procedural text or improve deterministic reliability.
-5. Keep the `Do Not Use` section current so native selection preserves clean boundaries.
-6. Preserve the rule that only `parallel-subagents` and `second-opinion` may
-   authorize subagent use.
-7. Remove the explicit stub warning only when the skill is genuinely fully authored.
+Create a skill directory only when its runtime behavior is fully authored and
+callable. Keep future concepts in subsystem specs until then.
 
-Expansion is complete when the skill can handle its intended task without requiring repo-specific facts and without becoming a broad generalist.
+- Start bounded outcome work from `templates/task-skill.template.md`.
+- Start behavior that composes across a session from
+  `templates/session-overlay.template.md`.
+- Start a multi-turn exchange that owns conversational control from
+  `templates/interactive-loop.template.md`.
+
+Task skills are the default and may still span turns or sessions. An overlay
+declares `Session Overlay Contract`; a loop declares
+`Interactive Loop Contract`. Do not encode this model in frontmatter or a
+central registry.
+
+Overlays and loops require explicit invocation metadata. At most one loop is
+active at a time. An overlay may compose with the active task or loop without
+owning its result.
 
 ## Maintain lifecycle-aware leaves
 
@@ -28,7 +35,7 @@ Expansion is complete when the skill can handle its intended task without requir
 ## Add a new specialist leaf
 
 1. Create `families/<family>/<skill-name>/SKILL.md`.
-2. Start from `templates/leaf-skill.template.md`.
+2. Start from the template matching its interaction lifetime.
 3. Add `references/` or `scripts/` only when they carry useful content or preserve an existing scaffold shape.
 4. Define trigger boundaries using purpose, use cases, exclusions, needs, and returns.
 5. Update `README.md` and `shared/examples/skill-selection-examples.md`.
@@ -37,13 +44,13 @@ Expansion is complete when the skill can handle its intended task without requir
 Do not add a router for new leaves. Native selection should rely on leaf
 frontmatter and clear boundaries.
 
-Explicit-only manuals such as `interview-me` and `ai-pipeline` require
+Explicit-only skills such as overlays, loops, and `ai-pipeline` require
 `agents/openai.yaml` with `allow_implicit_invocation: false`. Do not let them
 become implicit routers.
 
-Contract-complete stubs must say `This is a stub. NEVER CALL THIS SKILL.` until they are fully authored. Do not let a stub sound executable or production-ready.
-
-Do not add `agents/` metadata to specialist leaves by default. Use host metadata only when it materially improves routing or invocation behavior.
+Do not add `agents/` metadata to task skills by default. Use it when task
+invocation must be explicit or when host display materially improves use;
+overlays and loops always require explicit-invocation metadata.
 
 Write frontmatter descriptions as one constructive sentence, normally around
 120 characters. Name the owned action and a positive task or artifact cue.

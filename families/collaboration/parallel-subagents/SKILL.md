@@ -23,6 +23,7 @@ improves latency, coverage, or context isolation.
 - Subtasks would edit overlapping files or shared mutable state.
 - Required context is so entangled that each subagent needs the full thread.
 - Delegation would avoid work the main process must understand.
+- Do not turn this skill into a role registry or broad orchestrator.
 
 ## Needs
 
@@ -69,8 +70,8 @@ state; subagents never edit lifecycle intent or own phase transitions.
 1. Check that the host exposes subagent capability. If not, continue without
    promising delegation.
 2. Partition work by independent artifact or change surface.
-3. Spawn the fewest useful subagents, normally two or three, with task-local
-   context.
+3. Default assignments to read-only when mutation is unnecessary. Spawn the
+   fewest useful subagents, normally two or three, with task-local context.
 4. Continue useful main-process work outside their ownership boundaries.
 5. Collect every structured return and inspect its evidence.
 6. Reconcile disagreements and integrate accepted work.
@@ -91,13 +92,3 @@ reconciled conflict, or verified integrated state.
 Before yielding, collect or stop all live subagents, inspect available returns,
 and confirm further work would repeat or require a user-owned decision. Return
 the assignments, evidence, integration status, blocker, and next recovery step.
-
-## Designer Notes
-
-Keep this as an explicit collaboration primitive, not a role registry or broad
-orchestrator. Default delegated work to read-only when mutation is unnecessary.
-
-## Future Workflow Outline
-
-- Improve the contract only when repeated forward tests expose a concrete gap.
-- Add no scripts or references until they improve deterministic execution.

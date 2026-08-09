@@ -34,8 +34,11 @@ families/collaboration/
 
 ## Architectural Invariants
 
-- `interview-me` remains explicit-invocation-only.
-- Every other collaboration leaf relies on native frontmatter selection.
+- `interview-me` and `product-co-design` are explicit-invocation-only
+  interactive loops and cannot govern simultaneously.
+- `low-friction-collaboration` is an explicit-invocation-only session overlay
+  that may compose with the active task or loop.
+- Other collaboration leaves rely on native frontmatter selection.
 - Only `parallel-subagents` and `second-opinion` authorize subagent use.
 - Product research develops evidence; product co-design owns product judgment.
 - Decision mapping produces decisions, not implementation deliverables.
@@ -47,7 +50,7 @@ families/collaboration/
 ## Common Workflows
 
 - Use `product-research` to investigate product or domain evidence, then
-  `product-co-design` to make the product judgment.
+  explicitly invoke `product-co-design` to make the product judgment.
 - Use `domain-modeling` when terminology, invariants, or durable decisions need
   active clarification.
 - Use `decision-mapping` when the path to a specification exceeds one credible

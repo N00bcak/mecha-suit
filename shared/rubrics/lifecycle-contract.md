@@ -49,6 +49,32 @@ Ignore unrelated records. If more than one record plausibly matches and the
 choice changes what will be edited or treated as accepted intent, ask one
 focused question.
 
+## Resume Candidates
+
+`Resume candidates` preserves advisory context about explicit session overlays
+or interactive loops that remained useful when work yielded. Store canonical
+skill names without host-specific invocation syntax.
+
+- A mode adds only its own name and only when a matching durable record already
+  exists. Do not create a record merely to remember a mode.
+- An active or paused loop remains a candidate. Remove it when it completes or
+  the user cancels it.
+- An active overlay remains a candidate across a session boundary. Remove it
+  when the user explicitly deactivates it.
+- A candidate is not activation authority and does not select or invoke a
+  skill. Explicit user invocation is required in every session.
+
+On the first read of a matching record in a fresh session, omit candidates the
+user already invoked and surface the rest once. If an unfinished candidate loop
+owns `Current activity` or `Next`, pause and ask whether to reactivate it. If
+multiple loop candidates conflict, ask the user to choose one. Mention overlay
+candidates without blocking otherwise authorized work. Use the host's explicit
+invocation syntax from its platform adapter.
+
+Concurrent sessions may leave advisory candidates that are no longer useful.
+Treat the list as recent context, not a live lock; verify it against current
+activity and user intent before presenting it.
+
 ## Intent Authority
 
 In lifecycle mode, `Goal`, `Acceptance Criteria`, `Constraints`, and

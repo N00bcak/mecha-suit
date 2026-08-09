@@ -8,10 +8,14 @@ Use this repo-local file to adapt the global toolbox for Claude Code.
 - State safe assumptions and ask one focused question only when ambiguity
   materially changes the work.
 - Keep ordinary implementation in the relevant specialist leaf.
+- Require explicit invocation for session overlays and interactive loops; keep
+  at most one interactive loop active.
 - Do not authorize subagent use outside the global `parallel-subagents` and
   `second-opinion` skill contracts.
-- Treat `.mecha/work/<slug>/index.md` as optional host-neutral continuity when
-  it clearly matches the task; do not assume automatic planning-mode support.
+- When a collaboration or engineering skill declares lifecycle participation,
+  treat a matching `.mecha/work/<slug>/index.md` as optional host-neutral
+  continuity. Resume candidates require fresh explicit invocation; do not
+  assume automatic planning-mode support.
 
 ## Project Commands
 

@@ -7,13 +7,16 @@ Use this repo-local file to connect project facts to the global skill toolbox.
 - Inspect local context before asking about discoverable facts.
 - State safe assumptions and ask one focused question only when ambiguity
   materially changes the work.
-- Do not call specialist leaves still marked `This is a stub. NEVER CALL THIS SKILL.`
+- Require explicit invocation for session overlays and interactive loops; keep
+  at most one interactive loop active.
 - Do not authorize subagent use outside the global `parallel-subagents` and
   `second-opinion` skill contracts.
 - When a collaboration or engineering leaf declares lifecycle participation
   and a matching `.mecha/work/<slug>/index.md` exists, follow that leaf's
   work-record contract; unrelated ad-hoc, AI, and writing work remains
   unaffected.
+- Treat resume candidates as advisory context. Use Codex `$skill-name` syntax
+  to offer reactivation, and never activate one from the record alone.
 
 ## Local Commands
 

@@ -61,7 +61,8 @@ Each skill folder may contain:
 
 - Family boundaries make routing and maintenance cheap.
 - `SKILL.md` frontmatter gives hosts compact trigger metadata.
-- Stub leaves can define future contracts without pretending to be callable.
+- Three interaction-lifetime contracts keep authoring aligned with runtime
+  ownership without adding routing metadata.
 - The two-skill subagent allowlist prevents hidden delegation sprawl.
 
 ## Architectural Invariants
@@ -70,8 +71,11 @@ Each skill folder may contain:
 - Only `parallel-subagents` and `second-opinion` may authorize subagent use.
 - Authorized delegation preserves main-process ownership, structured evidence,
   and a prohibition on nested delegation.
-- `interview-me` and `ai-pipeline` are explicit-invocation-only.
-- `low-friction-collaboration` is routable.
+- `interview-me` and `product-co-design` are explicit interactive loops.
+- `low-friction-collaboration` is an explicit session overlay.
+- `ai-pipeline` is an explicit-only task skill.
+- At most one interactive loop is active; an overlay may compose with the
+  active task or loop.
 - Collaboration and engineering leaves may share matching `.mecha` work state
   without selecting or invoking one another.
 - Accepted lifecycle intent remains user-authoritative; each leaf owns only its
@@ -80,11 +84,11 @@ Each skill folder may contain:
 - Runtime behavior belongs in `SKILL.md`.
 - Passive background belongs in `references/`.
 - Scripts must improve determinism or reduce repeated procedural work.
-- Stub leaves must keep the exact warning: `This is a stub. NEVER CALL THIS SKILL.`
+- Skill directories contain only fully authored, callable runtime contracts.
 
 ## Common Workflows
 
-- Add a new specialist from `templates/leaf-skill.template.md`.
+- Add a new specialist from the template matching its interaction lifetime.
 - Update `README.md` and `shared/examples/skill-selection-examples.md` when the visible
   skill set changes.
 - Keep native selection cues in leaf frontmatter descriptions.

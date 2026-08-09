@@ -32,6 +32,20 @@ concept that another specialist can execute.
 - Known evidence, constraints, commitments, and non-negotiables.
 - The desired stopping point when the user has one.
 
+## Interactive Loop Contract
+
+- Activate only after the user explicitly invokes `product-co-design` or
+  directly asks to use it in the current session.
+- Own the primary exchange until the concept is ready, the user pauses or
+  cancels, or the user explicitly switches to another loop.
+- Keep at most one interactive loop active. If a request names this skill and
+  `interview-me` without choosing priority, ask which loop should govern before
+  activating either.
+- When the user explicitly switches loops, preserve a compact working model,
+  pause this loop, and continue under the requested loop.
+- Allow bounded task skills to contribute evidence or artifacts without taking
+  ownership of the co-design exchange.
+
 ## Collaboration Stance
 
 - Treat the user's intent as authoritative, not every premise as correct.
@@ -57,8 +71,8 @@ Adapt the loop to the product's maturity:
 
 Ask a focused question when user judgment materially changes the direction.
 Otherwise proceed with an explicit assumption and invite correction. Do not turn
-ordinary co-design into a compulsory questionnaire; use `interview-me` only
-when the user explicitly invokes it.
+ordinary co-design into a compulsory questionnaire. If the user explicitly
+switches to `interview-me`, pause this loop before that loop begins.
 
 ## Constructive Challenge
 
@@ -127,6 +141,11 @@ Before intent acceptance, keep user statements, agent interpretations, and
 proposals distinct. After acceptance, propose semantic revisions instead of
 editing goal, criteria, constraints, or non-goals silently. Without a matching
 record, keep the brief in the conversation unless the user requests persistence.
+
+While this loop remains active with a matching durable record, add
+`product-co-design` to `Resume candidates`. Keep it while paused. Remove it
+when the loop completes or the user cancels it. Recorded state never activates
+the loop in another session.
 
 ## Persistence And Yield
 

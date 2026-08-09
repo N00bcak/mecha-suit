@@ -61,7 +61,8 @@ reconstructing the work or receiving unnecessary private information.
 Include: purpose, environment and repository identity, accepted intent revision
 or `No lifecycle record`, decisions, completed and partial work, exact
 verification evidence, risks, blockers, artifact pointers, the next task shape
-in ordinary language, and one next action.
+in ordinary language, advisory resume candidates, and one next action. State
+that candidates require explicit activation in the destination session.
 
 Do not commit, publish, send, or upload the handoff unless separately requested.
 

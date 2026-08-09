@@ -13,6 +13,38 @@ needed to find and retain the point without simplifying the work itself.
 Assume the reader is capable but may skim, lose their place, or remember little
 from earlier turns. Do not infer a diagnosis or reduced competence.
 
+## Use When
+
+- The user explicitly asks for low-friction communication during the current
+  session.
+- A complex technical exchange must remain easy to scan, resume, and act on.
+
+## Do Not Use
+
+- Do not infer this overlay from writing style, attention, disability, or task
+  complexity alone.
+- Do not let communication preferences weaken correctness, evidence, safety,
+  or an active task's output contract.
+- Do not use, spawn, request, or rely on subagents.
+
+## Needs
+
+- An explicit user invocation in the current session.
+- The active task, applicable instructions, and stated communication
+  preferences.
+
+## Session Overlay Contract
+
+- Activate only after the user explicitly invokes `low-friction-collaboration`
+  or directly asks to use it in the current session.
+- Compose with the active task or interactive loop; do not take ownership of
+  its result, transitions, or completion.
+- Remain active until the user deactivates it or the session ends.
+- Preserve instruction priority and every substantive obligation of the active
+  task while shaping communication.
+- When a matching durable record exists, record this overlay only as a resume
+  candidate. Recorded state never activates it in another session.
+
 ## Protect The Thinking
 
 Think as thoroughly as the task requires before writing. These rules simplify
@@ -175,6 +207,11 @@ and next action. Follow `../../../shared/rubrics/lifecycle-contract.md`. State
 when new evidence changes a prior assumption or plan. Do not create a work
 record merely to improve one response, and do not rewrite accepted intent.
 
+While this overlay remains active, add `low-friction-collaboration` to `Resume
+candidates` in an existing matching record. Remove it when the user explicitly
+deactivates the overlay. A session boundary leaves it as an advisory candidate,
+not active behavior.
+
 ## Persistence And Yield
 
 Useful progress means making the underlying task more correct or making its
@@ -182,7 +219,6 @@ state easier to understand and resume.
 
 Do not shorten a response merely to finish sooner. Before yielding, preserve
 the verified state, blocker, material uncertainty, and best next step.
-Do not use, spawn, request, or rely on subagents.
 
 ## Reference
 

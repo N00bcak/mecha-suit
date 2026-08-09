@@ -38,6 +38,13 @@ prose must not come from reducing the reasoning.
 If author-owned facts, experiences, or judgments are material and unavailable,
 ask one focused question. Never manufacture them to make prose feel personal.
 
+## Returns
+
+- Complete long-form prose, a faithful revision, or an evidence-backed style
+  audit matching the requested task.
+- Material assumptions, unresolved evidence gaps, and preserved constraints
+  when they affect how the result should be judged.
+
 ## Voice Priority
 
 Use, in order:

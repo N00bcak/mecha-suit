@@ -2,16 +2,17 @@
 
 ## Collaboration
 
-- "Help me turn this rough product idea into a coherent concept" -> `product-co-design`
-- "Pressure-test this service idea and identify what we need to validate" -> `product-co-design`
+- "Use $product-co-design to turn this rough product idea into a coherent concept" -> `product-co-design` interactive loop
+- "Help me think about this rough product idea" -> native product assistance; do not activate the loop implicitly
 - "Research how dispatchers currently handle failed deliveries and what competing tools support" -> `product-research`
-- "Decide which delivery workflow we should build from these findings" -> `product-co-design`, using the research as evidence
+- "Use $product-co-design to decide which delivery workflow we should build from these findings" -> `product-co-design`, using the research as evidence
 - "Our code and docs use account, customer, and user inconsistently; help us define them" -> `domain-modeling`
 - "This migration is too large to plan in one session; map the decisions we must resolve first" -> `decision-mapping`
 - "Package the verified state of this work so I can continue on another machine" -> `portable-handoff`
-- "Interview me about what I want from this project" -> `interview-me` (explicit invocation only)
-- "Keep this debugging session direct and remind me what changed after each tool run" -> `low-friction-collaboration`
-- "Give me one clear next step at a time, but do not skip the technical reasoning" -> `low-friction-collaboration`
+- "Use $interview-me to interview me about what I want from this project" -> `interview-me` interactive loop
+- "Use $low-friction-collaboration for this debugging session" -> `low-friction-collaboration` session overlay
+- "Give me one clear next step at a time" -> follow the direct request natively; do not activate an overlay implicitly
+- "Use $interview-me and $product-co-design" -> ask which exclusive loop should govern before activating either
 - "Update the independent Python and TypeScript packages in parallel; they share no files" -> `parallel-subagents`
 - "Research these two unrelated source sets and return separate evidence summaries" -> `parallel-subagents`
 - "Run the migration first, then update callers based on its output" -> native sequential work; do not delegate in parallel
@@ -43,6 +44,8 @@
 - "Use planning mode to make this feature decision-complete" -> `implementation-spec`, plus `work-slicing` when multiple implementation units are needed
 - "Continue the accepted checkout lifecycle in `.mecha/work/checkout/index.md`" -> the leaf matching the recorded next task shape
 - "Review this lifecycle implementation and close it if it is ready" -> `code-review`; completion requires all three axes or an explicit user waiver
+- A resumed record names `product-co-design` as the unfinished next loop -> ask whether to reactivate it before continuing
+- A resumed record names `low-friction-collaboration` as a candidate -> mention explicit reactivation without blocking the requested task
 
 ## AI
 

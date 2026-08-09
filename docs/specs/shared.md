@@ -38,6 +38,8 @@ shared/
 - Do not hide active runtime steps here when they belong in `SKILL.md`.
 - `lifecycle-contract.md` defines common state and authority; each participating
   leaf still owns and states its active transition behavior.
+- Resume candidates preserve advisory context for explicit overlays and loops;
+  they never select or activate a skill.
 - Keep rubrics concise and reusable.
 - Update shared examples when visible selection behavior changes.
 

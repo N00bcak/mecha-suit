@@ -1,0 +1,6 @@
+interface:
+    display_name: "Product Co-Design"
+    short_description: "Shape and pressure-test product concepts"
+    default_prompt: "Use $product-co-design to shape and pressure-test this product concept with me."
+policy:
+    allow_implicit_invocation: false

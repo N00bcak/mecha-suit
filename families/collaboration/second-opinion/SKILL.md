@@ -22,6 +22,8 @@ consequential, uncertain, or difficult-to-reverse conclusion or action.
 - An ordinary test provides stronger evidence.
 - The reviewer cannot access the artifact or evidence being judged.
 - The goal is endorsement rather than independent assessment.
+- Do not replace tests, authoritative sources, or user-owned decisions with a
+  reviewer verdict.
 
 ## Needs
 
@@ -92,13 +94,3 @@ rejected weak claim, or narrowed uncertainty.
 Before yielding, collect or stop the reviewer, inspect its evidence, and run
 any safe decisive check. Return the verdict, adjudication, blocker, confidence,
 and next recovery step.
-
-## Designer Notes
-
-This skill complements direct verification; it never replaces tests,
-authoritative sources, or user-owned decisions.
-
-## Future Workflow Outline
-
-- Improve the review packet only when repeated forward tests expose a gap.
-- Add no scripts or references until they improve deterministic execution.

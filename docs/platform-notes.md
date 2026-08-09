@@ -12,18 +12,32 @@
 - Collaboration and engineering leaves share the host-neutral work-index
   contract in `shared/rubrics/lifecycle-contract.md` when durable state is
   active. The contract does not select or invoke skills.
+- Task skills are the default interaction model. Session overlays and
+  interactive loops declare their contract in `SKILL.md`; no registry or
+  custom frontmatter field encodes the taxonomy.
 
 ## Codex-specific notes
 
 - Codex reads skill frontmatter `name` and `description` for trigger matching.
 - `agents/openai.yaml` is useful for user-facing skill display and default prompts when metadata materially improves routing or invocation.
-- This toolbox currently includes `agents/openai.yaml` for `interview-me`,
-  and `ai-pipeline`.
-- `product-co-design`, `low-friction-collaboration`, engineering leaves, and AI
-  execution leaves currently rely on frontmatter only.
+- This toolbox includes explicit-only `agents/openai.yaml` metadata for
+  `interview-me`, `product-co-design`, `low-friction-collaboration`, and
+  `ai-pipeline`.
+- Other collaboration leaves, engineering leaves, and AI execution leaves
+  currently rely on frontmatter only.
 - Global installation targets `MECHA_SKILL_ROOT` when set, then `CODEX_HOME/skills` when `CODEX_HOME` is set, otherwise `$HOME/.codex/skills`.
 - On Windows, run the Bash scripts from WSL, Git Bash, MSYS, or Cygwin. Git Bash/MSYS/Cygwin default to a Unix-style path for `%USERPROFILE%\.codex\skills` when conversion is available.
 - Repo-local `AGENTS.md` files should point to global skills and provide only local facts.
+
+### Codex resume candidates
+
+- Store canonical skill names in the work record, without `$`.
+- On resume, say: `We were using $<skill-name> before this session was resumed.
+  It is not active here. To reactivate it, say: "Use $<skill-name>."`
+- For multiple compatible candidates, list them in one notice. If multiple
+  interactive loops conflict, ask the user to choose one.
+- Wait for a response when an unfinished loop owns the next activity. Mention
+  overlay candidates without blocking other authorized work.
 
 ### Codex planning mode
 

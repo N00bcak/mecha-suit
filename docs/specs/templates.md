@@ -9,7 +9,9 @@ instructions and adapters.
 
 ```text
 templates/
-    leaf-skill.template.md
+    task-skill.template.md
+    session-overlay.template.md
+    interactive-loop.template.md
     work-index.template.md
     repo-AGENTS.template.md
     repo-CLAUDE.template.md
@@ -18,7 +20,7 @@ templates/
 
 ## Main Responsibilities
 
-- Preserve the expected shape of new specialist leaves.
+- Preserve the task, session-overlay, and interactive-loop authoring contracts.
 - Preserve the fallback two-mode work-index shape used across lifecycle-aware
   leaves.
 - Provide repo-local instruction scaffolds for downstream projects.
@@ -32,8 +34,13 @@ templates/
 
 ## Architectural Invariants
 
-- If specialist leaf contract shape changes, update the template and all docs
-  that describe the contract.
+- Each skill uses exactly one interaction-lifetime template. Task is the
+  default; overlays and loops self-declare through standardized headings.
+- Overlays and loops require explicit-invocation host metadata and remain
+  session-local; templates do not create a routing registry.
+- Skill templates produce fully authored callable contracts, not placeholders.
+- If a skill contract shape changes, update the applicable template and all
+  docs and tests that describe it.
 - If lifecycle state changes, update `work-index.template.md`, the lifecycle
   rubric, participating leaves, and focused tests together.
 - Templates should not include private paths or organization-specific facts.
@@ -41,7 +48,10 @@ templates/
 
 ## Common Workflows
 
-- Start new specialist leaves from `leaf-skill.template.md`.
+- Start bounded outcomes from `task-skill.template.md`.
+- Start composable session behavior from `session-overlay.template.md`.
+- Start multi-turn conversational control from
+  `interactive-loop.template.md`.
 - Copy repo templates into downstream repos and fill in local commands.
 - Use adapter templates when a project needs local context around a global skill.
 

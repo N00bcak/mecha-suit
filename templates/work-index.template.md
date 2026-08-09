@@ -7,6 +7,7 @@
 - Current activity: <current task shape>
 - Intent revision: <not accepted | accepted revision number>
 - Review fixed point: <base revision, diff range, artifact version, or `Not established`>
+- Resume candidates: <explicit overlay or loop skill names, or `None`>
 - Updated: <YYYY-MM-DD>
 
 ## Goal

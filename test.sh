@@ -125,14 +125,79 @@ subagent_boundary_checks() {
 
 persistence_yield_checks() {
     assert_exists "${ROOT_DIR}/shared/rubrics/persistence-yield-rubric.md"
-    grep -Eq '^## Persistence And Yield$' "${ROOT_DIR}/templates/leaf-skill.template.md" || fail "leaf template persistence section is missing"
     pass "persistence and yield contract"
+}
+
+interaction_contract_checks() {
+    local task_template="${ROOT_DIR}/templates/task-skill.template.md"
+    local overlay_template="${ROOT_DIR}/templates/session-overlay.template.md"
+    local loop_template="${ROOT_DIR}/templates/interactive-loop.template.md"
+    local skill_file
+    local skill_name
+    local metadata
+    local heading
+    local overlay_count=0
+    local loop_count=0
+    local is_overlay
+    local is_loop
+
+    assert_not_exists "${ROOT_DIR}/templates/leaf-skill.template.md"
+    assert_exists "${task_template}"
+    assert_exists "${overlay_template}"
+    assert_exists "${loop_template}"
+
+    for template in "${task_template}" "${overlay_template}" "${loop_template}"; do
+        for heading in Purpose 'Use When' 'Do Not Use' Needs Returns 'Done Conditions' 'Persistence And Yield'; do
+            grep -Fxq "## ${heading}" "${template}" || fail "${template} is missing ${heading}"
+        done
+    done
+    grep -Fxq '## Session Overlay Contract' "${overlay_template}" || fail "session overlay template marker is missing"
+    grep -Fxq '## Interactive Loop Contract' "${loop_template}" || fail "interactive loop template marker is missing"
+
+    if grep -R -Eq '^## (Stub Status|Designer Notes|Future Workflow Outline)$' "${ROOT_DIR}/families"; then
+        fail "obsolete skill-development sections remain in runtime skills"
+    fi
+    while IFS= read -r skill_file; do
+        skill_name="$(basename "$(dirname "${skill_file}")")"
+        is_overlay=0
+        is_loop=0
+        grep -Fxq '## Session Overlay Contract' "${skill_file}" && is_overlay=1
+        grep -Fxq '## Interactive Loop Contract' "${skill_file}" && is_loop=1
+        [ $((is_overlay + is_loop)) -le 1 ] || fail "skill declares multiple interaction contracts: ${skill_file}"
+
+        for heading in Purpose 'Use When' 'Do Not Use' Needs Returns 'Done Conditions' 'Persistence And Yield'; do
+            grep -Fxq "## ${heading}" "${skill_file}" || fail "${skill_file} is missing core section ${heading}"
+        done
+
+        if [ "${is_overlay}" -eq 1 ] || [ "${is_loop}" -eq 1 ]; then
+            metadata="$(dirname "${skill_file}")/agents/openai.yaml"
+            assert_exists "${metadata}"
+            grep -Fq 'allow_implicit_invocation: false' "${metadata}" || fail "explicit interaction mode is implicitly invocable: ${skill_file}"
+            grep -Fq "\$${skill_name}" "${metadata}" || fail "explicit interaction metadata does not name ${skill_name}"
+        fi
+
+        if [ "${is_overlay}" -eq 1 ]; then
+            overlay_count=$((overlay_count + 1))
+        fi
+        if [ "${is_loop}" -eq 1 ]; then
+            loop_count=$((loop_count + 1))
+        fi
+    done < <(find "${ROOT_DIR}/families" -mindepth 3 -maxdepth 3 -name SKILL.md -print | sort)
+
+    [ "${overlay_count}" -eq 1 ] || fail "expected one session overlay, found ${overlay_count}"
+    [ "${loop_count}" -eq 2 ] || fail "expected two interactive loops, found ${loop_count}"
+    grep -Fxq '## Session Overlay Contract' "${ROOT_DIR}/families/collaboration/low-friction-collaboration/SKILL.md" || fail "low-friction collaboration is not the session overlay"
+    grep -Fxq '## Interactive Loop Contract' "${ROOT_DIR}/families/collaboration/interview-me/SKILL.md" || fail "interview-me is not an interactive loop"
+    grep -Fxq '## Interactive Loop Contract' "${ROOT_DIR}/families/collaboration/product-co-design/SKILL.md" || fail "product-co-design is not an interactive loop"
+
+    pass "task, session-overlay, and interactive-loop contracts"
 }
 
 collaboration_checks() {
     local interview_file="${ROOT_DIR}/families/collaboration/interview-me/SKILL.md"
     local interview_metadata="${ROOT_DIR}/families/collaboration/interview-me/agents/openai.yaml"
     local low_friction_file="${ROOT_DIR}/families/collaboration/low-friction-collaboration/SKILL.md"
+    local low_friction_metadata="${ROOT_DIR}/families/collaboration/low-friction-collaboration/agents/openai.yaml"
     local low_friction_reference="${ROOT_DIR}/families/collaboration/low-friction-collaboration/references/communication-evidence.md"
     local parallel="${ROOT_DIR}/families/collaboration/parallel-subagents/SKILL.md"
     local second_opinion="${ROOT_DIR}/families/collaboration/second-opinion/SKILL.md"
@@ -140,13 +205,19 @@ collaboration_checks() {
     local domain_modeling="${ROOT_DIR}/families/collaboration/domain-modeling/SKILL.md"
     local decision_mapping="${ROOT_DIR}/families/collaboration/decision-mapping/SKILL.md"
     local portable_handoff="${ROOT_DIR}/families/collaboration/portable-handoff/SKILL.md"
+    local product_co_design="${ROOT_DIR}/families/collaboration/product-co-design/SKILL.md"
+    local product_co_design_metadata="${ROOT_DIR}/families/collaboration/product-co-design/agents/openai.yaml"
 
     grep -Fxq 'description: Interview the user one focused question at a time.' "${interview_file}" || fail "interview-me description is missing"
     assert_exists "${interview_metadata}"
     grep -Fq 'allow_implicit_invocation: false' "${interview_metadata}" || fail "interview-me implicit invocation is not disabled"
     grep -Fxq 'description: Make complex technical conversations easy to follow and act on without reducing reasoning depth or precision.' "${low_friction_file}" || fail "low-friction-collaboration description drifted"
     assert_exists "${low_friction_reference}"
-    assert_not_exists "${ROOT_DIR}/families/collaboration/low-friction-collaboration/agents/openai.yaml"
+    assert_exists "${low_friction_metadata}"
+    grep -Fq 'allow_implicit_invocation: false' "${low_friction_metadata}" || fail "low-friction collaboration implicit invocation is not disabled"
+    assert_exists "${product_co_design_metadata}"
+    grep -Fq 'allow_implicit_invocation: false' "${product_co_design_metadata}" || fail "product co-design implicit invocation is not disabled"
+    grep -Fq 'Keep at most one interactive loop active.' "${product_co_design}" || fail "product co-design exclusive-loop contract is missing"
     grep -Fq 'Think as thoroughly as the task requires before writing.' "${low_friction_file}" || fail "low-friction reasoning safeguard is missing"
     grep -Fq "Prefer the words the user used" "${low_friction_file}" || fail "low-friction vocabulary continuity is missing"
     grep -Fq 'Do not coin labels, frameworks, categories, or slogans' "${low_friction_file}" || fail "low-friction invented-term guard is missing"
@@ -263,6 +334,7 @@ lifecycle_checks() {
     grep -Fq 'supersession note' "${contract}" || fail "legacy scratchpad supersession rule is missing"
     grep -Fq '## Acceptance Criteria' "${template}" || fail "work-index acceptance criteria are missing"
     grep -Fq 'Review fixed point:' "${template}" || fail "work-index review fixed point is missing"
+    grep -Fq 'Resume candidates:' "${template}" || fail "work-index resume candidates are missing"
     grep -Fq '## Revision History' "${template}" || fail "work-index revision history is missing"
     grep -Fq '.mecha/' "${ROOT_DIR}/.gitignore" || fail ".mecha ignore rule is missing"
 
@@ -309,6 +381,10 @@ lifecycle_checks() {
     grep -Fq '`../../../shared/rubrics/research-integrity.md`' "${ROOT_DIR}/families/collaboration/product-research/SKILL.md" || fail "product research integrity link is missing"
     grep -Fq '`../../../shared/rubrics/research-integrity.md`' "${ROOT_DIR}/families/engineering/technical-research/SKILL.md" || fail "technical research integrity link is missing"
     grep -Fq 'Implicit selection alone does not authorize filesystem writes' "${ROOT_DIR}/families/collaboration/decision-mapping/SKILL.md" || fail "decision-mapping persistence boundary is missing"
+    grep -Fq 'A candidate is not activation authority' "${contract}" || fail "resume candidate authority boundary is missing"
+    grep -Fq 'unfinished candidate loop' "${contract}" || fail "blocking loop resume behavior is missing"
+    grep -Fq 'candidates without blocking otherwise authorized work.' "${contract}" || fail "non-blocking overlay resume behavior is missing"
+    grep -Fq 'advisory resume candidates' "${ROOT_DIR}/families/collaboration/portable-handoff/SKILL.md" || fail "handoff resume-candidate behavior is missing"
     grep -Fq 'product-research' "${ROOT_DIR}/AGENTS.md" || fail "authoritative specialist inventory is stale"
     grep -Fq 'code-review' "${ROOT_DIR}/AGENTS.md" || fail "authoritative specialist inventory is stale"
     grep -Fq 'Keep native skill-selection cues in leaf frontmatter' "${ROOT_DIR}/docs/global-AGENTS.example.md" || fail "global example duplicates routing instead of deferring to frontmatter"
@@ -459,21 +535,8 @@ writing_family_checks() {
 metadata_policy_checks() {
     grep -Fq '`ai-pipeline`' "${ROOT_DIR}/CLAUDE.md" || fail "CLAUDE metadata policy does not mention ai-pipeline"
     grep -Fq '`ai-pipeline`' "${ROOT_DIR}/README.md" || fail "README metadata policy does not mention ai-pipeline"
-    grep -Fq '`product-co-design`, `low-friction-collaboration`, engineering leaves, and AI' "${ROOT_DIR}/docs/platform-notes.md" || fail "platform metadata policy is missing"
+    grep -Fq '`interview-me`, `product-co-design`, `low-friction-collaboration`, and' "${ROOT_DIR}/docs/platform-notes.md" || fail "platform explicit-mode metadata policy is missing"
     pass "metadata policy"
-}
-
-stub_skill_checks() {
-    local skill_file
-
-    while IFS= read -r skill_file; do
-        grep -Eq '^## Persistence And Yield$' "${skill_file}" || fail "persistence section is missing in ${skill_file}"
-        if grep -Eq '^## Stub Status$' "${skill_file}"; then
-            grep -Fq 'This is a stub. NEVER CALL THIS SKILL.' "${skill_file}" || fail "stub warning is missing in ${skill_file}"
-        fi
-    done < <(find "${ROOT_DIR}/families/collaboration" "${ROOT_DIR}/families/engineering" "${ROOT_DIR}/families/ai" "${ROOT_DIR}/families/writing" -mindepth 2 -maxdepth 2 -name SKILL.md -print | sort)
-
-    pass "stub guardrails"
 }
 
 install_uninstall_checks() {
@@ -585,13 +648,13 @@ main() {
     architecture_checks
     subagent_boundary_checks
     persistence_yield_checks
+    interaction_contract_checks
     collaboration_checks
     engineering_checks
     lifecycle_checks
     ai_family_checks
     writing_family_checks
     metadata_policy_checks
-    stub_skill_checks
     install_uninstall_checks
 }
 
