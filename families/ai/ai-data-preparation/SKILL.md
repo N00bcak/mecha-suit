@@ -10,13 +10,6 @@ description: Inspect, type, clean, convert, and package raw data into a document
 Turn raw data into a documented, reproducible, analysis-ready artifact without
 silently changing its meaning.
 
-## Use When
-
-- Data sources, schemas, field semantics, types, missingness, or packaging need
-  inspection or repair.
-- Raw inputs must be converted, aligned, validated, or made reproducible.
-- Later AI work is blocked by data readiness.
-
 ## Do Not Use
 
 - Do not own deeper pattern discovery — use `ai-insight-development`.
@@ -67,12 +60,9 @@ Never require or create it.
 
 ## Persistence And Yield
 
-Useful progress means a resolved semantic ambiguity, measured quality issue,
-reproducible conversion, or verified prepared artifact.
-
-Before yielding, inspect a representative source, try one bounded repair or
-validation path, and confirm further work would repeat or require unavailable
-meaning, policy, or data. Return evidence, blockers, and the next action.
+Progress is a resolved semantic ambiguity, measured quality issue, reproducible
+conversion, or verified artifact. Yield only when another repair or validation
+would repeat or require unavailable meaning, policy, or data.
 
 ## References
 

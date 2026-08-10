@@ -11,13 +11,6 @@ Make a large, uncertain effort navigable by recording the destination, decision
 dependencies, resolved choices, and the next decision that can be made without
 guessing.
 
-## Use When
-
-- The work exceeds one credible planning session and the route is still unclear.
-- Important decisions depend on research, prototypes, domain modeling, or other
-  unresolved choices.
-- A long-horizon effort needs durable planning without premature task breakdown.
-
 ## Do Not Use
 
 - Do not use for a feature already clear enough to specify.
@@ -65,9 +58,10 @@ research, specifications, or implementation plans.
 
 ## Lifecycle Participation
 
-Read `../../../shared/rubrics/lifecycle-contract.md`. When the user explicitly
-requests durable lifecycle planning or accepts the map as lifecycle intent,
-activate lifecycle mode, store the map at
+When the user explicitly requests durable lifecycle planning or accepts the map
+as lifecycle intent, read `../../../shared/rubrics/lifecycle-contract.md` unless
+its current contents are already available in context. Then activate lifecycle
+mode, store the map at
 `.mecha/work/<slug>/decision-map.md` when no project convention exists, and link
 research, domain, prototype, and decision artifacts from the work index.
 Implicit selection alone does not authorize filesystem writes; until the user
@@ -78,9 +72,6 @@ transition.
 
 ## Persistence And Yield
 
-Useful progress means a sharper destination, resolved decision, dependency
-correction, or newly actionable question.
-
-Before yielding, work one frontier decision or identify its exact evidence or
-user-owned prerequisite. Return the map state, decision made, blocker, and next
-frontier item without drifting into implementation.
+Progress is a sharper destination, resolved decision, corrected dependency, or
+actionable question. Work one frontier item or identify its exact prerequisite,
+then return the map state without drifting into implementation.

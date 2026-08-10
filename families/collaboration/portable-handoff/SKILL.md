@@ -10,12 +10,6 @@ description: Package verified work state into a redacted portable handoff for an
 Transfer enough verified context for a new recipient to continue safely without
 reconstructing the work or receiving unnecessary private information.
 
-## Use When
-
-- Work moves to another session, machine, repository checkout, agent, or person.
-- A side task needs a portable context boundary.
-- The user requests a durable handoff or context package.
-
 ## Do Not Use
 
 - Do not require a handoff for ordinary phase transitions in one active context.
@@ -68,16 +62,13 @@ Do not commit, publish, send, or upload the handoff unless separately requested.
 
 ## Lifecycle Participation
 
-Read `../../../shared/rubrics/lifecycle-contract.md` when a matching record
-exists. A handoff reports lifecycle state but does not complete a phase, change
-intent, or mark work complete. Record the handoff pointer only when the target
-location is durable and useful to the active context.
+When a matching record exists, read
+`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
+already available in context. A handoff reports state but does not complete a
+phase or change intent. Record only a durable, useful handoff pointer.
 
 ## Persistence And Yield
 
-Useful progress means verified transferable state, an accessible pointer, or a
-resolved recipient-context gap.
-
-Before yielding, check the packet from the recipient's perspective, verify the
-next command or action when safe, and scan for sensitive content. Return the
-path, intended recipient, remaining limitation, and next action.
+Progress is verified transferable state, an accessible pointer, or a resolved
+recipient-context gap. Before yielding, check the packet as the recipient,
+verify the next action when safe, and scan for sensitive content.

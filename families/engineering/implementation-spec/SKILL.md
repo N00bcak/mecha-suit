@@ -10,12 +10,6 @@ description: Turn settled intent and evidence into an accepted implementation co
 Create a decision-complete, user-owned contract for what an engineering change
 must accomplish before implementation structure can distort its intent.
 
-## Use When
-
-- Product or engineering direction is settled enough to specify.
-- A planning-mode conversation must become an implementation contract.
-- Existing notes, decisions, or prototypes need synthesis into acceptance terms.
-
 ## Do Not Use
 
 - Do not use while consequential product or domain decisions remain unresolved.
@@ -75,13 +69,12 @@ User acceptance of the contract activates or promotes lifecycle mode; implicit
 selection alone does not authorize filesystem writes. Write the accepted
 contract into `.mecha/work/<slug>/index.md` using
 `../../../templates/work-index.template.md`, preserving prior verified
-continuity state. After acceptance, follow the intent authority rules exactly.
+continuity state. Read `../../../shared/rubrics/lifecycle-contract.md` unless
+its current contents are already available in context, then follow its intent
+authority rules.
 
 ## Persistence And Yield
 
-Useful progress means a checkable criterion, resolved semantic gap, explicit
-non-goal, or accepted contract revision.
-
-Before yielding, test the draft against one normal and one material failure or
-edge scenario. Return the full draft or accepted contract, blocker, and next
-planning action without starting implementation.
+Progress is a checkable criterion, resolved semantic gap, explicit non-goal, or
+accepted revision. Test one normal and one material failure scenario before
+returning the complete contract without starting implementation.

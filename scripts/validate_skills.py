@@ -24,7 +24,6 @@ PORTABLE_PROPERTIES = {
 CODEX_PROPERTIES = PORTABLE_PROPERTIES - {"compatibility"}
 CORE_SECTIONS = {
     "Purpose",
-    "Use When",
     "Do Not Use",
     "Needs",
     "Returns",

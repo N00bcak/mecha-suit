@@ -241,6 +241,7 @@ def run_codex_case(case: dict[str, Any], runs: int, timeout: int) -> dict[str, A
 
     results: list[dict[str, Any]] = []
     observed_counts = {name: 0 for name in case["available_skills"]}
+    successful_runs = 0
     for run_number in range(1, runs + 1):
         with tempfile.TemporaryDirectory(prefix="mecha-eval-") as directory:
             workspace = Path(directory)
@@ -270,8 +271,11 @@ def run_codex_case(case: dict[str, Any], runs: int, timeout: int) -> dict[str, A
                 observed, response, turn_completed = parse_codex_events(
                     completed.stdout, case["available_skills"]
                 )
-                for name in observed:
-                    observed_counts[name] += 1
+                run_succeeded = completed.returncode == 0 and turn_completed
+                if run_succeeded:
+                    successful_runs += 1
+                    for name in observed:
+                        observed_counts[name] += 1
                 classification = (
                     "manual-review"
                     if case["kind"] == "interaction"
@@ -283,6 +287,7 @@ def run_codex_case(case: dict[str, Any], runs: int, timeout: int) -> dict[str, A
                         "classification": classification,
                         "observed_skill_reads": sorted(observed),
                         "exit_code": completed.returncode,
+                        "stderr": completed.stderr.strip(),
                         "final_response": response,
                     }
                 )
@@ -300,8 +305,10 @@ def run_codex_case(case: dict[str, Any], runs: int, timeout: int) -> dict[str, A
         "id": case["id"],
         "telemetry": "heuristic-skill-file-read",
         "runs": results,
+        "successful_runs": successful_runs,
         "observed_rates": {
-            name: observed_counts[name] / runs for name in sorted(observed_counts)
+            name: observed_counts[name] / successful_runs if successful_runs else 0.0
+            for name in sorted(observed_counts)
         },
     }
     if case["kind"] == "interaction":
@@ -312,6 +319,9 @@ def run_codex_case(case: dict[str, Any], runs: int, timeout: int) -> dict[str, A
 
 def summarize_case(case: dict[str, Any], result: dict[str, Any], threshold: float) -> None:
     if case["kind"] != "trigger" or "observed_rates" not in result:
+        return
+    if result.get("successful_runs", 0) == 0:
+        result["evaluation"] = "inconclusive-host-failure"
         return
     expected = case["expected"]
     loaded_pass = all(result["observed_rates"][name] > threshold for name in expected["loaded_skills"])

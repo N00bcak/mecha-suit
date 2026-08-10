@@ -1,0 +1,71 @@
+{
+    "schema_version": 1,
+    "default_runs": 3,
+    "trigger_threshold": 0.5,
+    "cases": [
+        {
+            "id": "engineering-greenfield-prototype",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["prototype-builder", "large-codebase-change"],
+            "turns": [{"prompt": "Build a new isolated demo from scratch that proves users can upload a CSV and preview validation errors.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["prototype-builder"], "excluded_skills": ["large-codebase-change"], "behaviors": []}
+        },
+        {
+            "id": "engineering-large-existing-change",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["prototype-builder", "large-codebase-change"],
+            "turns": [{"prompt": "Implement tenant-aware rate limits in this existing 60k-line service, including configuration, tests, and rollout compatibility.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["large-codebase-change"], "excluded_skills": ["prototype-builder"], "behaviors": []}
+        },
+        {
+            "id": "engineering-small-existing-native",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["prototype-builder", "large-codebase-change"],
+            "turns": [{"prompt": "Rename this local variable in an existing 2k-line utility and update its focused test.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["prototype-builder", "large-codebase-change"], "behaviors": []}
+        },
+        {
+            "id": "engineering-diagnosis-before-change",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["diagnosing-bugs", "large-codebase-change", "prototype-builder"],
+            "turns": [{"prompt": "This large repository intermittently corrupts cache entries. Reproduce the failure and determine the cause before changing code.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["diagnosing-bugs"], "excluded_skills": ["large-codebase-change", "prototype-builder"], "behaviors": []}
+        },
+        {
+            "id": "engineering-isolated-demo-in-monorepo",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["prototype-builder", "large-codebase-change"],
+            "turns": [{"prompt": "Inside this large monorepo, create a new isolated throwaway demo that tests one WebAssembly integration idea without touching production packages.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["prototype-builder"], "excluded_skills": ["large-codebase-change"], "behaviors": []}
+        },
+        {
+            "id": "engineering-small-diff-large-repo",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["prototype-builder", "large-codebase-change"],
+            "turns": [{"prompt": "In this existing 12k-line application, add one optional response field while preserving older clients.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["large-codebase-change"], "excluded_skills": ["prototype-builder"], "behaviors": []}
+        },
+        {
+            "id": "engineering-ai-performance-not-prototype",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["ai-performance", "prototype-builder", "large-codebase-change"],
+            "turns": [{"prompt": "Train and compare the two specified classifiers against the accepted evaluation contract and diagnose subgroup errors.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["ai-performance"], "excluded_skills": ["prototype-builder", "large-codebase-change"], "behaviors": []}
+        },
+        {
+            "id": "engineering-small-greenfield-script-native",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["prototype-builder", "large-codebase-change"],
+            "turns": [{"prompt": "Write a tiny standalone script that prints the current directory. No demo or broader app is needed.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["prototype-builder", "large-codebase-change"], "behaviors": []}
+        }
+    ]
+}

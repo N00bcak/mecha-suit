@@ -1,139 +1,117 @@
 # Maintenance Playbook
 
-## Choose an interaction contract
+## Choose the contract
 
-Create a skill directory only when its runtime behavior is fully authored and
-callable. Keep future concepts in subsystem specs until then.
+Create a skill only when its runtime behavior is complete and callable. Keep
+future concepts in `docs/architecture.md`.
 
-- Start bounded outcome work from `templates/task-skill.template.md`.
-- Start behavior that composes across a session from
-  `templates/session-overlay.template.md`.
-- Start a multi-turn exchange that owns conversational control from
-  `templates/interactive-loop.template.md`.
+- Use `templates/task-skill.template.md` for a bounded outcome.
+- Use `templates/session-overlay.template.md` for behavior that composes with
+  another task or loop.
+- Use `templates/interactive-loop.template.md` for a multi-turn exchange that
+  owns conversational control.
 
-Task skills are the default and may still span turns or sessions. An overlay
-declares `Session Overlay Contract`; a loop declares
-`Interactive Loop Contract`. Do not encode this model in frontmatter or a
-central registry.
+Task skills are the default. Overlays and loops declare their contract in the
+body and require explicit-invocation metadata. Do not add a frontmatter field
+or registry for interaction lifetime.
 
-Overlays and loops require explicit invocation metadata. At most one loop is
-active at a time. An overlay may compose with the active task or loop without
-owning its result.
+## Add or revise a skill
+
+1. Start from the applicable template under `families/<family>/<skill>/`.
+2. Put positive task and artifact cues in the frontmatter description.
+3. Define runtime purpose, exclusions, needs, returns, done conditions, and
+   persistence/yield behavior in `SKILL.md`.
+4. Add a reference only for passive detail with a direct loading cue. Add a
+   script only for repeated deterministic work.
+5. Add positive and near-miss cases to `evals/*.json`.
+6. Update `docs/skills.md` when the public catalog changes.
+7. Run the validator and full deterministic suite.
+
+Do not add a router. Do not add `agents/` metadata to task skills by default.
+Explicit-only skills use `agents/openai.yaml` with
+`allow_implicit_invocation: false` when the Codex adapter supports it.
+
+Descriptions should be one constructive sentence, normally around 120
+characters. Treat that length as editorial guidance, not a validator limit.
+
+## Control context consumption
+
+Use these soft initial-read ranges: 500–750 words for overlays, 500–900 for
+ordinary tasks, 800–1,100 for complex engineering skills, and 800–1,200 for
+interactive loops. Do not hide active behavior in references to meet them.
+
+Keep a general principle only when the skill turns it into a domain-specific
+decision, artifact, invariant, or verification step. Load shared and family
+references only when their stated condition applies. Re-read a shared contract
+after context loss, suspected staleness, or a file change; do not create cache
+flags or a registry.
 
 ## Maintain lifecycle-aware leaves
 
-- Keep native selection in leaf descriptions; the work index never routes or
-  invokes skills.
-- State each leaf's own lifecycle participation in its `SKILL.md` and point to
-  `shared/rubrics/lifecycle-contract.md` for shared state and authority rules.
-- Preserve ad-hoc behavior when no matching work record exists.
-- Update `templates/work-index.template.md`, lifecycle tests, README, platform
-  notes, and collaboration or engineering specs when the state contract changes.
-- Keep accepted intent user-authoritative and detailed phase output behind
-  artifact pointers.
+The work index never routes or invokes skills. A participating leaf states its
+own behavior and links `shared/rubrics/lifecycle-contract.md`. Preserve ad-hoc
+behavior when no record matches. Keep accepted intent user-authoritative and
+put detailed phase output behind artifact links.
 
-## Add a new specialist leaf
+When the lifecycle contract changes, update
+`templates/work-index.template.md`, focused tests, architecture, and platform
+notes.
 
-1. Create `families/<family>/<skill-name>/SKILL.md`.
-2. Start from the template matching its interaction lifetime.
-3. Add `references/` or `scripts/` only when they carry useful content or preserve an existing scaffold shape.
-4. Define trigger boundaries using purpose, use cases, exclusions, needs, and returns.
-5. Update `README.md` and `shared/examples/skill-selection-examples.md`.
-6. Write frontmatter that lets Codex select the leaf directly.
+## Maintain behavioral evaluations
 
-Do not add a router for new leaves. Native selection should rely on leaf
-frontmatter and clear boundaries.
+Keep reusable prompts and expectations in `evals/*.json`. Store explicit skill
+names separately from prompt text so adapters can add host syntax. Use
+realistic positives and adjacent near misses; keep the committed split stable
+while tuning descriptions.
 
-Explicit-only skills such as overlays, loops, and `ai-pipeline` require
-`agents/openai.yaml` with `allow_implicit_invocation: false`. Do not let them
-become implicit routers.
+`./test.sh` validates and dry-renders every corpus without a model. When live
+behavioral evidence is worth its cost, run a targeted adapter sample:
 
-Do not add `agents/` metadata to task skills by default. Use it when task
-invocation must be explicit or when host display materially improves use;
-overlays and loops always require explicit-invocation metadata.
+```bash
+uv run python scripts/run_interaction_evals.py \
+    --host codex \
+    --corpus evals/skill-routing.json \
+    --split validation \
+    --runs 1
+```
 
-Write frontmatter descriptions as one constructive sentence, normally around
-120 characters. Name the owned action and a positive task or artifact cue.
-Avoid contrastive exclusions, workflow summaries, and repeated repo-wide
-policies. Keep a few diagnostic cues only when adjacent skill categories need
-them. Treat this as editorial guidance rather than a validator limit.
+Codex skill-file-read observations are heuristic. An explicit binding without
+an observable read is inconclusive. Keep live evaluation outside deterministic
+tests and review responses manually.
 
-## Verify changes
+## Preserve persistence without flailing
+
+Open-ended skills define a bounded first pass, useful progress, at least two
+distinct strategies when available, and valid stop states. A useful yield names
+attempts, evidence, the exact blocker, confidence, and the next recovery step.
+Do not broaden scope as a substitute for progress.
+
+Use `shared/rubrics/change-discipline.md` as the common coding floor. Add
+family-specific guidance only for materially different tradeoffs.
+
+## Keep ownership clear
+
+- `AGENTS.md` owns repository rules.
+- `docs/architecture.md` owns durable structure and rationale.
+- This playbook owns change procedure.
+- `docs/platform-notes.md` owns host differences.
+- `docs/skills.md` owns the human-facing input/output catalog.
+- `evals/*.json` owns routing examples.
+
+Prefer a link over repeated wording. Only `parallel-subagents` and
+`second-opinion` may authorize subagents; an allowlist change requires matching
+runtime contracts, templates, evaluation cases, tests, and architecture docs.
+
+## Verify
 
 Run:
 
 ```bash
 uv sync --dev
 ./test.sh
+git diff --check
 ```
 
-`uv sync --dev` creates `.venv` from the committed lockfile. PyYAML is the only
-third-party development dependency. Do not add Python packages unless a
-repository test or deterministic development tool requires them; runtime
-skills and the install scripts must remain independent of this environment.
-
-The deterministic test command validates portable Agent Skills frontmatter,
-Mecha Suit interaction contracts, Codex adapter metadata, evaluation-corpus
-structure, shell syntax, install/uninstall behavior, routing-family layout, and
-subagent boundary rules. Add focused checks there when a new executable
-invariant is introduced.
-
-## Maintain behavioral evaluations
-
-Keep reusable prompts and expectations in
-`evals/interaction-boundary.json`. Store explicit skill names separately from
-prompt text so each host adapter can render its own invocation syntax. Use
-realistic positive prompts and near-miss negatives, and keep the committed
-train/validation split fixed while tuning descriptions.
-
-`./test.sh` validates and dry-renders the corpus without invoking a model. Run
-the opt-in Codex adapter when behavioral evidence is worth its cost:
-
-```bash
-uv run python scripts/run_interaction_evals.py \
-    --host codex \
-    --split validation \
-    --runs 3
-```
-
-Treat Codex skill-file-read observations as heuristic and explicit bindings
-without an observable read as inconclusive. Do not make live model evaluation
-a deterministic test or merge prerequisite. Review single-turn interaction
-responses manually; do not simulate multi-turn state inside one prompt. Add
-another host adapter only after verifying its invocation telemetry against the
-same corpus.
-
-## Write open-ended skills
-
-Open-ended skills must be persistent without flailing.
-
-- Define a bounded first-pass workflow.
-- Define what useful progress means for the skill.
-- Include at least two distinct progress strategies when the domain supports it.
-- Define valid stop states and blockers.
-- Require a compact decision record: assumptions, attempts, evidence, blocker, confidence, and next step.
-- Avoid broadening scope as a substitute for progress.
-
-"I ran out of ideas" must mean "I exhausted the bounded strategy set," not "I am uncertain." Uncertainty is a signal to narrow the task, inspect evidence, ask a focused question, or yield with a specific blocker after the persistence floor is met.
-
-Use `shared/rubrics/persistence-yield-rubric.md` for shared language.
-
-Use `shared/rubrics/change-discipline.md` as the minimum coding floor when
-multiple families produce code. Add family-specific coding or performance
-guidance when the domain needs materially different tradeoffs rather than
-forcing application-development conventions everywhere.
-
-## Choose where future behavior belongs
-
-- Leave ordinary ambiguity reduction and focused missing-input questions to the
-  host agent.
-- Put reusable domain execution methods in a specialist leaf.
-
-## Govern subagent use
-
-- Only `parallel-subagents` and `second-opinion` may authorize subagent use.
-- Both must preserve main-process ownership, prohibit nested delegation, check
-  host capability, and require structured evidence returns.
-- All other skills must not spawn, request, assume, or depend on subagents.
-- Any change to this allowlist is an explicit architecture change requiring
-  matching tests, templates, README, and collaboration specs.
+The suite validates portable frontmatter, interaction contracts, Codex
+metadata, reference ownership, documentation links, evaluation corpora, shell
+syntax, family layout, subagent boundaries, and install/uninstall safety.

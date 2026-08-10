@@ -1,6 +1,6 @@
 ---
 name: <loop-name>
-description: <one constructive sentence describing the multi-turn outcome the loop owns>
+description: <one constructive sentence describing the multi-turn outcome and explicit invocation cue>
 ---
 
 # <Loop Title>
@@ -8,10 +8,6 @@ description: <one constructive sentence describing the multi-turn outcome the lo
 ## Purpose
 
 <What outcome this interactive loop develops across turns.>
-
-## Use When
-
-- <Explicit user request that should activate the loop.>
 
 ## Do Not Use
 
@@ -60,12 +56,10 @@ output, and completion contracts.
 ## Lifecycle Participation
 
 <Link the shared lifecycle contract when the loop may use matching work
-records. Do not create durable state merely to remember the loop.>
+records. Read it only when it is not already available in the current context.
+Do not create durable state merely to remember the loop.>
 
 ## Persistence And Yield
 
-Useful progress means <a resolved decision, learned fact, sharper model, or
-other loop-specific progress signal>.
-
-Before yielding, complete one progress unit or identify the exact user-owned
-decision or evidence prerequisite. Return the loop state and next interaction.
+<Name a loop-specific progress unit and the exact condition for pausing or
+yielding without repeating generic host persistence instructions.>

@@ -10,15 +10,6 @@ description: Build and verify isolated greenfield prototypes, demos, tools, or a
 Build an isolated greenfield artifact that demonstrates one core outcome
 end-to-end, without introducing production architecture.
 
-## Use When
-
-- The work starts from little or no existing implementation.
-- The artifact is isolated and organized around one demonstrable outcome.
-- The user wants a prototype, demo, tool, app, or experiment.
-
-There is no line-count limit. Greenfield posture and a single core outcome are
-the routing cues.
-
 ## Do Not Use
 
 - Changes inside an existing repository that are not an isolated greenfield
@@ -40,7 +31,6 @@ that skill's large-codebase boundary. Otherwise continue with native Codex.
 
 ## Returns
 
-- Updated `.mecha/work/<slug>/index.md` when durable continuity is warranted.
 - A runnable vertical slice with conventional run instructions.
 - Verification of the primary path and a material failure path.
 - Visible shortcuts, scope deferrals, and promotion signals.
@@ -51,28 +41,17 @@ that skill's large-codebase boundary. Otherwise continue with native Codex.
 - The realistic primary path and one material failure path are verified.
 - Run instructions live in the repository's conventional location.
 - Required, optional, and deferred scope is clear.
-- Work-record state is current when durable continuity is in use.
 
 ## Methodology
 
 ### Phase 0: Continuity Check
 
-Look for a matching `.mecha/work/<slug>/index.md`, partial implementation,
-relevant TODO markers, and recent Git history when a repository exists. Check
-for a legacy `SCRATCHPAD.md` only to reconcile existing state safely.
-
-If a work record exists, read it completely, verify its claims against current
-files and runnable state, and resume from its next step. Preserve accepted
-intent when correcting stale implementation state.
-
-If a legacy scratchpad matches, read and verify it, then offer to reconcile its
-useful state. Do not move or delete it without explicit authorization.
-
-Create a continuity-mode work record only for multi-session work, multiple
-dependencies, significant coordination risk, or an explicit user request.
-Small prototypes keep state in the response. Follow
-`../references/session-continuity.md` and
-`../../../shared/rubrics/lifecycle-contract.md`.
+Inspect partial implementation and any matching work record. Verify recorded
+claims before resuming. Use `../references/session-continuity.md` for durable
+multi-session work; otherwise keep state in the response. When a matching
+record requires `../../../shared/rubrics/lifecycle-contract.md`, read it only
+if its current contents are not already available in context. Reconcile legacy
+scratchpads without moving or deleting them unless authorized.
 
 ### Phase 1: Frame the Demonstration
 
@@ -91,17 +70,10 @@ Maintain a scope budget:
 
 ### Phase 2: Choose the Stack
 
-Choose from, in order:
-
-1. explicit user preference;
-2. available runtime and repository context;
-3. libraries critical to the hypothesis;
-4. deployment or distribution target;
-5. likely maintainer familiarity.
-
-Do not shop for frameworks without a constraint. Record the choice and a short
-rationale. Use `references/stack-selection.md`, then load only the shared
-language primers relevant to the chosen stack.
+Choose from explicit preference, available runtime, hypothesis-critical
+libraries, delivery target, then maintainer familiarity. Do not shop for
+frameworks without a constraint. Use `references/stack-selection.md` when the
+choice is material and load only the relevant `../references/*-practices.md`.
 
 ### Phase 3: Build One Vertical Slice
 
@@ -114,8 +86,8 @@ Then add only:
 - behavior required to observe the core outcome;
 - optional scope that is genuinely cheap and does not create architecture.
 
-Follow `../../../shared/rubrics/change-discipline.md`. Local duplication is acceptable
-when extracting an abstraction would cost more to understand or change.
+Follow `../../../shared/rubrics/change-discipline.md`. Keep local duplication
+when extraction would cost more to understand or change.
 
 ### Phase 4: Calibrate Quality
 
@@ -140,34 +112,23 @@ concurrency, and types without building production layers.
 
 ### Phase 6: Close and Assess Promotion
 
-Promotion signals include:
-
-- real users depend on it;
-- it handles sensitive or durable data;
-- downtime or incorrect output has consequences;
-- it integrates into production systems;
-- it acquires compatibility obligations.
-
-When a signal appears, identify the hardening work. Hand off to
+Real users, sensitive or durable data, consequential failures, production
+integration, or compatibility obligations are promotion signals. When one
+appears, identify the hardening work. Hand off to
 `large-codebase-change` only if the resulting existing repository also meets
 the large-codebase heuristic; otherwise continue with native Codex.
 
 If using a work record, update runnable state, verification, files changed,
 deferrals, promotion signals, and the next step.
 
-In lifecycle mode, link the prototype as evidence for the decision it tests and
-record the observed answer separately from interpretation. Prototype completion
-does not complete lifecycle code work; retain the review or explicit-waiver
-gate when the prototype itself is the requested code deliverable.
+In lifecycle mode, record observation separately from interpretation. Prototype
+completion does not waive required review of a requested code deliverable.
 
 ## Persistence And Yield
 
-Useful progress means a working slice, validated stack choice, clearer scope,
-or discovered constraints.
-
-Before yielding, try the primary path and one bounded simplification such as a
-smaller scope, simpler stack, or fewer features. Check whether missing
-information is discoverable and update the work record when one is in use.
+Progress is a working slice, validated stack, clearer scope, or discovered
+constraint. Try one bounded simplification before yielding and update any
+active work record.
 
 ## Pivot Rules
 
@@ -179,16 +140,9 @@ information is discoverable and update the work record when one is in use.
 - If the user changes the core outcome, update the scope budget before
   continuing.
 
-## References
+## Language References
 
-- `../../../shared/rubrics/change-discipline.md` — anti-bloat and surgical-change gates
-- `../../../shared/rubrics/lifecycle-contract.md` — optional durable work and intent contract
-- `../references/session-continuity.md` — engineering continuity protocol
-- `../references/python-practices.md` — Python idioms
-- `../references/typescript-practices.md` — TypeScript idioms
-- `../references/go-practices.md` — Go idioms
-- `../references/rust-practices.md` — Rust idioms
-- `../references/systems-c-cpp-practices.md` — C and C++ idioms
-- `../references/java-jvm-practices.md` — Java and JVM idioms
-- `references/stack-selection.md` — constraint-led stack selection
-- `references/prototype-quality.md` — risk-calibrated prototype quality
+Load only the relevant primer: `../references/python-practices.md`,
+`../references/typescript-practices.md`, `../references/go-practices.md`,
+`../references/rust-practices.md`, `../references/systems-c-cpp-practices.md`,
+or `../references/java-jvm-practices.md`.

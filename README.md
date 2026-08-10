@@ -1,478 +1,127 @@
 # Mecha Suit
 
-Mecha Suit is a reusable skill harness for Codex-first work. It gives your
-agent a small, opinionated set of global skills for collaborating on product
-ideas and doing specialist work.
+Mecha Suit is a small, version-controlled toolbox of reusable skills for coding
+agents. It is Codex-first and keeps its shared skill documents portable enough
+for other Agent Skills-compatible hosts.
 
-Authorship note: Mecha Suit was vibe-coded by Codex and human-QC'ed by the maintainer.
+The toolbox helps an agent collaborate on product decisions, carry out focused
+engineering and AI work, and write long-form prose. It improves working
+discipline; it does not replace your judgment, tests, review, or production
+safeguards.
 
-## Read This First
+## Install
 
-Mecha Suit is not magic safety. It does not make an agent correct, harmless, or production-ready by default. It gives the agent better instructions and cleaner routing boundaries so it is less likely to sprawl, guess silently, or use the wrong mode of work.
-
-You still need to:
-
-- read commands before running them
-- inspect diffs before accepting changes
-- run tests before trusting output
-- keep secrets and private infrastructure out of global reusable skills
-- write repo-local instructions for project-specific facts
-
-If you are vibecoding fast, Mecha Suit is the seatbelt, not the driver.
-
-## What This Is
-
-Mecha Suit is a version-controlled library of reusable agent skills.
-
-The basic model:
-
-1. Keep this repository somewhere you control.
-2. Install the skill folders as symlinks into an agent skill directory.
-3. Put project-specific facts in each project's `AGENTS.md` or in repo-local adapter skills.
-4. Let native Codex handle ordinary selection and clarification while global
-   skills provide product collaboration, engineering workflows, and AI
-   workflows.
-
-The harness is designed for Codex first, while keeping the skill documents portable enough to adapt to other agent hosts later.
-
-## What This Is Not
-
-Mecha Suit is not:
-
-- a replacement for code review
-- a replacement for tests
-- a prompt that should contain every fact about every project
-- a permission slip to run destructive commands blindly
-- a subagent free-for-all
-- a production framework or package manager
-
-The global skills should stay generic. Local facts belong locally.
-
-## Quick Start
-
-From this repository:
+Prepare and verify this checkout:
 
 ```bash
 uv sync --dev
 ./test.sh
 ```
 
-`uv sync --dev` creates the local `.venv` and installs the test-only dependencies.
-PyYAML is the only third-party dependency. The skill installer and installed
-skills do not depend on Python or this environment.
-
-`./test.sh` verifies the harness before you install anything. It checks
-portable Agent Skills contracts, Codex adapter metadata, the host-neutral
-interaction-evaluation corpus, script syntax, family layout, the exact
-subagent-authorization allowlist, and install/uninstall behavior against a
-temporary skill root. It never invokes a model.
-
-Install every skill into the default Codex skill root:
+Install all skills into the default Codex skill root:
 
 ```bash
 ./install.sh
 ```
-
-By default, this creates symlinks under:
-
-```text
-$CODEX_HOME/skills, when CODEX_HOME is set
-$HOME/.codex/skills, otherwise
-```
-
-On Windows, run the scripts from WSL, Git Bash, MSYS, or Cygwin. The installer
-uses the Bash-visible home directory, and converts `USERPROFILE` to a Unix-style
-path in common Windows Bash shells when possible.
 
 Install only selected skills:
 
 ```bash
-./install.sh parallel-subagents second-opinion
+./install.sh product-co-design large-codebase-change
 ```
 
-Install into a custom skill root:
-
-```bash
-MECHA_SKILL_ROOT="$HOME/.codex/skills" ./install.sh
-```
-
-Install into the legacy compatibility root:
-
-```bash
-MECHA_SKILL_ROOT="$HOME/.agents/skills" ./install.sh
-```
-
-Uninstall every managed symlink:
-
-```bash
-./uninstall.sh
-```
-
-Uninstall from a custom skill root:
-
-```bash
-MECHA_SKILL_ROOT="$HOME/.codex/skills" ./uninstall.sh
-```
-
-The install scripts are intentionally conservative. They skip unrelated files, directories, and symlinks instead of overwriting them.
-
-## How Installation Works
-
-`install.sh` discovers skills by looking for:
-
-```text
-families/*/*/SKILL.md
-```
-
-Each skill directory is symlinked into the selected skill root. The selected root is:
-
-1. `MECHA_SKILL_ROOT`, when set.
-2. `$CODEX_HOME/skills`, when `CODEX_HOME` is set.
-3. `$HOME/.codex/skills`, otherwise.
-
-For Windows Git Bash, MSYS, or Cygwin, the default root is the Unix-style path
-for `%USERPROFILE%\.codex\skills` when `USERPROFILE` can be converted.
-
-The installer is idempotent. Running it twice should report already-installed skills, not duplicate anything.
-
-`uninstall.sh` removes only symlinks that point back to skill directories in this repository. If it sees a real file, directory, or symlink owned by something else, it skips it.
-
-## How The Harness Is Organized
-
-Mecha Suit is organized into skill families:
-
-- `families/collaboration/`: interviewing, low-friction communication, product
-  co-design and research, domain modeling, decision mapping, portable handoff,
-  bounded parallel delegation, and independent review.
-- `families/engineering/`: technical research, accepted implementation
-  specifications, work slicing, PR-ready large-repository changes, isolated
-  greenfield prototypes, bug diagnosis, and three-axis code review.
-- `families/ai/`: an explicit-only initial pipeline manual plus callable leaves
-  for data preparation, insight development, representations, problem
-  modeling, and performance across ML, deep learning, GOFAI, and hybrids.
-- `families/writing/`: long-form prose authoring and revision plus
-  VitePress-ready posts and CTF writeups in N00bcak's voice.
-
-Codex selects callable skills directly from their frontmatter descriptions and
-handles ordinary ambiguity without a generic routing or clarification skill.
-
-The collaboration, engineering, AI, and writing specialist leaves are fully authored.
-
-Every skill uses one interaction-lifetime contract:
-
-- A task skill owns a bounded outcome and is the default.
-- A session overlay changes how the active task or loop is conducted.
-- An interactive loop owns a multi-turn exchange until it completes, pauses,
-  is cancelled, or is explicitly replaced.
-
-Overlays and loops require explicit invocation in each session. At most one
-loop is active; an overlay may compose with the active task or loop. The
-templates for all three contracts live under `templates/`.
-
-## Optional Work Lifecycle
-
-Mecha Suit can connect collaboration and engineering leaves through a matching
-work record without adding a router. Small ad-hoc tasks create no record.
-Durable work uses `.mecha/work/<slug>/index.md` in one of two modes:
-
-- `continuity` keeps verified multi-session state and one next action.
-- `lifecycle` adds user-authoritative intent, stable acceptance criteria,
-  linked research and decisions, work slices, evidence, and review state.
-
-The first fallback record adds `.mecha/` to the repository's `.gitignore`.
-Existing project conventions take precedence. Accepted intent changes only with
-user authorization; implementation evidence may challenge it but not silently
-rewrite it.
-
-An explicitly requested durable plan or an accepted planning-mode output may
-activate lifecycle planning. Skill selection alone does not authorize durable
-state. When the host forbids writes during planning, the plan remains in the
-conversation and is materialized on the first execution turn.
-
-A matching work record may preserve advisory resume candidates for an explicit
-overlay or unfinished loop. They never activate automatically in a new
-session: an unfinished loop prompts before its work resumes, while an overlay
-is mentioned without blocking the requested task.
-
-## Which Skill Do I Use?
-
-For a brief, human-friendly view of every skill, see
-[Skills at a Glance](docs/skills.md). It shows what you bring and what each
-skill gives back.
-
-For ordinary ambiguity, let Codex inspect supplied context, state safe
-assumptions, and ask one focused question only when a user-owned decision
-materially changes the work.
-
-Engineering specialist leaves and AI execution leaves
-(`ai-data-preparation`, `ai-insight-development`,
-`ai-representation-workbench`, `ai-problem-modeling`, `ai-performance`) are
-fully authored and callable.
-
-Use `product-research` for evidence about users, workflows, alternatives, and
-domain assumptions. Use `technical-research` for software, API, architecture,
-standards, compatibility, or feasibility questions grounded in primary sources
-and reproducible repository evidence.
-
-Use `domain-modeling` to sharpen terminology, test invariants against scenarios
-and code, and preserve authorized durable decisions. Use `decision-mapping` for
-long-horizon efforts whose path to an implementation specification is still
-unclear.
-
-Use `implementation-spec` to create accepted intent with stable criteria,
-constraints, and non-goals. Use `work-slicing` to derive verifiable vertical
-slices and dependency edges without changing that intent.
-
-Use `diagnosing-bugs` for difficult bugs and regressions that need a tight
-reproducer and falsifiable hypotheses. Use `code-review` to review a bounded
-change separately for intent fidelity, behavioral correctness and evidence,
-and maintainability.
-
-Use `portable-handoff` when verified state must cross a session, machine,
-checkout, agent, or collaborator boundary.
-
-Use `large-codebase-change` for any requested edit in a clearly large existing
-repository, even when the diff is small. Existing repositories clearly below
-roughly 5k maintained source lines stay with native Codex. Use
-`prototype-builder` for isolated greenfield prototypes, demos, tools, or apps;
-it has no line-count limit.
-
-Use `interview-me` only by explicitly invoking it or directly asking to use it.
-It conducts a scoped, one-question-at-a-time interview and is never an
-automatic selection destination.
-
-Use `ai-pipeline` only by explicitly naming or invoking it. It conducts a
-one-time framing interview and creates `ML_PIPELINE.md`; it does not execute
-the five AI leaves or manage later iteration.
-
-Explicitly invoke `product-co-design` to enter its product-shaping loop for a
-service, workflow, experience, or product concept and continue until the
-concept is ready, paused, or cancelled.
-
-Explicitly invoke `low-friction-collaboration` to overlay a dense or multi-step
-technical session with communication that is easy to follow, resume, and act
-on without reducing reasoning depth or precision.
-
-Use `humanizer` to write or revise long-form papers, essays, reports, articles,
-speeches, and ordinary blog posts. Use `blogpost-writing` for VitePress-ready
-posts or CTF writeups intended for N00bcak's site or voice.
-
-Use `parallel-subagents` when two or more bounded assignments are genuinely
-independent, have non-overlapping ownership, and can be reconciled by the main
-process. Use `second-opinion` for one non-leading independent critique of a
-consequential conclusion, diagnosis, plan, or diff.
-
-Only those two skills authorize subagent use. The main process retains scope,
-permissions, decisions, integration, verification, and final-response
-ownership; nested delegation is prohibited.
-
-## Responsible Use
-
-Before asking an agent to work in a repository:
-
-1. Read that repository's `AGENTS.md`.
-2. Confirm setup, test, lint, and run commands.
-3. Tell the agent what files or areas are out of scope.
-4. Run `./test.sh` in this harness after editing the harness.
-5. Inspect diffs before committing or deploying.
-
-Do not paste secrets into global skills. Do not hardcode private company systems in global skills. Do not turn one project's local quirks into reusable rules for every future project.
-
-If a command sounds destructive, ask the agent to explain it first. If a change affects data, auth, billing, deployments, or security boundaries, slow down and verify.
-
-## Persistence, Not Flailing
-
-Mecha Suit expects agents to keep working while the work is evidence-producing. Useful progress means new evidence, narrower uncertainty, an improved artifact, an invalidated assumption, a clearer next action, or a risk surfaced with evidence.
-
-Mecha Suit also expects agents to stop before hallucinating, repeating failed moves, or broadening scope irresponsibly. Yielding is allowed only after bounded, distinct attempts and a concise record of attempts, evidence, blocker, and next recovery step.
-
-Hard, uncertain, or incomplete work is not enough reason to stop. The agent must show why another in-scope attempt would repeat prior work, require unsafe guessing, or need input it cannot discover.
-
-## Common Workflows
-
-Install all skills:
-
-```bash
-./install.sh
-```
-
-Install selected skills:
-
-```bash
-./install.sh product-co-design low-friction-collaboration
-```
-
-Use a custom skill root:
+Choose a different root when needed:
 
 ```bash
 MECHA_SKILL_ROOT="/path/to/skills" ./install.sh
 ```
 
-Add a repo-local `AGENTS.md`:
+The default is `$CODEX_HOME/skills` when `CODEX_HOME` is set, otherwise
+`$HOME/.codex/skills`. On Windows, run the scripts through WSL, Git Bash, MSYS,
+or Cygwin.
 
-1. Copy `templates/repo-AGENTS.template.md` into the target repository as `AGENTS.md`.
-2. Fill in local commands, paths, generated-file rules, and guardrails.
-3. Keep reusable methods out of the local file.
+The installer creates symlinks and will not overwrite unrelated files,
+directories, or links. It is safe to run again.
 
-Create a repo-local adapter skill:
-
-1. Copy `templates/repo-adapter-skill.template.md` into the target repository's local skill area.
-2. Point it at one global skill.
-3. Add only local context: commands, paths, conventions, constraints.
-
-Add or edit a global skill:
-
-1. Read `AGENTS.md` in this repository.
-2. Choose `task-skill.template.md`, `session-overlay.template.md`, or
-   `interactive-loop.template.md` from the skill's interaction lifetime.
-3. Keep the skill narrow.
-4. Create the skill directory only when its runtime contract is callable.
-5. Update routing examples and README when the visible skill set changes.
-6. Run `uv sync --dev`, then `./test.sh`.
-
-Uninstall safely:
+To remove links managed by this checkout:
 
 ```bash
 ./uninstall.sh
 ```
 
-If you installed with `MECHA_SKILL_ROOT`, uninstall with the same value.
+Use the same `MECHA_SKILL_ROOT` for uninstalling if you supplied one during
+installation.
 
-## What Goes Where
+## Use
 
-- `SKILL.md`: runtime behavior, trigger boundaries, input needs, output contract, done conditions.
-- `references/`: passive checklists, rubrics, examples, and decision aids.
-- `scripts/`: deterministic helpers that remove repeated procedural work.
-- `evals/`: host-neutral prompts and observable behavioral expectations.
-- `tests/`: deterministic validator, schema, and adapter-rendering tests.
-- `templates/`: repeatable authoring patterns.
-- `docs/`: human-facing maintenance and platform notes.
-- `agents/`: host metadata only when it materially improves routing or
-  invocation behavior. `interview-me`, `product-co-design`,
-  `low-friction-collaboration`, and `ai-pipeline` currently use explicit-only
-  Codex metadata; other leaves rely on frontmatter.
-- `AGENTS.md`: rules for developing this harness itself.
-- `PROMPT.md`: original scaffold prompt, kept as project history.
+Tell the agent what outcome you want and share the context you already have.
+The host normally chooses a matching skill from its description. You do not
+need to memorize the toolbox.
 
-Do not hide active runtime instructions in `references/`. Do not add scripts
-unless they improve repeatability. Do not add `agents/` metadata to task skills
-by default; explicit overlays and loops require it. Keep future skill concepts
-in specs until their runtime behavior is fully authored.
+Four modes start only when you ask for them:
 
-## Verify Changes
+- `product-co-design` shapes a product concept through a multi-turn exchange.
+- `interview-me` runs a focused, one-question-at-a-time interview.
+- `low-friction-collaboration` makes a complex working session easier to
+  follow and resume.
+- `ai-pipeline` frames an AI effort and creates an initial pipeline plan.
 
-Run:
+See [Skills at a Glance](docs/skills.md) for the input and output of every
+skill.
 
-```bash
-./test.sh
-```
+Keep project-specific commands, paths, architecture, and restrictions in that
+project's `AGENTS.md` or a repo-local adapter. Global skills should remain
+portable.
 
-The test harness checks:
+## Safety
 
-- Agent Skills-compatible frontmatter and interaction contracts
-- Codex-specific `agents/openai.yaml` metadata as a separate adapter layer
-- validator unit tests and host-neutral interaction-evaluation cases
-- shell syntax for executable scripts
-- required routing and family layout
-- absence of `families/orchestration/`
-- subagent authorization limited to `parallel-subagents` and `second-opinion`
-- main-process ownership, structured evidence, and no nested delegation in
-  both authorized skills
-- install behavior against a temporary skill root
-- idempotent reinstall
-- selected-skill install
-- missing-skill failure
-- unrelated file and symlink protection
-- managed uninstall behavior
+Mecha Suit is a seatbelt, not the driver. Before accepting agent work:
 
-Add focused checks to `test.sh` when a new executable invariant is introduced.
+- read commands before running them;
+- inspect the diff;
+- run the relevant tests;
+- keep secrets and private infrastructure out of reusable skills;
+- use extra care around data, authentication, billing, deployments, and
+  security boundaries.
 
-Live evaluation is deliberately separate from the deterministic test suite:
+Only `parallel-subagents` and `second-opinion` may authorize subagent use. The
+main agent still owns scope, permissions, integration, verification, and the
+final response.
+
+## Repository Map
+
+- `families/` contains the installable skills.
+- `shared/` contains cross-skill runtime contracts and rubrics.
+- `templates/` contains repeatable skill and host-instruction starting points.
+- `evals/` contains host-neutral routing and interaction cases.
+- `tests/` and `test.sh` contain deterministic checks.
+- `docs/` contains the short human handbook.
+
+For maintainers, start with [AGENTS.md](AGENTS.md), then use
+[Architecture](docs/architecture.md), the
+[Maintenance Playbook](docs/maintenance-playbook.md), and
+[Platform Notes](docs/platform-notes.md) as needed.
+
+## Troubleshooting
+
+If a skill does not appear, confirm that the host reads the root used by the
+installer and that the link points to this checkout.
+
+If installation skips a path, it belongs to something else. Inspect it and
+decide manually whether it should move; the installer will not take ownership.
+
+If `./test.sh` fails, read the first `[fail]` line, run `uv sync --dev`, fix the
+reported contract or structure, and run the test again.
+
+Live routing evaluation is optional and separate from deterministic tests:
 
 ```bash
 uv run python scripts/run_interaction_evals.py \
     --host codex \
+    --corpus evals/interaction-boundary.json \
     --split validation \
     --runs 3
 ```
 
-The committed corpus keeps user prompts and expected behavior independent of
-host invocation syntax. The Codex adapter renders `$skill-name` only at run
-time. Its invocation result is heuristic because current Codex JSON events do
-not expose a stable implicit-skill invocation event; explicit bindings without
-an observable skill-file read are reported as inconclusive.
-Single-turn interaction responses are retained for manual review. Multi-turn
-cases remain corpus-level review scenarios until an adapter can preserve and
-observe host session state without contaminating the test.
-
-## Troubleshooting
-
-### The skill root is wrong
-
-Set `MECHA_SKILL_ROOT` explicitly:
-
-```bash
-MECHA_SKILL_ROOT="/path/to/skills" ./install.sh
-```
-
-Use the same value for uninstalling.
-
-### Install skipped an existing file
-
-The installer refuses to overwrite unrelated files or directories. Inspect the skipped path. Move it yourself if it is safe, then rerun install.
-
-### Install skipped an unrelated symlink
-
-The target name already points somewhere else. The harness will not steal it. Inspect the link with:
-
-```bash
-ls -l "$HOME/.codex/skills/<skill-name>"
-```
-
-Then decide whether to keep it, rename it, or remove it manually.
-
-### Uninstall skipped a symlink
-
-The symlink does not point back to this checkout. That means it is not managed by this harness. Remove it manually only if you are sure it is not needed.
-
-### A skill does not trigger
-
-Check that the skill is installed in the skill root your agent host actually reads. Then check the skill frontmatter `name` and `description` in its `SKILL.md`.
-
-If the task is vague, inspect supplied context and clarify it before expecting
-a specialist skill to trigger.
-
-### `./test.sh` fails
-
-Read the failing `[fail]` line first. The test harness is intentionally small; failures usually mean one of these changed:
-
-- the uv development environment has not been synchronized
-- skill frontmatter is not valid YAML accepted by Codex's validator
-- a script has invalid shell syntax
-- a skill folder name and frontmatter name diverged
-- family layout changed
-- a skill outside the two-skill allowlist appears to authorize subagents
-- an authorized collaboration skill loses an ownership or evidence guardrail
-- install/uninstall safety behavior regressed
-
-Fix the cause, then rerun:
-
-```bash
-uv sync --dev
-./test.sh
-```
-
-## Architectural Rules
-
-- Native Codex owns ordinary skill selection and clarification.
-- Only `parallel-subagents` and `second-opinion` may authorize subagent use.
-- Specialist leaves do one job well.
-- Runtime behavior belongs in `SKILL.md`.
-- Repo-maintenance policy belongs in `AGENTS.md` and `docs/`.
-- Project-specific facts belong in repo-local instructions or adapter skills.
-
-## Repository Development
-
-Before meaningful changes, read `AGENTS.md`. It defines the rules for developing this harness.
-
-Use `docs/maintenance-playbook.md` for skill maintenance workflow and `docs/platform-notes.md` for host-specific notes.
+The runner adapts the host-neutral corpus to Codex. Skill-file-read evidence is
+heuristic, so review live results rather than treating them as a merge gate.

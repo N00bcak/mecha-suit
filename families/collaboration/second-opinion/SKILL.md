@@ -10,12 +10,6 @@ description: Obtain an independent evidence-backed critique of a consequential c
 Obtain one independent critique before the main process commits to a
 consequential, uncertain, or difficult-to-reverse conclusion or action.
 
-## Use When
-
-- A diagnosis has plausible competing explanations.
-- A plan or diff would benefit from adversarial review.
-- Anchoring, confirmation bias, or missed edge cases are material risks.
-
 ## Do Not Use
 
 - The answer is routine and directly verifiable.
@@ -61,10 +55,10 @@ material finding and why.
 ## Lifecycle Participation
 
 When separately invoked for work with a matching work record, read
-`../../../shared/rubrics/lifecycle-contract.md`. Build the non-leading review
-packet from the frozen artifact, accepted constraints, and raw evidence. The
-main process records its adjudication and any decisive check; the reviewer may
-not revise intent or lifecycle state.
+`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
+already available in context. Build the non-leading packet from the frozen
+artifact, accepted constraints, and raw evidence. The reviewer may not revise
+intent or lifecycle state.
 
 ## Workflow
 
@@ -88,9 +82,6 @@ chain-of-thought.
 
 ## Persistence And Yield
 
-Useful progress means a completed independent review, a verified finding, a
-rejected weak claim, or narrowed uncertainty.
-
-Before yielding, collect or stop the reviewer, inspect its evidence, and run
-any safe decisive check. Return the verdict, adjudication, blocker, confidence,
-and next recovery step.
+Progress is a completed review, verified finding, rejected weak claim, or
+narrower uncertainty. Collect or stop the reviewer, inspect its evidence, and
+run any safe decisive check before returning the adjudication.

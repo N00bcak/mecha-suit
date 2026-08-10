@@ -14,13 +14,6 @@ different genres rather than applying the loudest stylistic habits everywhere.
 Think as thoroughly as the topic requires before composing. Clear prose must
 carry the technical reasoning, not replace it.
 
-## Use When
-
-- Drafting or substantially rewriting a post for `n00bcak.github.io`.
-- Writing in N00bcak's established blog voice.
-- Producing a technical or personal blog post, CTF reflection, participant
-  writeup, or challenge-author writeup for the site.
-
 ## Do Not Use
 
 - Generic long-form prose with no connection to this site or voice; use
@@ -99,10 +92,6 @@ incomplete scaffold, mark missing material plainly.
 
 ## Persistence And Yield
 
-Useful progress means a settled thesis, resolved evidence gap, verified
-technical explanation, or completed post section.
-
-Before yielding, try the primary structure and one alternative framing when it
-does not serve the reader. Yield only when further drafting would require
-inventing author-owned material or unsupported technical claims. Return the
-specific missing input and where it affects the post.
+Progress is a settled thesis, resolved evidence gap, verified explanation, or
+completed section. Try one alternate framing when needed; yield only when
+continuing would invent author-owned material or unsupported claims.

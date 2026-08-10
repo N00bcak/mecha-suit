@@ -10,12 +10,6 @@ description: Delegate independent bounded subtasks concurrently and integrate th
 Run two or more independent subtasks concurrently when delegation materially
 improves latency, coverage, or context isolation.
 
-## Use When
-
-- Two or more bounded subtasks have separate inputs or change surfaces.
-- Each subtask can progress without another subtask's output.
-- The main process can inspect and reconcile every returned artifact.
-
 ## Do Not Use
 
 - The work is sequential or one result determines the next action.
@@ -60,10 +54,11 @@ verification performed, and unresolved risks.
 ## Lifecycle Participation
 
 When separately invoked for work with a matching work record, read
-`../../../shared/rubrics/lifecycle-contract.md`. Give subagents only the
-task-local artifacts and accepted constraints their assignments require. The
-main process links accepted evidence, reconciles conflicts, and updates current
-state; subagents never edit lifecycle intent or own phase transitions.
+`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
+already available in context. Give subagents only the task-local artifacts and
+accepted constraints their assignments require. The main process links
+accepted evidence and updates state; subagents never edit intent or own phase
+transitions.
 
 ## Workflow
 
@@ -86,9 +81,6 @@ chain-of-thought.
 
 ## Persistence And Yield
 
-Useful progress means a completed bounded assignment, inspected evidence, a
-reconciled conflict, or verified integrated state.
-
-Before yielding, collect or stop all live subagents, inspect available returns,
-and confirm further work would repeat or require a user-owned decision. Return
-the assignments, evidence, integration status, blocker, and next recovery step.
+Progress is a completed assignment, inspected evidence, reconciled conflict, or
+verified integration. Before yielding, collect or stop every live subagent and
+return integration state plus the next recovery step.

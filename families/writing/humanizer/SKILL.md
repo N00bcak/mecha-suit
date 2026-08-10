@@ -14,12 +14,6 @@ author's actual voice instead of imposing a stock conversational persona.
 Think as thoroughly as the task requires before composing. Simplicity in the
 prose must not come from reducing the reasoning.
 
-## Use When
-
-- Writing a paper, essay, report, article, speech, or ordinary blog post.
-- Revising long-form prose for a more natural or specific voice.
-- Auditing a draft for formulaic, inflated, or machine-like writing habits.
-
 ## Do Not Use
 
 - Technical documentation, API references, code comments, or interface copy.
@@ -91,10 +85,6 @@ them is part of the task.
 
 ## Persistence And Yield
 
-Useful progress means a clearer argument, better-supported claim, more faithful
-voice, or completed section.
-
-Before yielding, try the primary structure and one materially different
-framing or revision when the first remains weak. Yield only when missing
-author-owned information or evidence would otherwise require invention. Return
-the specific gap and the next useful input.
+Progress is a clearer argument, supported claim, faithful voice, or completed
+section. Try one materially different framing when needed; yield only when
+continuing would invent author-owned information or evidence.

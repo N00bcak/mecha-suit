@@ -10,13 +10,6 @@ description: Review changes for intent fidelity, behavioral correctness and evid
 Review a bounded change along three independent axes so clean code cannot mask
 the wrong behavior and passing tests cannot mask intent drift.
 
-## Use When
-
-- A branch, pull request, worktree diff, or lifecycle implementation needs
-  review against a fixed point.
-- The user asks for code review, change review, or verification against a spec.
-- Lifecycle code work is ready for its completion gate.
-
 ## Do Not Use
 
 - Do not edit the reviewed change unless the user separately requests fixes.
@@ -100,16 +93,13 @@ waiver does not turn missing verification into passing evidence.
 
 ## Lifecycle Participation
 
-Read `../../../shared/rubrics/lifecycle-contract.md`. Write the report to
-`.mecha/work/<slug>/review.md` or the established convention, link it, and
-update state. Route intent gaps to specification or the user, correctness gaps
-to diagnosis or implementation, and maintainability gaps to implementation.
+When a matching record exists, read
+`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
+already available in context. Store and link the report, then route intent,
+correctness, and maintainability gaps to their owning task shapes.
 
 ## Persistence And Yield
 
-Useful progress means a verified finding, cleared acceptance criterion,
-eliminated false positive, or decisive check.
-
-Before yielding, inspect the full bounded diff and run one safe decisive check
-for the highest-risk uncertain finding. Return the three axes, disposition,
-verification gaps, blocker, and next corrective action.
+Progress is a verified finding, cleared criterion, rejected false positive, or
+decisive check. Inspect the full bounded diff and test the highest-risk
+uncertainty before returning the three review axes and disposition.

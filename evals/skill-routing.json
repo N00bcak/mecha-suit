@@ -1,0 +1,143 @@
+{
+    "schema_version": 1,
+    "default_runs": 3,
+    "trigger_threshold": 0.5,
+    "cases": [
+        {
+            "id": "collaboration-domain-modeling",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["domain-modeling", "product-research", "implementation-spec"],
+            "turns": [{"prompt": "Our code and policies disagree about whether an account, customer, and tenant are the same thing. Define the terms and test the invariants against these scenarios.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["domain-modeling"], "excluded_skills": [], "behaviors": []}
+        },
+        {
+            "id": "collaboration-portable-handoff",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["portable-handoff", "implementation-spec"],
+            "turns": [{"prompt": "Package the verified state, evidence, risks, and next action so I can continue this work from another checkout tomorrow.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["portable-handoff"], "excluded_skills": [], "behaviors": []}
+        },
+        {
+            "id": "collaboration-second-opinion",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["second-opinion", "code-review"],
+            "turns": [{"prompt": "Get one independent, non-leading critique of this production migration plan before I approve it.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["second-opinion"], "excluded_skills": ["code-review"], "behaviors": []}
+        },
+        {
+            "id": "engineering-technical-research",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["technical-research", "diagnosing-bugs"],
+            "turns": [{"prompt": "Check the official API documentation and source to determine whether version 4 of this SDK supports streaming retries, with reproducible evidence.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["technical-research"], "excluded_skills": ["diagnosing-bugs"], "behaviors": []}
+        },
+        {
+            "id": "engineering-work-slicing",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["work-slicing", "implementation-spec"],
+            "turns": [{"prompt": "Decompose this accepted implementation contract into ordered, independently verifiable vertical slices without changing its intent.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["work-slicing"], "excluded_skills": ["implementation-spec"], "behaviors": []}
+        },
+        {
+            "id": "engineering-code-review",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["code-review", "large-codebase-change"],
+            "turns": [{"prompt": "Review this fixed diff against the accepted specification for intent fidelity, behavioral correctness and evidence, and maintainability. Do not edit it.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["code-review"], "excluded_skills": ["large-codebase-change"], "behaviors": []}
+        },
+        {
+            "id": "ai-explicit-pipeline",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["ai-pipeline", "ai-problem-modeling"],
+            "turns": [{"prompt": "Frame this churn prediction effort from raw evidence through evaluation and create the initial pipeline plan.", "explicit_invocations": ["ai-pipeline"]}],
+            "expected": {"loaded_skills": ["ai-pipeline"], "excluded_skills": [], "behaviors": []}
+        },
+        {
+            "id": "ai-data-preparation",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["ai-data-preparation", "ai-insight-development"],
+            "turns": [{"prompt": "Classify these columns, quantify missingness, resolve unit conversions, and package a documented analysis-ready dataset with provenance.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["ai-data-preparation"], "excluded_skills": ["ai-insight-development"], "behaviors": []}
+        },
+        {
+            "id": "ai-insight-development",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["ai-insight-development", "ai-data-preparation", "ai-problem-modeling"],
+            "turns": [{"prompt": "Find and validate meaningful cohort and temporal patterns in this prepared dataset, including alternate explanations and candidate signals.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["ai-insight-development"], "excluded_skills": [], "behaviors": []}
+        },
+        {
+            "id": "ai-problem-modeling",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["ai-problem-modeling", "ai-representation-workbench", "ai-performance"],
+            "turns": [{"prompt": "Formalize this forecasting objective and choose among boosted trees, a neural sequence model, and a hybrid, including baselines, metrics, and failure costs.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["ai-problem-modeling"], "excluded_skills": ["ai-performance"], "behaviors": []}
+        },
+        {
+            "id": "writing-blogpost",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["blogpost-writing", "humanizer"],
+            "turns": [{"prompt": "Turn these challenge notes into a VitePress-ready CTF writeup for n00bcak.github.io in my established site voice.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["blogpost-writing"], "excluded_skills": ["humanizer"], "behaviors": []}
+        },
+        {
+            "id": "collaboration-parallel-independent",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["parallel-subagents", "large-codebase-change"],
+            "turns": [{"prompt": "Update the independent Python and TypeScript packages concurrently; they share no files or generated artifacts, and integrate both verified results.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["parallel-subagents"], "excluded_skills": [], "behaviors": []}
+        },
+        {
+            "id": "collaboration-sequential-not-parallel",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["parallel-subagents"],
+            "turns": [{"prompt": "Run the schema migration first, then update callers based on the generated output from that migration.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["parallel-subagents"], "behaviors": []}
+        },
+        {
+            "id": "ai-representation-workbench",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["ai-representation-workbench", "ai-problem-modeling", "ai-performance"],
+            "turns": [{"prompt": "Design and validate a leakage-safe state representation and admissible heuristic for this planner before choosing the search algorithm.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["ai-representation-workbench"], "excluded_skills": ["ai-problem-modeling", "ai-performance"], "behaviors": []}
+        },
+        {
+            "id": "ai-routine-code-not-ai-workbench",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["ai-representation-workbench", "ai-problem-modeling"],
+            "turns": [{"prompt": "Rename this helper in the model-serving package and update its unit test; no features, model choices, or experiments are involved.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["ai-representation-workbench", "ai-problem-modeling"], "behaviors": []}
+        },
+        {
+            "id": "writing-humanizer",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["humanizer", "blogpost-writing"],
+            "turns": [{"prompt": "Revise this long-form policy report so it reads naturally while preserving every citation, qualification, and part of the argument.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["humanizer"], "excluded_skills": ["blogpost-writing"], "behaviors": []}
+        },
+        {
+            "id": "writing-api-docs-native",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["humanizer", "blogpost-writing"],
+            "turns": [{"prompt": "Rewrite these API reference entries and code comments for clarity and consistent terminology.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["humanizer", "blogpost-writing"], "behaviors": []}
+        }
+    ]
+}

@@ -10,13 +10,6 @@ description: Diagnose difficult bugs and regressions through a tight reproducer,
 Determine the supported cause of a difficult bug or performance regression
 through a symptom-specific feedback loop, then fix it only when authorized.
 
-## Use When
-
-- A bug, flake, regression, crash, wrong result, or slowdown resists a direct
-  inspection.
-- The user asks to diagnose or debug a reported failure.
-- Several plausible causes require disciplined discrimination.
-
 ## Do Not Use
 
 - Do not use for a routine failing test whose cause and repair are already clear.
@@ -91,15 +84,12 @@ prevention opportunity, verification, and remaining uncertainty.
 ## Lifecycle Participation
 
 When a matching record exists, read
-`../../../shared/rubrics/lifecycle-contract.md`. Link the reproducer and
-diagnostic evidence, map a fix to affected `AC-*` criteria, and route an intent
-contradiction back to the user rather than redefining expected behavior.
+`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
+already available in context. Link the reproducer and evidence, map a fix to
+affected `AC-*` criteria, and surface intent contradictions to the user.
 
 ## Persistence And Yield
 
-Useful progress means a tighter loop, smaller reproduction, falsified
-hypothesis, discriminating observation, or verified cause.
-
-Before yielding, try the primary reproduction and one distinct bounded way to
-raise its signal. Return attempts, evidence, confidence, blocker, why more work
-would repeat, and the next diagnostic action.
+Progress is a tighter loop, smaller reproducer, falsified hypothesis,
+discriminating observation, or verified cause. Try one distinct way to raise
+the reproduction signal before returning confidence and the next probe.

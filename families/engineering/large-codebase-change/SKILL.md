@@ -1,6 +1,6 @@
 ---
 name: large-codebase-change
-description: Implement PR-ready changes in codebases above roughly 5kLoC with idiomatic, anti-bloat, and verification discipline.
+description: Implement PR-ready changes to established code above roughly 5kLoC with idiomatic, anti-bloat, and verification discipline.
 ---
 
 # Large Codebase Change
@@ -9,17 +9,6 @@ description: Implement PR-ready changes in codebases above roughly 5kLoC with id
 
 Implement the smallest idiomatic, verified change that is ready for review in a
 clearly large existing repository.
-
-## Use When
-
-- The task changes an existing repository with roughly more than 5k lines of
-  maintained source code.
-- The requested edit is small or large; repository scale is the routing cue.
-- The work may affect integrations, shared contracts, persistence,
-  configuration, migrations, or compatibility boundaries.
-
-Treat 5kLoC as a heuristic. Exclude generated, vendored, dependency, and build
-output. Count only when repository size is genuinely unclear.
 
 ## Do Not Use
 
@@ -41,7 +30,6 @@ output. Count only when repository size is genuinely unclear.
 
 ## Returns
 
-- Updated `.mecha/work/<slug>/index.md` when durable continuity is warranted.
 - A minimal, idiomatic, PR-ready diff.
 - Verification evidence and explicit test gaps.
 - Compatibility or rollout risks, deferred work, and suggested review focus.
@@ -55,7 +43,6 @@ unless the user explicitly asks.
 - The requested behavior is implemented across every affected boundary.
 - The diff contains no speculative or redundant structure.
 - Relevant formatting, static checks, and tests pass, or gaps are explained.
-- Work-record state is current when durable continuity is in use.
 - The handoff identifies outcome, scope, evidence, risks, deferrals, and review
   focus.
 
@@ -63,24 +50,14 @@ unless the user explicitly asks.
 
 ### Phase 0: Continuity Check
 
-1. Look for a matching `.mecha/work/<slug>/index.md`, then for a legacy
-   `SCRATCHPAD.md` at the repository root or in `.agent/`.
-2. Inspect current Git status and recent history without changing the branch.
-3. Read TODO or FIXME markers only on the relevant change surface.
-
-If a work record exists, read it completely and verify its claims against
-files, Git state, and available tests before resuming. Correct stale
-implementation state before new work while preserving accepted intent.
-
-If only a legacy scratchpad exists, read and verify it. Offer to reconcile its
-useful state into the work record; do not move or delete it without explicit
-authorization.
-
-If no durable state exists, create a continuity-mode work record only for
-multi-session work, broad change surfaces, migrations, significant coordination
-risk, or an explicit user request. Small self-contained changes keep state in
-the response. Follow `../references/session-continuity.md` and
-`../../../shared/rubrics/lifecycle-contract.md`.
+Inspect Git state, relevant TODOs, partial work, and any matching work record.
+Verify recorded claims before resuming and preserve accepted intent when
+correcting stale implementation state. Use
+`../references/session-continuity.md` only for durable work; keep small changes
+in the response. When a matching record requires
+`../../../shared/rubrics/lifecycle-contract.md`, read it only if its current
+contents are not already available in context. Reconcile legacy scratchpads
+without moving or deleting them unless authorized.
 
 ### Phase 1: Orient Narrowly
 
@@ -88,8 +65,8 @@ the response. Follow `../references/session-continuity.md` and
 2. Inspect nearby implementation and test style.
 3. Identify the narrowest relevant change surface.
 4. Preserve unrelated working-tree changes.
-5. Load `../../../shared/rubrics/change-discipline.md`.
-6. Load only the shared language primers for files likely to change.
+5. Load `../../../shared/rubrics/change-discipline.md` and only the relevant
+   `../references/*-practices.md` primers.
 
 Do not survey the whole repository. Count maintained source lines only if the
 routing boundary remains unclear after inspecting its structure.
@@ -132,7 +109,7 @@ Apply these abstraction gates:
   existing toolchain.
 
 Handle errors, resources, concurrency, and types in the repository's idiom.
-Avoid drive-by cleanup; remove only artifacts made obsolete by this change.
+Remove only artifacts made obsolete by this change.
 
 Read `../references/behavior-first-development.md` when the user requests
 test-first work, a regression needs a durable guard, or a meaningful automated
@@ -169,35 +146,22 @@ affected verification after compression.
 
 ### Phase 6: Close
 
-If using a work record, update completed work, current verification state,
-deferrals, risks, modified files, and one explicit next step. Set status to
-`complete` only when no required work remains.
+Update any active work record with verification, risks, files, and one next
+step. Set it complete only when no required work remains.
 
 In lifecycle mode, implementation completion is not lifecycle completion.
 Record the fixed point, diff scope, criterion evidence, and review-ready state,
 then name three-axis review as the next task shape. Keep lifecycle state
 in-progress until `code-review` passes or the user records an explicit waiver.
 
-Return a PR-ready handoff:
-
-- outcome;
-- concise diff scope;
-- verification evidence;
-- compatibility or rollout risks;
-- intentionally deferred work;
-- suggested reviewer focus.
-
-Do not publish Git state unless explicitly requested.
+Return the outcome, diff scope, verification, risks, deferrals, and reviewer
+focus. Do not publish Git state unless explicitly requested.
 
 ## Persistence And Yield
 
-Useful progress means working code, passing tests, narrowed change surface,
-discovered constraints, or verified assumptions.
-
-Before yielding, try the primary path and one distinct bounded alternative,
-check whether missing information is locally discoverable, and confirm further
-work would repeat or require a user-owned decision. Update the work record when
-one is in use.
+Progress is working code, passing tests, a narrower change surface, or a
+verified constraint. Try one distinct bounded alternative before yielding and
+update any active work record.
 
 ## Pivot Rules
 
@@ -207,18 +171,9 @@ one is in use.
 - Use an appropriate domain specialist when engineering integration is not the
   primary task.
 
-## References
+## Language References
 
-- `../../../shared/rubrics/change-discipline.md` — anti-bloat and surgical-change gates
-- `../../../shared/rubrics/lifecycle-contract.md` — optional durable work and intent contract
-- `../references/session-continuity.md` — engineering continuity protocol
-- `../references/behavior-first-development.md` — conditional red-green vertical development
-- `../references/design-decision-discipline.md` — conditional interface and seam decisions
-- `../references/python-practices.md` — Python idioms
-- `../references/typescript-practices.md` — TypeScript idioms
-- `../references/go-practices.md` — Go idioms
-- `../references/rust-practices.md` — Rust idioms
-- `../references/systems-c-cpp-practices.md` — C and C++ idioms
-- `../references/java-jvm-practices.md` — Java and JVM idioms
-- `references/testing-strategy.md` — risk-calibrated test selection
-- `references/migration-and-rollout.md` — migration and rollout decisions
+Load only the relevant primer: `../references/python-practices.md`,
+`../references/typescript-practices.md`, `../references/go-practices.md`,
+`../references/rust-practices.md`, `../references/systems-c-cpp-practices.md`,
+or `../references/java-jvm-practices.md`.

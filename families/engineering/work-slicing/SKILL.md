@@ -10,12 +10,6 @@ description: Decompose an accepted implementation contract into verifiable verti
 Turn accepted intent into executable engineering slices while preserving every
 acceptance criterion, constraint, and non-goal.
 
-## Use When
-
-- Accepted work exceeds one simple implementation unit.
-- A specification or plan needs dependency-aware vertical decomposition.
-- Multi-session work needs independently verifiable progress units.
-
 ## Do Not Use
 
 - Do not invent, reinterpret, or accept product intent.
@@ -67,16 +61,13 @@ Prefer an existing seam. When a new or moved interface is consequential, read
 
 ## Lifecycle Participation
 
-Store the plan at `.mecha/work/<slug>/slices.md` or the established project
-location. Link it from the index, record the next unblocked slice, and preserve
-the accepted intent revision verbatim. If implementation evidence challenges
-intent, stop and surface the required user-authorized revision.
+When a matching record exists, read
+`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
+already available in context. Store and link the plan, record the next
+unblocked slice, and surface evidence that challenges accepted intent.
 
 ## Persistence And Yield
 
-Useful progress means covered acceptance criteria, a smaller coherent slice,
-corrected dependency, or explicit migration sequence.
-
-Before yielding, test the primary decomposition against one alternate grouping
-and verify criterion coverage. Return slices, frontier, unresolved planning
-blocker, and next action.
+Progress is covered criteria, a smaller coherent slice, corrected dependency,
+or explicit migration sequence. Test one alternate grouping and verify
+criterion coverage before returning the frontier.

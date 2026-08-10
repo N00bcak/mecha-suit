@@ -1,6 +1,6 @@
 ---
 name: <overlay-name>
-description: <one constructive sentence describing the session behavior the overlay provides>
+description: <one constructive sentence describing the session behavior and explicit invocation cue>
 ---
 
 # <Overlay Title>
@@ -8,10 +8,6 @@ description: <one constructive sentence describing the session behavior the over
 ## Purpose
 
 <What this overlay changes about collaboration without owning the primary task.>
-
-## Use When
-
-- <Explicit user request that should activate the overlay.>
 
 ## Do Not Use
 
@@ -48,11 +44,10 @@ description: <one constructive sentence describing the session behavior the over
 ## Lifecycle Participation
 
 <Link the shared lifecycle contract when the overlay may use matching work
-records. Do not create durable state merely to remember the overlay.>
+records. Read it only when it is not already available in the current context.
+Do not create durable state merely to remember the overlay.>
 
 ## Persistence And Yield
 
-Useful progress means <improvement to the underlying task or collaboration>.
-
-Before yielding, preserve the underlying task's verified state, blocker,
-material uncertainty, and next action.
+<Name the overlay-specific progress or stop condition without repeating the
+underlying task or host persistence contract.>

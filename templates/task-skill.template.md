@@ -1,6 +1,6 @@
 ---
 name: <skill-name>
-description: <one constructive sentence of about 120 characters naming the owned action and positive task or artifact cue>
+description: <one constructive sentence naming the owned action and enough task cues for reliable selection>
 ---
 
 # <Skill Title>
@@ -8,11 +8,6 @@ description: <one constructive sentence of about 120 characters naming the owned
 ## Purpose
 
 <What bounded outcome this task skill owns.>
-
-## Use When
-
-- <Concrete trigger.>
-- <Concrete trigger.>
 
 ## Do Not Use
 
@@ -42,21 +37,18 @@ description: <one constructive sentence of about 120 characters naming the owned
 3. <Verification or completion step.>
 
 Replace `Workflow` with domain-specific active sections when that makes the
-method clearer. Keep routing, inputs, outputs, and completion explicit.
+method clearer. Keep runtime boundaries, inputs, outputs, and completion explicit.
 
 ## Lifecycle Participation
 
 <Keep this section only when the skill participates in matching work records.
-State the leaf's own behavior and link the shared lifecycle contract.>
+State the leaf's own behavior and link the shared lifecycle contract. Read that
+contract only when it is not already available in the current context.>
 
 ## Persistence And Yield
 
-Useful progress means <new evidence, narrower uncertainty, a better artifact,
-or another domain-specific progress signal>.
-
-Before yielding, try the primary path and one bounded alternative when useful,
-check whether missing information is discoverable, and return the verified
-state, blocker, and next task shape.
+<Name domain-specific progress and the exact condition for yielding. Do not
+repeat generic host persistence instructions.>
 
 ## References
 

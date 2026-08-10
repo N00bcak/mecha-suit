@@ -10,13 +10,6 @@ description: Resolve software and architecture questions through primary technic
 Resolve a bounded software, API, architecture, compatibility, or standards
 question with evidence strong enough to guide an engineering decision.
 
-## Use When
-
-- Official documentation, source code, specifications, standards, or papers
-  must be reconciled.
-- Library, platform, compatibility, or implementation feasibility is unclear.
-- A technical claim needs a reproducible check before planning or coding.
-
 ## Do Not Use
 
 - Do not own user, market, workflow, or product-alternative research; use
@@ -66,18 +59,16 @@ gap between documented behavior, reproduced behavior, and the target system.
 ## Lifecycle Participation
 
 When a matching work record exists, read
-`../../../shared/rubrics/lifecycle-contract.md`. Save findings under
-`.mecha/work/<slug>/research/` or the established convention, link the artifact,
-and update evidence without rewriting accepted intent.
+`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
+already available in context. Save findings under the established convention
+or `.mecha/work/<slug>/research/`, link them, and update evidence without
+rewriting accepted intent.
 
 Without a matching record, answer in the conversation or persist only when the
 user requests it.
 
 ## Persistence And Yield
 
-Useful progress means a verified technical claim, eliminated option, measured
-constraint, or narrower compatibility risk.
-
-Before yielding, inspect the owning source and try one bounded reproducible or
-contrary check when feasible. Return evidence, versions, confidence, blocker,
-and the next decisive action.
+Progress is a verified claim, eliminated option, measured constraint, or
+narrower compatibility risk. Inspect the owning source and run one reproducible
+or contrary check when feasible before returning confidence.

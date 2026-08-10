@@ -11,11 +11,6 @@ Build an accurate shared understanding of a user-owned topic through a focused
 interview, then return a concise synthesis that can guide the next conversation
 or specialist.
 
-## Use When
-
-- The user explicitly requests a focused interview about a user-owned topic.
-- Accurate elicitation matters more than producing an immediate answer.
-
 ## Do Not Use
 
 - Do not infer this loop from ordinary ambiguity or a vague request for help.
@@ -103,8 +98,9 @@ artifact only when the user requests one.
 ## Lifecycle Participation
 
 When the explicitly requested interview belongs to a matching work record,
-read `../../../shared/rubrics/lifecycle-contract.md`. Use existing intent,
-evidence, decisions, and open questions to avoid repetition. At a meaningful
+read `../../../shared/rubrics/lifecycle-contract.md` unless its current contents
+are already available in context. Use existing intent, evidence, decisions,
+and open questions to avoid repetition. At a meaningful
 transition, record the compact synthesis and next task shape without changing
 accepted intent semantics.
 
@@ -119,17 +115,6 @@ in another session.
 
 ## Persistence And Yield
 
-Useful progress means learning something that changes the shared model, rules
-out an interpretation, resolves a tension, or sharpens the next question.
-
-Before yielding:
-
-- Try the highest-information question.
-- Reframe once when a question is not producing useful information.
-- Check whether the missing detail is available from supplied context.
-- Confirm that another question would repeat prior inquiry, require intrusive
-  guessing, or leave the agreed topic.
-
-Do not continue questioning merely to make the interview feel exhaustive.
-When yielding, return what was learned, the blocker or stopping reason, and the
-best next step.
+Progress changes the shared model, rules out an interpretation, resolves a
+tension, or sharpens the next question. Reframe one unproductive question;
+stop when another would repeat, guess intrusively, or leave the agreed topic.

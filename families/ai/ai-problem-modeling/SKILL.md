@@ -10,14 +10,6 @@ description: Formalize AI problems and choose statistical models, neural archite
 Turn evidence and constraints into an experiment-ready formal problem and a
 justified portfolio of solution candidates.
 
-## Use When
-
-- The objective, validation contract, metric, baseline, or solution family
-  needs formalization.
-- Statistical, neural, symbolic, search, constraint, or hybrid candidates must
-  be compared.
-- A deep architecture or GOFAI formulation needs bounded design.
-
 ## Do Not Use
 
 - Do not own raw preparation, open-ended insights, or representation
@@ -71,12 +63,9 @@ Never require or create it.
 
 ## Persistence And Yield
 
-Useful progress means a clearer formal objective, valid evaluation contract,
-eliminated candidate, justified architecture, or experiment-ready decision.
-
-Before yielding, develop the primary formulation and one materially different
-candidate when the regime supports comparison. Return evidence, tradeoffs,
-blocker, and next experiment.
+Progress is a clearer objective, valid evaluation contract, eliminated
+candidate, or experiment-ready decision. Compare one materially different
+formulation when the regime supports it, then return the next experiment.
 
 ## References
 

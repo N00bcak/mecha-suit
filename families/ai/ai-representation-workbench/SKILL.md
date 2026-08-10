@@ -10,14 +10,6 @@ description: Design and validate features, states, constraints, knowledge, embed
 Create a validated representation that exposes useful problem structure without
 leakage or unexplained information loss.
 
-## Use When
-
-- Features, transformations, selections, embeddings, or pretrained
-  representations are the main work.
-- A GOFAI task needs states, operators, constraints, knowledge, abstractions, or
-  heuristics.
-- Representation quality or cost limits downstream solutions.
-
 ## Do Not Use
 
 - Do not own raw-data cleanup or open-ended insight discovery.
@@ -69,12 +61,9 @@ Never require or create it.
 
 ## Persistence And Yield
 
-Useful progress means a working transform, clarified representation contract,
-verified invariant, informative ablation, or measured feasibility constraint.
-
-Before yielding, try the simplest credible representation and one bounded
-alternative when comparison can discriminate. Return evidence, blocker, and
-the next action.
+Progress is a working transform, clarified contract, verified invariant,
+informative ablation, or measured constraint. Compare one bounded alternative
+when it can discriminate, then return evidence and the next action.
 
 ## References
 

@@ -10,13 +10,6 @@ description: Develop evidence-backed insights about data, domain structure, dyna
 Discover and challenge patterns or domain structure that can materially change
 representations, problem formulation, or solution choice.
 
-## Use When
-
-- Exploratory, statistical, temporal, structural, or domain analysis is needed.
-- Label behavior, cohorts, invariants, constraints, or failure patterns are
-  unclear.
-- Candidate signals need evidence before feature or model work.
-
 ## Do Not Use
 
 - Do not perform routine data conversion and packaging.
@@ -67,12 +60,9 @@ Never require or create it.
 
 ## Persistence And Yield
 
-Useful progress means a tested hypothesis, invalidated explanation, discovered
-structure, or narrower uncertainty.
-
-Before yielding, test the primary explanation and one bounded alternate
-explanation when evidence permits. Return findings, limitations, blocker, and
-the next discriminating action.
+Progress is a tested hypothesis, rejected explanation, discovered structure, or
+narrower uncertainty. When evidence permits, test one alternate explanation;
+yield with limitations and the next discriminating action.
 
 ## References
 

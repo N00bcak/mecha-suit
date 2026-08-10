@@ -47,8 +47,10 @@ development_environment_checks() {
     fi
     PYTHONDONTWRITEBYTECODE=1 "${DEV_PYTHON}" "${ROOT_DIR}/scripts/validate_skills.py"
     PYTHONDONTWRITEBYTECODE=1 "${DEV_PYTHON}" -m unittest discover -s "${ROOT_DIR}/tests"
-    PYTHONDONTWRITEBYTECODE=1 "${DEV_PYTHON}" "${ROOT_DIR}/scripts/run_interaction_evals.py" --split all --dry-run >/dev/null
-    pass "validator unit tests and host-neutral evaluation corpus"
+    for corpus in "${ROOT_DIR}"/evals/*.json; do
+        PYTHONDONTWRITEBYTECODE=1 "${DEV_PYTHON}" "${ROOT_DIR}/scripts/run_interaction_evals.py" --corpus "${corpus}" --split all --dry-run >/dev/null
+    done
+    pass "validator unit tests and host-neutral evaluation corpora"
 }
 
 architecture_checks() {
@@ -80,7 +82,6 @@ subagent_boundary_checks() {
     local skill_file
     local parallel="${ROOT_DIR}/families/collaboration/parallel-subagents/SKILL.md"
     local second_opinion="${ROOT_DIR}/families/collaboration/second-opinion/SKILL.md"
-    local examples="${ROOT_DIR}/shared/examples/skill-selection-examples.md"
 
     while IFS= read -r skill_file; do
         if [ "${skill_file}" != "${parallel}" ] && \
@@ -103,17 +104,7 @@ subagent_boundary_checks() {
 
     grep -Fq 'Check that the host exposes subagent capability.' "${parallel}" || fail "parallel-subagents host capability check is missing"
     grep -Fq 'Check that the host exposes subagent capability.' "${second_opinion}" || fail "second-opinion host capability check is missing"
-    grep -Fq 'Update the independent Python and TypeScript packages in parallel' "${examples}" || fail "polyglot parallel selection example is missing"
-    grep -Fq 'Research these two unrelated source sets' "${examples}" || fail "independent research selection example is missing"
-    grep -Fq 'Independently review this production migration plan' "${examples}" || fail "non-leading review selection example is missing"
-    grep -Fq 'Run the migration first, then update callers based on its output' "${examples}" || fail "sequential refusal selection example is missing"
-
     pass "subagent allowlist and contracts"
-}
-
-persistence_yield_checks() {
-    assert_exists "${ROOT_DIR}/shared/rubrics/persistence-yield-rubric.md"
-    pass "persistence and yield contract"
 }
 
 interaction_contract_checks() {
@@ -128,7 +119,7 @@ interaction_contract_checks() {
     assert_exists "${loop_template}"
 
     for template in "${task_template}" "${overlay_template}" "${loop_template}"; do
-        for heading in Purpose 'Use When' 'Do Not Use' Needs Returns 'Done Conditions' 'Persistence And Yield'; do
+        for heading in Purpose 'Do Not Use' Needs Returns 'Done Conditions' 'Persistence And Yield'; do
             grep -Fxq "## ${heading}" "${template}" || fail "${template} is missing ${heading}"
         done
     done
@@ -195,7 +186,7 @@ engineering_checks() {
     local code_review="${family_dir}/code-review/SKILL.md"
     local reference
 
-    grep -Fxq 'description: Implement PR-ready changes in codebases above roughly 5kLoC with idiomatic, anti-bloat, and verification discipline.' "${large_skill}" || fail "large-codebase-change description drifted"
+    grep -Fxq 'description: Implement PR-ready changes to established code above roughly 5kLoC with idiomatic, anti-bloat, and verification discipline.' "${large_skill}" || fail "large-codebase-change description drifted"
     grep -Fxq 'description: Build and verify isolated greenfield prototypes, demos, tools, or apps around one core outcome.' "${prototype_skill}" || fail "prototype-builder description drifted"
     grep -Fxq 'description: Resolve software and architecture questions through primary technical sources, repository evidence, and reproducible checks.' "${technical_research}" || fail "technical-research description drifted"
     grep -Fxq 'description: Turn settled intent and evidence into an accepted implementation contract with criteria, constraints, and non-goals.' "${implementation_spec}" || fail "implementation-spec description drifted"
@@ -259,7 +250,6 @@ engineering_checks() {
 lifecycle_checks() {
     local contract="${ROOT_DIR}/shared/rubrics/lifecycle-contract.md"
     local template="${ROOT_DIR}/templates/work-index.template.md"
-    local examples="${ROOT_DIR}/shared/examples/skill-selection-examples.md"
     local skill_file
 
     assert_exists "${contract}"
@@ -327,17 +317,12 @@ lifecycle_checks() {
     grep -Fq 'advisory resume candidates' "${ROOT_DIR}/families/collaboration/portable-handoff/SKILL.md" || fail "handoff resume-candidate behavior is missing"
     grep -Fq 'product-research' "${ROOT_DIR}/AGENTS.md" || fail "authoritative specialist inventory is stale"
     grep -Fq 'code-review' "${ROOT_DIR}/AGENTS.md" || fail "authoritative specialist inventory is stale"
-    grep -Fq 'Keep native skill-selection cues in leaf frontmatter' "${ROOT_DIR}/docs/global-AGENTS.example.md" || fail "global example duplicates routing instead of deferring to frontmatter"
+    grep -Fq 'Keep native skill-selection cues in leaf frontmatter' "${ROOT_DIR}/templates/global-AGENTS.template.md" || fail "global template duplicates routing instead of deferring to frontmatter"
     grep -Fq 'unrelated ad-hoc, AI, and writing work remains' "${ROOT_DIR}/templates/repo-AGENTS.template.md" || fail "repo template leaks lifecycle behavior into other families"
 
     if find "${ROOT_DIR}/families/ai" "${ROOT_DIR}/families/writing" -name SKILL.md -exec grep -El 'lifecycle-contract|\.mecha/work' {} + | grep -q .; then
         fail "lifecycle behavior leaked into AI or writing leaves"
     fi
-
-    grep -Fq 'Rename this local variable' "${examples}" || fail "ad-hoc lifecycle selection example is missing"
-    grep -Fq 'Turn the decisions in this conversation' "${examples}" || fail "implementation-spec selection example is missing"
-    grep -Fq 'Break this accepted implementation contract' "${examples}" || fail "work-slicing selection example is missing"
-    grep -Fq 'Review the changes since main' "${examples}" || fail "code-review selection example is missing"
 
     pass "optional lifecycle, intent authority, and routing contracts"
 }
@@ -439,7 +424,6 @@ writing_family_checks() {
     local family_dir="${ROOT_DIR}/families/writing"
     local humanizer="${family_dir}/humanizer/SKILL.md"
     local blogpost="${family_dir}/blogpost-writing/SKILL.md"
-    local examples="${ROOT_DIR}/shared/examples/skill-selection-examples.md"
 
     grep -Fxq 'description: Write and revise long-form prose with a natural, genre-aware voice while preserving meaning, evidence, and authorial intent.' "${humanizer}" || fail "humanizer description drifted"
     grep -Fxq "description: Author VitePress-ready blog posts and CTF writeups in N00bcak's evidence-grounded, adaptable personal voice." "${blogpost}" || fail "blogpost-writing description drifted"
@@ -463,11 +447,6 @@ writing_family_checks() {
     grep -Fq 'Publishing, committing, or deploying' "${blogpost}" || fail "blogpost-writing publication boundary is missing"
     grep -Fq 'Do not use, spawn, request, or rely on subagents.' "${humanizer}" || fail "humanizer subagent boundary is missing"
     grep -Fq 'Do not use, spawn, request, or rely on subagents.' "${blogpost}" || fail "blogpost-writing subagent boundary is missing"
-
-    grep -Fq 'Write an essay from these notes' "${examples}" || fail "humanizer authoring selection example is missing"
-    grep -Fq 'Rewrite these API docs and code comments' "${examples}" || fail "humanizer exclusion example is missing"
-    grep -Fq 'Draft a technical post for n00bcak.github.io' "${examples}" || fail "blogpost-writing selection example is missing"
-    grep -Fq 'Tell me whether AI wrote this essay' "${examples}" || fail "authorship refusal example is missing"
 
     pass "writing routing, progressive disclosure, and output contracts"
 }
@@ -586,7 +565,6 @@ main() {
     development_environment_checks
     architecture_checks
     subagent_boundary_checks
-    persistence_yield_checks
     interaction_contract_checks
     collaboration_checks
     engineering_checks

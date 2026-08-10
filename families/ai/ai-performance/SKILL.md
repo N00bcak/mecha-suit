@@ -10,14 +10,6 @@ description: Construct, optimize, train, and evaluate AI solutions with coupled 
 Construct and optimize AI solutions while evaluating them under one stable,
 reproducible evidence contract.
 
-## Use When
-
-- Statistical or neural candidates need implementation, training, tuning, and
-  evaluation.
-- Symbolic, search, planning, constraint, or hybrid solutions need
-  construction, tuning, and benchmarking.
-- Candidate or ensemble comparisons and error analysis are the main work.
-
 ## Do Not Use
 
 - Do not train against an undefined or changing validation contract.
@@ -71,12 +63,9 @@ recommendations. Never require or create it.
 
 ## Persistence And Yield
 
-Useful progress means a reproduced baseline, stable run, measured bottleneck,
-candidate result, diagnosed failure, or eliminated hypothesis.
-
-Before yielding, attempt the primary candidate and one bounded diagnostic or
-fallback when resources permit. Return runs attempted, evidence, resource
-state, blocker, why more work would repeat, and the next action.
+Progress is a reproduced baseline, stable run, measured bottleneck, candidate
+result, diagnosed failure, or rejected hypothesis. When resources permit, try
+one diagnostic or fallback before returning evidence and the next action.
 
 ## References
 

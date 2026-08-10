@@ -14,13 +14,6 @@ learning, Good Old-Fashioned AI, and hybrid systems.
 This skill is an explicit manual, not an implicit router or an experiment
 controller.
 
-## Use When
-
-- The user explicitly invokes `ai-pipeline`.
-- The problem needs an end-to-end initial framing before focused execution.
-- A theoretical AI problem benefits from the same pipeline without empirical
-  execution.
-
 ## Do Not Use
 
 - Do not invoke this skill implicitly for ordinary AI work.
@@ -117,12 +110,9 @@ Stop after the initial pass. Native Codex and the user control later flow.
 
 ## Persistence And Yield
 
-Useful progress means a resolved framing question, better regime recognition,
-clearer evidence status, or a credible initial pipeline section.
-
-Before yielding, inspect available context, ask the next material question, and
-determine whether further framing would repeat or require unavailable
-user-owned information. Return the completed initial pass or the exact blocker.
+Progress is a resolved framing question, clearer evidence status, or credible
+pipeline section. Yield only when further framing would repeat or require
+unavailable user-owned information; return the exact blocker.
 
 ## References
 

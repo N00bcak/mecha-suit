@@ -1,375 +1,153 @@
 # AGENTS.md
 
-## Purpose
+## Purpose and scope
 
-This repository defines a reusable "Mecha Suit" skill toolbox for Codex-first development, with future-friendly compatibility for Claude Code.
-
-This file governs how to DEVELOP the toolbox itself.
-It does not replace the runtime instructions inside each skill's `SKILL.md`.
-
-## Scope
-
-This file applies to:
-- architecture changes
-- new skill creation
-- edits to existing skills
-- templates
-- install / uninstall scripts
-- maintenance docs
-- shared rubrics and examples
-
-This file does NOT define end-user runtime behavior for individual skills beyond repo-wide architectural invariants.
-
-## Behavioral defaults
-
-These rules exist to reduce common coding-agent failure modes while developing this repo.
-They are the repo-specific version of the higher-level practices summarized in
-`CODESTYLE.md`: think before coding, simplicity first, surgical changes, and
-goal-driven execution.
-
-When editing this repository:
-- treat this `AGENTS.md` as the authoritative rule set
-- use `CODESTYLE.md` for rationale and high-level development practice
-- if the two conflict, follow `AGENTS.md` because it is tailored to Mecha Suit
+This repository develops Mecha Suit, a reusable Codex-first skill toolbox with
+portable Agent Skills contracts. This file is authoritative for changes to the
+toolbox: skills, templates, shared resources, evaluation corpora, validators,
+install scripts, and documentation. Runtime behavior remains in each skill's
+`SKILL.md`.
 
 ## Development environment
 
-- Use `uv` for the repository's Python development environment.
-- Run `uv sync --dev` to create or update `.venv` from `uv.lock`.
-- Run `./test.sh` after synchronization.
-- Keep Python packages in the development dependency group. Do not make them
-  runtime requirements for installed skills or for `install.sh`.
-- Add a dependency only when a repository test or deterministic development
-  tool requires it. PyYAML is currently the sole third-party dependency,
-  supporting portable frontmatter and Codex adapter validation.
-- Commit `uv.lock`; never commit `.venv`.
-- When changing skill frontmatter rules, keep `scripts/validate_skills.py`
-  aligned with the Agent Skills specification and keep its Codex profile
-  aligned with Codex's `skill-creator` `quick_validate.py`.
+- Use `uv` for Python development.
+- Run `uv sync --dev`, then `./test.sh` after meaningful changes.
+- Keep development packages in the development dependency group. Installed
+  skills and `install.sh` must not depend on them.
+- Add dependencies only for deterministic repository tooling. Commit `uv.lock`
+  and never commit `.venv`.
+- Keep `scripts/validate_skills.py` aligned with the portable Agent Skills
+  contract and its Codex profile aligned with Codex `skill-creator` validation.
 
-### 1. Think before coding
-Do not assume silently.
+## Working discipline
 
-Before implementing:
-- State assumptions explicitly.
-- If multiple reasonable interpretations exist, name them briefly and choose one deliberately.
-- If a simpler approach exists, prefer it and say so.
-- If something is genuinely blocking or structurally ambiguous, stop and ask.
-- If something is ambiguous but non-blocking, state the assumption and proceed.
+Before a non-trivial change, state the goal, material assumptions, and the
+smallest useful plan. Inspect available context before asking questions. If a
+missing user-owned choice changes architecture or scope, ask one focused
+question; otherwise state a reversible assumption and proceed.
 
-Do not hide confusion.
-Do not silently pick one interpretation when the choice materially affects architecture.
+Implement the minimum coherent change. Do not add speculative abstractions,
+configuration, defensive machinery, or future features. Touch only lines that
+trace to the task, match existing style, and remove only cleanup made obsolete
+by your change. Mention unrelated issues without fixing them.
 
-### 2. Simplicity first
-Write the minimum structure and code that correctly satisfies the task.
+Define concrete success criteria, verify in proportion to risk, and inspect the
+resulting diff. Do not claim verification you did not perform.
 
-Do NOT add:
-- speculative abstractions
-- extra configurability that was not requested
-- extra features "for future use"
-- generalized frameworks for one-off needs
-- defensive handling for implausible scenarios unless the architecture clearly needs it
+## Architecture invariants
 
-If a design is becoming clever, compress it.
-If 200 lines can honestly be 50, rewrite it.
+### Native selection is the top layer
 
-### 3. Surgical changes
-Touch only what is needed.
+The host selects callable skills from leaf frontmatter and handles ordinary
+clarification. Do not add a router, registry, orchestration layer, score
+matrix, or duplicate selection table. Keep positive task and artifact cues in
+each leaf description.
 
-When editing existing files:
-- Do not improve adjacent code unless the request requires it.
-- Do not refactor unrelated structures.
-- Match existing style unless this repo explicitly standardizes something else.
-- If you notice unrelated problems, mention them. Do not fix them automatically.
+### Skills stay narrow
 
-When your own change creates local cleanup needs:
-- remove imports, variables, functions, examples, or docs made obsolete by YOUR change
-- do not remove pre-existing dead material unless asked
+Specialist leaves own one recognizable job. Current leaves include
+`interview-me`, `product-co-design`, `low-friction-collaboration`,
+`product-research`, `domain-modeling`, `decision-mapping`, `portable-handoff`,
+`parallel-subagents`, `second-opinion`, `technical-research`,
+`implementation-spec`, `work-slicing`, `large-codebase-change`,
+`prototype-builder`, `diagnosing-bugs`, `code-review`,
+`ai-data-preparation`, `ai-insight-development`,
+`ai-representation-workbench`, `ai-problem-modeling`, and `ai-performance`.
 
-Every changed line should trace back to the task.
+`ai-pipeline` is an explicit-only conceptual manual rather than a specialist
+execution leaf. Add no broad umbrella skill without a demonstrated ownership
+gap.
 
-### 4. Goal-driven execution
-Convert tasks into verifiable goals.
+### Interaction lifetime shapes the contract
 
-For non-trivial work:
-1. state the goal
-2. state assumptions
-3. state the smallest useful plan
-4. implement
-5. verify
-6. summarize what changed and what remains uncertain
+Every skill uses one interaction model:
 
-Prefer concrete success criteria over vague completion language.
-
-Examples:
-- "Improve skill selection" -> "Tighten frontmatter trigger boundaries, update docs/templates if the contract changes, then verify consistency."
-- "Add a skill" -> "Create skill folder, define boundaries, define output contract, update template/docs if needed, then verify architecture invariants still hold."
-
-## Core architectural invariants
-
-### 1. Native Codex selection and clarification are the top layer
-Codex selects callable skills directly from their frontmatter descriptions and
-handles ordinary ambiguity before invocation.
-
-Do not add a toolbox router, orchestration layer, registry, or duplicate
-selection table. Keep selection cues in leaf descriptions.
-
-For ambiguous work:
-- inspect available context before asking
-- separate mixed goals and their dependencies
-- state reversible, low-risk assumptions and proceed
-- ask one focused question only when a missing user-owned decision materially
-  changes the work
-
-### 2. Subagent authorization is limited to two collaboration skills
-
-Only `parallel-subagents` and `second-opinion` may authorize subagent use.
-Every other skill must not spawn, request, assume, or depend on subagents.
-
-The two authorized skills must preserve main-process ownership, prohibit nested
-delegation, require structured evidence returns, and check host capability
-before promising delegation.
-
-### 3. Specialist leaves stay narrow
-Specialist leaves should do one job well.
-
-Current specialist leaves include:
-- `interview-me`
-- `parallel-subagents`
-- `product-co-design`
-- `product-research`
-- `domain-modeling`
-- `decision-mapping`
-- `portable-handoff`
-- `second-opinion`
-- `large-codebase-change`
-- `prototype-builder`
-- `technical-research`
-- `implementation-spec`
-- `work-slicing`
-- `diagnosing-bugs`
-- `code-review`
-- `ai-data-preparation`
-- `ai-insight-development`
-- `ai-representation-workbench`
-- `ai-problem-modeling`
-- `ai-performance`
-
-Avoid broad umbrella skills unless there is a clear architectural reason.
-
-### 4. Interaction lifetime determines the authoring contract
-
-Every skill uses exactly one interaction model:
-
-- A task skill owns a bounded outcome. It may span turns or sessions but does
-  not retain conversational control after returning.
-- A session overlay changes how another active task or loop is conducted. It
-  does not own the underlying outcome.
+- A task skill owns a bounded outcome and then returns control.
+- A session overlay changes how another task or loop is conducted without
+  owning its result.
 - An interactive loop owns a multi-turn exchange until it completes, pauses,
   is cancelled, or is explicitly replaced.
 
 Task skills are the default. Overlays declare `Session Overlay Contract` and
-loops declare `Interactive Loop Contract` in `SKILL.md`; do not add a registry
-or custom frontmatter field.
+loops declare `Interactive Loop Contract` in `SKILL.md`; do not encode this in
+frontmatter or a registry. Overlays and loops are explicit-only. At most one
+loop is active, while an overlay may compose with one task or loop. Durable
+state may suggest a resume candidate but never activates a skill.
 
-Overlays and loops are explicit-invocation-only. At most one loop may be active;
-overlays may compose with one task or loop. Invocation state is session-local.
-Durable work state may offer a resume candidate but never activates a skill.
+Create skill directories only for fully authored, callable contracts. Keep
+future concepts in `docs/architecture.md` until then.
 
-Create skill directories only for fully authored, callable runtime contracts.
-Keep future skill concepts in specs until then.
+### Subagent authorization has two owners
 
-### 5. Runtime behavior belongs in `SKILL.md`
-Use:
-- `AGENTS.md` for repo-wide development rules
-- `SKILL.md` for skill runtime behavior
-- `references/` for passive supporting material
-- `scripts/` for deterministic helper logic
-- `evals/` for host-neutral behavioral cases and expectations
-- `tests/` for deterministic validation and adapter-rendering checks
-- `templates/` for repeatable authoring patterns
-- `docs/` for human-facing explanation and maintenance policy
+Only `parallel-subagents` and `second-opinion` may authorize subagent use.
+Every other skill must not spawn, request, assume, or depend on subagents.
 
-Do not stuff repo-maintenance policy into skill files unless it materially affects runtime behavior.
+Both authorized skills must check host capability, preserve main-process
+ownership, prohibit nested delegation, and require structured evidence.
+`parallel-subagents` requires independent non-overlapping work;
+`second-opinion` requires one non-leading review and main-process adjudication.
 
-## File and folder responsibilities
+### Durable work does not route
 
-### `families/collaboration/`
-Contains conversation-first specialist leaves. `interview-me` and
-`product-co-design` are explicit interactive loops, and
-`low-friction-collaboration` is an explicit session overlay. Only
-`parallel-subagents` and `second-opinion` may authorize subagent use.
+Collaboration and engineering leaves may participate in a matching
+`.mecha/work/<slug>/index.md` record under
+`shared/rubrics/lifecycle-contract.md`. A record connects verified artifacts;
+it does not select or invoke skills. Accepted intent remains user-authoritative.
+Ad-hoc work creates no record. AI and writing leaves do not participate.
 
-### `families/engineering/`, `families/ai/`
+## File ownership
 
-Contain specialist leaves.
-These should remain narrow and composable.
+- `SKILL.md`: active runtime behavior and output contract.
+- `references/`: concise passive knowledge, checklists, and decision aids.
+- `scripts/`: portable deterministic helpers that remove repeated work.
+- `agents/`: host metadata only when invocation policy or presentation needs it.
+- `evals/`: host-neutral prompts and observable expectations.
+- `tests/`: deterministic contracts and adapter-rendering checks.
+- `templates/`: repeatable authoring shapes and host-instruction starting points.
+- `docs/`: the human handbook; no runtime behavior.
+- `shared/`: cross-skill runtime contracts with multiple direct consumers.
 
-`families/ai/ai-pipeline` is an explicit-invocation-only conceptual manual, not
-a specialist leaf.
+Do not move active instructions into references merely to shrink `SKILL.md`.
+Every reference must have a direct consumer and a clear loading cue. Do not add
+scripts that only wrap trivial prose. Do not add task-skill metadata by
+default; explicit overlays and loops require explicit-invocation metadata.
 
-### `references/`
-Use for:
-- concise checklists
-- rubrics
-- decision aids
-- stable passive background
+## Authoring skills
 
-Do not move active instructions from `SKILL.md` into `references/` just to hide complexity.
+Use the template matching the interaction lifetime. Runtime skills define
+purpose, exclusions, needs, returns, done conditions, and persistence/yield
+behavior. Add references or scripts only after the core playbook earns them.
 
-### `scripts/`
-Only add a script if it:
-- removes repeated procedural text
-- improves determinism
-- is portable
-- does not depend on private infrastructure
+Descriptions are constructive routing sentences, normally around 120
+characters. Name the owned action and positive task or artifact cue. Keep
+adjacent boundaries in the runtime contract rather than filling frontmatter
+with warnings. Use host policy for manual-only invocation.
 
-Avoid scripts that merely wrap trivial prose.
+Use direct operational language and 4-space indentation. Preserve portability:
+no hardcoded local paths, private infrastructure, or repo-specific commands in
+global skills. Keep project facts in local instructions or adapters.
 
-### `evals/`, `tests/`
+Every callable skill must have a positive case in `evals/*.json`, plus
+near-miss cases for material adjacent boundaries. Prompts remain independent
+of host syntax; `explicit_invocations` records manual selection. Deterministic
+tests must not require a model, credentials, network, or nondeterministic
+output. Live evaluation is optional evidence, not a merge gate.
 
-Keep evaluation prompts independent of host invocation syntax. Host adapters may
-render syntax and collect evidence, but deterministic tests must not require a
-model, credentials, network access, or nondeterministic output.
+If a public skill or contract changes, update the applicable template,
+`docs/skills.md`, `docs/maintenance-playbook.md`, focused tests, evaluation
+cases, and `docs/architecture.md` only where ownership or rationale changed.
 
-### `agents/`
-Only add metadata files when they materially improve routing or invocation behavior.
-Do not add metadata to task skills by default. Session overlays and interactive
-loops require explicit-invocation metadata.
-
-## Change policy
-
-### Prefer simplification over cleverness
-When multiple designs are possible, prefer:
-- fewer skills
-- sharper boundaries
-- lower context usage
-- clearer routing
-- smaller references
-- fewer scripts
-
-Do not introduce registries, score matrices, capability taxonomies, or other control layers unless the current structure has clearly broken down.
-The three interaction-lifetime contracts are local authoring shapes, not a
-capability taxonomy or selection mechanism.
-
-### Preserve portability
-Do not introduce:
-- repo-specific commands into global skills
-- hardcoded local paths
-- private company infrastructure
-- assumptions tied to one language, one framework, or one codebase unless the skill is explicitly scoped that way
-
-### Preserve editability
-This repo should stay easy to evolve.
-Do not create structures that make a small skill edit require touching many unrelated files.
-
-### Keep templates aligned
-If you change the contract shape of specialist leaves, update:
-- the applicable template under `templates/`
-- README
-- maintenance-playbook
-- focused contract tests and relevant subsystem specs
-
-## Authoring standards
-
-### Writing style
-- Use direct language.
-- Prefer dense, operational instructions.
-- Avoid motivational filler.
-- Avoid vague "best practices" phrasing when a rule can be stated concretely.
-
-### Indentation
-Use 4-space indentation consistently.
-
-### Naming
-Use names that reflect actual function.
-Examples:
-- `product-co-design`, not a generic "product-helper"
-
-### Skill descriptions
-Descriptions must be good routers.
-
-- Use one constructive sentence, normally around 120 characters.
-- Name the owned action and a positive task or artifact cue.
-- Make boundaries clear through task shape, not contrastive phrasing.
-- Omit workflow summaries and repo-wide policies.
-- Keep a few diagnostic cues when adjacent categories need them.
-- Treat the length target as editorial guidance, not a validator limit.
-- Use host invocation policy, not warning prose, for manual-only skills.
-
-## Specialist development rules
-
-When authoring or expanding a specialist:
-1. choose the task, session-overlay, or interactive-loop template from its
-   interaction lifetime
-2. preserve the common contract and add only domain-specific active sections
-3. write the smallest useful playbook first
-4. add references only if they improve repeated execution
-5. add scripts only if they improve determinism
-6. keep trigger and exclusion boundaries explicit
-
-A specialist should earn additional complexity.
-Do not front-load elaborate workflows.
-
-## Maintenance workflow
-
-When making meaningful changes:
-1. identify which architectural layer is changing:
-    - skill selection
-    - subagent policy
-    - specialist
-    - shared template
-    - docs
-    - install logic
-2. state assumptions and success criteria
-3. make the smallest coherent change
-4. update nearby templates/docs if the contract changed
-5. audit for boundary drift
-6. summarize:
-    - what changed
-    - why
-    - what assumptions changed
-    - what remains intentionally deferred
-
-## Transparency and externalized reasoning
-
-Do not expose hidden chain-of-thought.
-Instead, for non-trivial development work on this repo, externalize a compact decision record:
-
-1. goal
-2. assumptions and unknowns
-3. candidate approaches
-4. chosen approach
-5. files touched
-6. verification performed
-7. remaining risks
-
-Keep that record concise and operational.
-
-## Definition of done for repo changes
+## Definition of done
 
 A meaningful change is done when:
-- the changed files are internally consistent
-- architectural invariants remain intact
-- templates/docs are updated if needed
-- new complexity is justified
-- routing boundaries remain clear
-- the final summary states what was verified and what was not
 
-## Default bias
+- changed files are internally consistent and architecture invariants hold;
+- new complexity has a demonstrated purpose;
+- templates, docs, and evaluation cases remain aligned;
+- `uv sync --dev`, `./test.sh`, and relevant focused checks pass;
+- the diff contains no unrelated cleanup.
 
-Bias toward:
-- narrow skills
-- native skill selection
-- subagent authorization limited to `parallel-subagents` and `second-opinion`
-- fully authored specialist leaves
-- low context overhead
-- portable instructions
-- future editability
-
-Bias against:
-- hidden complexity
-- duplicate logic
-- broad catch-all skills
-- premature workflow elaboration
-- architecture sprawl
+Finish with a compact decision record: goal, assumptions, chosen approach,
+files touched, verification, and remaining risk. Use
+`docs/architecture.md` for durable rationale, not a historical plan or a second
+copy of these rules.

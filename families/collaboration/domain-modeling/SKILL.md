@@ -10,12 +10,6 @@ description: Sharpen domain terminology and record durable decisions against con
 Build a precise shared domain language and preserve consequential decisions so
 later planning and implementation do not reinterpret the user's meaning.
 
-## Use When
-
-- Domain terms are vague, overloaded, contradictory, or missing.
-- Relationships, states, invariants, or edge cases need concrete modeling.
-- A durable domain or architecture decision should be evaluated and recorded.
-
 ## Do Not Use
 
 - Do not use for ordinary reading of an existing glossary.
@@ -74,15 +68,12 @@ defaults, never as hidden requirements.
 ## Lifecycle Participation
 
 When a matching record exists, read
-`../../../shared/rubrics/lifecycle-contract.md`, link candidate or promoted
-domain artifacts, and update decision evidence. Do not alter accepted intent
-merely to make terminology agree with the implementation.
+`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
+already available in context. Link candidate or promoted domain artifacts and
+update decision evidence without changing accepted intent to match code.
 
 ## Persistence And Yield
 
-Useful progress means a resolved term, tested invariant, exposed contradiction,
-or durable decision with rationale.
-
-Before yielding, test the primary model against one meaningful edge case and
-check it against available code or evidence. Return resolved language,
-contradictions, remaining uncertainty, and the next modeling or planning action.
+Progress is a resolved term, tested invariant, exposed contradiction, or
+durable decision. Test the model against one meaningful edge case and available
+evidence before returning remaining uncertainty.

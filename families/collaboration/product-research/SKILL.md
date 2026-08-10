@@ -10,13 +10,6 @@ description: Develop evidence-backed findings about users, workflows, terminolog
 Resolve a bounded product or domain question with evidence that can change a
 product decision, domain model, or validation plan.
 
-## Use When
-
-- User needs, workflows, alternatives, ecosystem conditions, or domain facts
-  require investigation.
-- A product assumption needs evidence before co-design or specification.
-- Existing research must be synthesized into a decision-relevant finding.
-
 ## Do Not Use
 
 - Do not own technical feasibility, APIs, source code, or software standards;
@@ -66,20 +59,16 @@ results.
 ## Lifecycle Participation
 
 When a matching work record exists, read
-`../../../shared/rubrics/lifecycle-contract.md`. Save detailed findings under
-`.mecha/work/<slug>/research/` or the established project convention, link the
-artifact from the index, and update evidence and next action without rewriting
-accepted intent.
+`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
+already available in context. Save findings under the established convention
+or `.mecha/work/<slug>/research/`, link them, and update evidence and next action
+without rewriting accepted intent.
 
 Without a matching work record, answer in the conversation or persist only
 when the user requests an artifact.
 
 ## Persistence And Yield
 
-Useful progress means a verified claim, rejected assumption, narrower
-uncertainty, or decision-changing finding.
-
-Before yielding, inspect available evidence, try one credible contrary source
-or explanation when stakes justify it, and confirm further work would repeat or
-require unavailable primary evidence. Return findings, limitations, confidence,
-blocker, and the next discriminating action.
+Progress is a verified claim, rejected assumption, narrower uncertainty, or
+decision-changing finding. When stakes justify it, test one credible contrary
+source or explanation before returning confidence and the next check.

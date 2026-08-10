@@ -17,9 +17,6 @@ CORE_BODY = """# Example
 ## Purpose
 Do one job.
 
-## Use When
-- The job is requested.
-
 ## Do Not Use
 - Another job is requested.
 

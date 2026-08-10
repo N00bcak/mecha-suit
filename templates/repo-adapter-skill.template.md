@@ -1,6 +1,6 @@
 ---
 name: <repo-adapter-skill-name>
-description: Thin repo-local adapter for <global-skill-name>. Adds project-specific commands, paths, and constraints while relying on the global skill for reusable method.
+description: Thin repo-local adapter for <global-skill-name> when project-specific commands, paths, or constraints are needed.
 ---
 
 # <Repo Adapter Skill Title>
@@ -8,11 +8,6 @@ description: Thin repo-local adapter for <global-skill-name>. Adds project-speci
 ## Purpose
 
 Provide local facts for `<global-skill-name>` without copying reusable method content into this repository.
-
-## Use When
-
-- The task fits `<global-skill-name>`.
-- Project-specific paths, commands, conventions, or constraints are needed.
 
 ## Delegate To Global Skill
 
