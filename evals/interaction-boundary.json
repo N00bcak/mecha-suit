@@ -1,0 +1,256 @@
+{
+    "schema_version": 1,
+    "default_runs": 3,
+    "trigger_threshold": 0.5,
+    "cases": [
+        {
+            "id": "trigger-explicit-product-co-design",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["product-co-design", "product-research"],
+            "turns": [{"prompt": "Help me shape this product concept with you before we commit to a design.", "explicit_invocations": ["product-co-design"]}],
+            "expected": {"loaded_skills": ["product-co-design"], "excluded_skills": [], "behaviors": []}
+        },
+        {
+            "id": "trigger-explicit-interview-me",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["interview-me", "product-co-design"],
+            "turns": [{"prompt": "Help me uncover what I actually need for this internal tool.", "explicit_invocations": ["interview-me"]}],
+            "expected": {"loaded_skills": ["interview-me"], "excluded_skills": [], "behaviors": []}
+        },
+        {
+            "id": "trigger-explicit-low-friction",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["low-friction-collaboration", "implementation-spec"],
+            "turns": [{"prompt": "Keep this technical discussion easy to follow while we work.", "explicit_invocations": ["low-friction-collaboration"]}],
+            "expected": {"loaded_skills": ["low-friction-collaboration"], "excluded_skills": [], "behaviors": []}
+        },
+        {
+            "id": "trigger-product-concept-without-explicit-mode",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["product-co-design", "product-research"],
+            "turns": [{"prompt": "I have a rough concept for a meal-planning app. What questions should I think about?", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["product-co-design"], "behaviors": []}
+        },
+        {
+            "id": "trigger-interview-request-without-explicit-mode",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["interview-me", "product-research"],
+            "turns": [{"prompt": "Could you ask me a few questions about this migration before answering?", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["interview-me"], "behaviors": []}
+        },
+        {
+            "id": "trigger-clearer-writing-without-explicit-overlay",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["low-friction-collaboration", "humanizer"],
+            "turns": [{"prompt": "Please make your explanation of this stack trace easier to follow.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["low-friction-collaboration"], "behaviors": []}
+        },
+        {
+            "id": "trigger-product-research-users",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["product-research", "product-co-design"],
+            "turns": [{"prompt": "Research how freelance designers currently hand off assets to developers and identify recurring pain points.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["product-research"], "excluded_skills": ["product-co-design"], "behaviors": []}
+        },
+        {
+            "id": "trigger-decision-mapping-blockers",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["decision-mapping", "implementation-spec", "product-co-design"],
+            "turns": [{"prompt": "Map the unresolved decisions preventing this six-month platform migration from being ready to specify.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["decision-mapping"], "excluded_skills": ["product-co-design"], "behaviors": []}
+        },
+        {
+            "id": "trigger-implementation-spec-settled-intent",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["implementation-spec", "work-slicing", "product-co-design"],
+            "turns": [{"prompt": "Turn the settled decisions above into an implementation contract with acceptance criteria and non-goals.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["implementation-spec"], "excluded_skills": ["product-co-design"], "behaviors": []}
+        },
+        {
+            "id": "trigger-mention-interview-skill",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["interview-me"],
+            "turns": [{"prompt": "What does the interview-me skill do, and when would I invoke it?", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["interview-me"], "behaviors": []}
+        },
+        {
+            "id": "trigger-mention-product-skill",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["product-co-design"],
+            "turns": [{"prompt": "Summarize the purpose of product-co-design without starting a design session.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["product-co-design"], "behaviors": []}
+        },
+        {
+            "id": "trigger-product-research-casual",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["product-research", "product-co-design"],
+            "turns": [{"prompt": "can you look into how small teams deal with flaky deploy previews? i want evidence, not feature ideas yet", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["product-research"], "excluded_skills": ["product-co-design"], "behaviors": []}
+        },
+        {
+            "id": "trigger-decision-mapping-context-heavy",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["decision-mapping", "implementation-spec", "product-co-design"],
+            "turns": [{"prompt": "We agree on the destination, but auth ownership, tenant isolation, and rollback responsibility are still unresolved. Organize those decisions so engineering can eventually write the spec.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["decision-mapping"], "excluded_skills": ["product-co-design"], "behaviors": []}
+        },
+        {
+            "id": "trigger-implementation-spec-casual",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["implementation-spec", "work-slicing", "product-co-design"],
+            "turns": [{"prompt": "decisions are done. write the build contract engineers can accept before anyone touches code", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["implementation-spec"], "excluded_skills": ["product-co-design"], "behaviors": []}
+        },
+        {
+            "id": "trigger-product-research-near-miss",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["product-research", "product-co-design"],
+            "turns": [{"prompt": "Find evidence about how warehouse staff record damaged stock before we discuss a solution.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["product-research"], "excluded_skills": ["product-co-design"], "behaviors": []}
+        },
+        {
+            "id": "trigger-question-list-not-interview-loop",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["interview-me"],
+            "turns": [{"prompt": "Give me a checklist of questions to ask vendors during tomorrow's procurement call.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["interview-me"], "behaviors": []}
+        },
+        {
+            "id": "trigger-product-copy-not-co-design",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["product-co-design", "humanizer"],
+            "turns": [{"prompt": "Rewrite this finished product announcement so it sounds natural while preserving every claim.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["product-co-design"], "behaviors": []}
+        },
+        {
+            "id": "trigger-meeting-clarity-not-overlay",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["low-friction-collaboration"],
+            "turns": [{"prompt": "Draft five guidelines our team can use to make architecture meetings less confusing.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["low-friction-collaboration"], "behaviors": []}
+        },
+        {
+            "id": "trigger-product-advice-with-adjacent-task",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["product-co-design", "product-research", "implementation-spec"],
+            "turns": [{"prompt": "Explain whether an audit-log explorer sounds useful, but do not start a co-design session.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["product-co-design"], "behaviors": []}
+        },
+        {
+            "id": "trigger-mention-low-friction-skill",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["low-friction-collaboration"],
+            "turns": [{"prompt": "Does low-friction-collaboration change reasoning depth, or only presentation?", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["low-friction-collaboration"], "behaviors": []}
+        },
+        {
+            "id": "interaction-product-loop-owns-exchange",
+            "split": "train",
+            "kind": "interaction",
+            "available_skills": ["product-co-design", "implementation-spec"],
+            "turns": [{"prompt": "Help me explore a tool for reviewing infrastructure drift.", "explicit_invocations": ["product-co-design"]}],
+            "expected": {"loaded_skills": ["product-co-design"], "excluded_skills": [], "behaviors": ["requested-loop-owns-primary-exchange"]}
+        },
+        {
+            "id": "interaction-interview-one-question",
+            "split": "train",
+            "kind": "interaction",
+            "available_skills": ["interview-me"],
+            "turns": [{"prompt": "Understand what I need from a home inventory system.", "explicit_invocations": ["interview-me"]}],
+            "expected": {"loaded_skills": ["interview-me"], "excluded_skills": [], "behaviors": ["asks-one-focused-question"]}
+        },
+        {
+            "id": "interaction-two-loops-require-choice",
+            "split": "train",
+            "kind": "interaction",
+            "available_skills": ["interview-me", "product-co-design"],
+            "turns": [{"prompt": "Help me figure out this product idea.", "explicit_invocations": ["interview-me", "product-co-design"]}],
+            "expected": {"loaded_skills": [], "excluded_skills": [], "behaviors": ["asks-user-to-choose-one-loop-before-activation"]}
+        },
+        {
+            "id": "interaction-loop-switch-preserves-synthesis",
+            "split": "train",
+            "kind": "interaction",
+            "available_skills": ["product-co-design", "interview-me"],
+            "turns": [
+                {"prompt": "Explore a safer approval flow for finance operations.", "explicit_invocations": ["product-co-design"]},
+                {"prompt": "Switch modes and interview me about the operators' actual workflow.", "explicit_invocations": ["interview-me"]}
+            ],
+            "expected": {"loaded_skills": ["product-co-design", "interview-me"], "excluded_skills": [], "behaviors": ["preserves-compact-synthesis", "switches-loop-ownership"]}
+        },
+        {
+            "id": "interaction-overlay-composes-with-task",
+            "split": "train",
+            "kind": "interaction",
+            "available_skills": ["low-friction-collaboration", "implementation-spec"],
+            "turns": [{"prompt": "Turn the settled decisions into an implementation contract, and keep the discussion easy to follow.", "explicit_invocations": ["low-friction-collaboration"]}],
+            "expected": {"loaded_skills": ["low-friction-collaboration", "implementation-spec"], "excluded_skills": [], "behaviors": ["overlay-composes-with-task", "task-retains-outcome-ownership"]}
+        },
+        {
+            "id": "interaction-overlay-composes-with-loop",
+            "split": "train",
+            "kind": "interaction",
+            "available_skills": ["low-friction-collaboration", "product-co-design"],
+            "turns": [{"prompt": "Shape this observability product with me while keeping the conversation easy to follow.", "explicit_invocations": ["product-co-design", "low-friction-collaboration"]}],
+            "expected": {"loaded_skills": ["product-co-design", "low-friction-collaboration"], "excluded_skills": [], "behaviors": ["overlay-composes-with-loop", "loop-retains-primary-ownership"]}
+        },
+        {
+            "id": "interaction-task-contribution-does-not-steal-loop",
+            "split": "validation",
+            "kind": "interaction",
+            "available_skills": ["product-co-design", "product-research"],
+            "turns": [
+                {"prompt": "Explore a release-health dashboard with me.", "explicit_invocations": ["product-co-design"]},
+                {"prompt": "Now research existing release-health workflows as one input to our discussion.", "explicit_invocations": []}
+            ],
+            "expected": {"loaded_skills": ["product-co-design", "product-research"], "excluded_skills": [], "behaviors": ["task-contribution-is-bounded", "loop-retains-primary-ownership"]}
+        },
+        {
+            "id": "interaction-loop-resume-blocks-for-confirmation",
+            "split": "validation",
+            "kind": "interaction",
+            "available_skills": ["product-co-design"],
+            "turns": [{"prompt": "A matching work record says product-co-design was paused and still owns Next. Continue the work.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["product-co-design"], "behaviors": ["surfaces-resume-candidate-once", "waits-for-explicit-reactivation"]}
+        },
+        {
+            "id": "interaction-overlay-resume-does-not-block",
+            "split": "validation",
+            "kind": "interaction",
+            "available_skills": ["low-friction-collaboration", "implementation-spec"],
+            "turns": [{"prompt": "A matching work record lists low-friction-collaboration as a resume candidate. Finish the already-authorized implementation specification.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["implementation-spec"], "excluded_skills": ["low-friction-collaboration"], "behaviors": ["mentions-overlay-candidate-once", "does-not-block-authorized-work"]}
+        },
+        {
+            "id": "interaction-overlay-deactivation-ends-composition",
+            "split": "validation",
+            "kind": "interaction",
+            "available_skills": ["low-friction-collaboration", "implementation-spec"],
+            "turns": [
+                {"prompt": "Keep this implementation discussion easy to follow.", "explicit_invocations": ["low-friction-collaboration"]},
+                {"prompt": "Deactivate that overlay and continue the underlying task normally.", "explicit_invocations": []}
+            ],
+            "expected": {"loaded_skills": ["low-friction-collaboration"], "excluded_skills": [], "behaviors": ["deactivates-overlay", "underlying-task-continues"]}
+        }
+    ]
+}

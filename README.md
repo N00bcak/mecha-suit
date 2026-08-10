@@ -58,14 +58,14 @@ uv sync --dev
 ```
 
 `uv sync --dev` creates the local `.venv` and installs the test-only dependencies.
-The only third-party dependency is PyYAML, which Codex's `skill-creator`
-validator uses to parse skill frontmatter. The skill installer and installed
+PyYAML is the only third-party dependency. The skill installer and installed
 skills do not depend on Python or this environment.
 
 `./test.sh` verifies the harness before you install anything. It checks
-Codex-compatible YAML frontmatter, script syntax, skill names, family layout,
-the exact subagent-authorization allowlist, and install/uninstall behavior
-against a temporary skill root.
+portable Agent Skills contracts, Codex adapter metadata, the host-neutral
+interaction-evaluation corpus, script syntax, family layout, the exact
+subagent-authorization allowlist, and install/uninstall behavior against a
+temporary skill root. It never invokes a model.
 
 Install every skill into the default Codex skill root:
 
@@ -195,6 +195,10 @@ session: an unfinished loop prompts before its work resumes, while an overlay
 is mentioned without blocking the requested task.
 
 ## Which Skill Do I Use?
+
+For a brief, human-friendly view of every skill, see
+[Skills at a Glance](docs/skills.md). It shows what you bring and what each
+skill gives back.
 
 For ordinary ambiguity, let Codex inspect supplied context, state safe
 assumptions, and ask one focused question only when a user-owned decision
@@ -339,6 +343,8 @@ If you installed with `MECHA_SKILL_ROOT`, uninstall with the same value.
 - `SKILL.md`: runtime behavior, trigger boundaries, input needs, output contract, done conditions.
 - `references/`: passive checklists, rubrics, examples, and decision aids.
 - `scripts/`: deterministic helpers that remove repeated procedural work.
+- `evals/`: host-neutral prompts and observable behavioral expectations.
+- `tests/`: deterministic validator, schema, and adapter-rendering tests.
 - `templates/`: repeatable authoring patterns.
 - `docs/`: human-facing maintenance and platform notes.
 - `agents/`: host metadata only when it materially improves routing or
@@ -363,9 +369,10 @@ Run:
 
 The test harness checks:
 
-- Codex `skill-creator`-compatible YAML frontmatter
+- Agent Skills-compatible frontmatter and interaction contracts
+- Codex-specific `agents/openai.yaml` metadata as a separate adapter layer
+- validator unit tests and host-neutral interaction-evaluation cases
 - shell syntax for executable scripts
-- `SKILL.md` frontmatter names against folder names
 - required routing and family layout
 - absence of `families/orchestration/`
 - subagent authorization limited to `parallel-subagents` and `second-opinion`
@@ -379,6 +386,24 @@ The test harness checks:
 - managed uninstall behavior
 
 Add focused checks to `test.sh` when a new executable invariant is introduced.
+
+Live evaluation is deliberately separate from the deterministic test suite:
+
+```bash
+uv run python scripts/run_interaction_evals.py \
+    --host codex \
+    --split validation \
+    --runs 3
+```
+
+The committed corpus keeps user prompts and expected behavior independent of
+host invocation syntax. The Codex adapter renders `$skill-name` only at run
+time. Its invocation result is heuristic because current Codex JSON events do
+not expose a stable implicit-skill invocation event; explicit bindings without
+an observable skill-file read are reported as inconclusive.
+Single-turn interaction responses are retained for manual review. Multi-turn
+cases remain corpus-level review scenarios until an adapter can preserve and
+observe host session state without contaminating the test.
 
 ## Troubleshooting
 

@@ -14,9 +14,12 @@ development rules still belong in `AGENTS.md`.
 ```text
 mecha-suit/
     docs/          human-facing maintenance and platform documentation
+    evals/         host-neutral behavioral evaluation cases
     families/      skill families and specialist leaves
+    scripts/       deterministic validators and opt-in evaluation adapters
     shared/        cross-skill examples and rubrics
     templates/     repeatable authoring templates
+    tests/         deterministic validator and corpus tests
 ```
 
 Generated, vendor, ignored work-state, and cache folders are intentionally
@@ -43,6 +46,8 @@ development environments.
 - Runtime behavior belongs in `SKILL.md`.
 - Passive aids belong in `references/`.
 - Deterministic helpers belong in `scripts/`.
+- Evaluation cases remain host-neutral; invocation syntax belongs in adapters.
+- Live model evaluation stays outside the deterministic test suite.
 - Generated and dependency directories should not gain hand-authored specs.
 
 ## Common Workflow

@@ -15,6 +15,8 @@
 - Task skills are the default interaction model. Session overlays and
   interactive loops declare their contract in `SKILL.md`; no registry or
   custom frontmatter field encodes the taxonomy.
+- Portable validation follows the Agent Skills frontmatter contract. Host
+  invocation policy and presentation metadata are validated separately.
 
 ## Codex-specific notes
 
@@ -52,10 +54,25 @@
 
 ## Claude Code-specific notes
 
-- Treat these skills as portable method documents.
+- Claude Code can load the shared Agent Skills-compatible `SKILL.md` files.
 - Use `docs/global-CLAUDE.example.md` as a starting point for global instructions.
 - Use `templates/repo-CLAUDE.template.md` for project-level adaptation.
-- If Claude Code gains a native skill metadata format, keep the global contracts and add host-specific metadata beside `agents/`.
+- Do not add Claude-only invocation fields to shared frontmatter while they are
+  rejected by the current Codex compatibility profile. Explicit-only behavior
+  is therefore not host-enforced in Claude Code by this repository yet.
+- Reuse the host-neutral evaluation corpus when a verified Claude runner is
+  available; keep Claude invocation and telemetry handling in its adapter.
+
+## Validation and evaluation layers
+
+- `scripts/validate_skills.py` checks the portable core, Mecha Suit interaction
+  contracts, and Codex metadata as distinct layers.
+- `./test.sh` is deterministic and does not require an agent host, credentials,
+  network access, or model calls.
+- `scripts/run_interaction_evals.py` is opt-in. Its Codex adapter infers skill
+  use from `SKILL.md` read commands and labels the evidence as heuristic.
+- The JSON corpus contains no `$` or `/` invocation syntax; adapters add it at
+  execution time.
 
 ### Planning-mode adapter stub
 

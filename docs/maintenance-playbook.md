@@ -68,15 +68,40 @@ uv sync --dev
 ```
 
 `uv sync --dev` creates `.venv` from the committed lockfile. PyYAML is the only
-third-party development dependency because Codex's `skill-creator` validator
-uses it for frontmatter parsing. Do not add Python packages unless a repository
-test or deterministic development tool requires them; runtime skills and the
-install scripts must remain independent of this environment.
+third-party development dependency. Do not add Python packages unless a
+repository test or deterministic development tool requires them; runtime
+skills and the install scripts must remain independent of this environment.
 
-The test command validates Codex-compatible YAML frontmatter, shell syntax,
-install/uninstall behavior, frontmatter names, routing-family layout, and
+The deterministic test command validates portable Agent Skills frontmatter,
+Mecha Suit interaction contracts, Codex adapter metadata, evaluation-corpus
+structure, shell syntax, install/uninstall behavior, routing-family layout, and
 subagent boundary rules. Add focused checks there when a new executable
 invariant is introduced.
+
+## Maintain behavioral evaluations
+
+Keep reusable prompts and expectations in
+`evals/interaction-boundary.json`. Store explicit skill names separately from
+prompt text so each host adapter can render its own invocation syntax. Use
+realistic positive prompts and near-miss negatives, and keep the committed
+train/validation split fixed while tuning descriptions.
+
+`./test.sh` validates and dry-renders the corpus without invoking a model. Run
+the opt-in Codex adapter when behavioral evidence is worth its cost:
+
+```bash
+uv run python scripts/run_interaction_evals.py \
+    --host codex \
+    --split validation \
+    --runs 3
+```
+
+Treat Codex skill-file-read observations as heuristic and explicit bindings
+without an observable read as inconclusive. Do not make live model evaluation
+a deterministic test or merge prerequisite. Review single-turn interaction
+responses manually; do not simulate multi-turn state inside one prompt. Add
+another host adapter only after verifying its invocation telemetry against the
+same corpus.
 
 ## Write open-ended skills
 

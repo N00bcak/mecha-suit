@@ -41,9 +41,10 @@ When editing this repository:
   runtime requirements for installed skills or for `install.sh`.
 - Add a dependency only when a repository test or deterministic development
   tool requires it. PyYAML is currently the sole third-party dependency,
-  matching Codex `skill-creator` frontmatter validation.
+  supporting portable frontmatter and Codex adapter validation.
 - Commit `uv.lock`; never commit `.venv`.
 - When changing skill frontmatter rules, keep `scripts/validate_skills.py`
+  aligned with the Agent Skills specification and keep its Codex profile
   aligned with Codex's `skill-creator` `quick_validate.py`.
 
 ### 1. Think before coding
@@ -184,6 +185,8 @@ Use:
 - `SKILL.md` for skill runtime behavior
 - `references/` for passive supporting material
 - `scripts/` for deterministic helper logic
+- `evals/` for host-neutral behavioral cases and expectations
+- `tests/` for deterministic validation and adapter-rendering checks
 - `templates/` for repeatable authoring patterns
 - `docs/` for human-facing explanation and maintenance policy
 
@@ -222,6 +225,12 @@ Only add a script if it:
 - does not depend on private infrastructure
 
 Avoid scripts that merely wrap trivial prose.
+
+### `evals/`, `tests/`
+
+Keep evaluation prompts independent of host invocation syntax. Host adapters may
+render syntax and collect evidence, but deterministic tests must not require a
+model, credentials, network access, or nondeterministic output.
 
 ### `agents/`
 Only add metadata files when they materially improve routing or invocation behavior.

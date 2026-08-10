@@ -9,7 +9,9 @@ Mecha Suit is a reusable, symlink-installed skill harness for coding agents (Cod
 ## Commands
 
 ```bash
-./test.sh                    # Validate harness (syntax, frontmatter, architecture, install behavior)
+uv sync --dev                # Create the deterministic test environment
+./test.sh                    # Validate portable core, adapters, architecture, and install behavior
+uv run python scripts/run_interaction_evals.py --host codex --split validation --runs 3  # Optional live eval
 ./install.sh                 # Install all skills as symlinks to the Codex skill root
 ./install.sh product-co-design  # Install selected skills only
 ./uninstall.sh               # Remove only managed symlinks
@@ -44,6 +46,7 @@ Each skill folder contains `SKILL.md` (runtime behavior with frontmatter), optio
 - `shared/rubrics/` — toolbox-wide lifecycle, research, change,
   persistence/yield, and skill-boundary discipline.
 - `shared/examples/` — Skill-selection examples.
+- `evals/` — Host-neutral trigger and interaction evaluation cases.
 - `templates/` — Task, session-overlay, and interactive-loop authoring
   contracts plus repo-local AGENTS/CLAUDE files and adapter skills.
 - `docs/` — `maintenance-playbook.md`, `platform-notes.md`, example global instructions.
