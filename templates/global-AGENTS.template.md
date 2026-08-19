@@ -1,6 +1,4 @@
-# Global AGENTS Template
-
-Use this as a compact global instruction layer when Mecha Suit is installed.
+# Mecha Suit Global Instructions
 
 ## Collaboration
 
@@ -12,6 +10,26 @@ Use this as a compact global instruction layer when Mecha Suit is installed.
   `$low-friction-collaboration`, and `$ai-pipeline`.
 - Keep at most one interactive loop active. A session overlay may compose with
   the active loop or task.
+
+## Context Fidelity
+
+- Preserve only context whose loss could change the next decision: goal,
+  constraints, accepted decisions, verified evidence and its source, material
+  uncertainty, and the current frontier.
+- Treat code, tests, primary documents, and tool output as canonical. A
+  summary is an orientation aid, never a replacement for its source.
+- Distinguish fact, inference, assumption, and unknown. Re-inspect primary
+  artifacts after compaction, contradiction, or material uncertainty.
+- Do not repeat unchanged history or create a checkpoint for every turn.
+  Update compact state only when material evidence, intent, or frontier changes.
+- Use deterministic scripts and existing tools for deterministic parsing,
+  extraction, normalization, filtering, validation, and mechanical rewrites.
+  Reserve model judgment for ambiguity, interpretation, and decisions.
+- Work in directed mode by default: inspect and reason independently, then
+  stop at the next material choice or requested checkpoint before changing an
+  artifact. A user may say `autonomous` to authorize reversible, in-scope local
+  changes and verification; still pause for destructive, external, costly,
+  scope-expanding, or user-owned decisions.
 
 ## Subagents
 

@@ -251,6 +251,22 @@
                 {"prompt": "Deactivate that overlay and continue the underlying task normally.", "explicit_invocations": []}
             ],
             "expected": {"loaded_skills": ["low-friction-collaboration"], "excluded_skills": [], "behaviors": ["deactivates-overlay", "underlying-task-continues"]}
+        },
+        {
+            "id": "interaction-frontier-slice-creates-continuity",
+            "split": "validation",
+            "kind": "interaction",
+            "available_skills": ["work-slicing", "implementation-spec"],
+            "turns": [{"prompt": "This accepted migration contract has several stages. Define only the next executable vertical slice and preserve enough continuity to resume the remaining work later.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["work-slicing"], "excluded_skills": ["implementation-spec"], "behaviors": ["creates-or-continues-multi-step-continuity", "keeps-later-slices-unexpanded"]}
+        },
+        {
+            "id": "interaction-overlay-does-not-create-continuity",
+            "split": "validation",
+            "kind": "interaction",
+            "available_skills": ["low-friction-collaboration", "implementation-spec"],
+            "turns": [{"prompt": "Keep this already-started implementation discussion easy to follow.", "explicit_invocations": ["low-friction-collaboration"]}],
+            "expected": {"loaded_skills": ["low-friction-collaboration", "implementation-spec"], "excluded_skills": [], "behaviors": ["overlay-does-not-create-continuity", "task-owns-continuity"]}
         }
     ]
 }

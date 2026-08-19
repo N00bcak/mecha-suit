@@ -31,6 +31,14 @@
 - Other collaboration leaves, engineering leaves, and AI execution leaves
   currently rely on frontmatter only.
 - Global installation targets `MECHA_SKILL_ROOT` when set, then `CODEX_HOME/skills` when `CODEX_HOME` is set, otherwise `$HOME/.codex/skills`.
+- `install.sh` also provisions the canonical consumer prompt from
+  `templates/global-AGENTS.template.md` at `AGENTS.md` beside that skill root.
+  It aborts on non-default instructions unless
+  `--use-custom-global-instructions` is explicit; that replacement backs up
+  the old file under this checkout's `.mecha/backups/global-instructions/`.
+- The repository-root `AGENTS.md` governs Mecha Suit development only.
+  `EXAMPLE_PROMPT.md` is a downstream customization example, not the installed
+  prompt or a development contract.
 - On Windows, run the Bash scripts from WSL, Git Bash, MSYS, or Cygwin. Git Bash/MSYS/Cygwin default to a Unix-style path for `%USERPROFILE%\.codex\skills` when conversion is available.
 - Repo-local `AGENTS.md` files should point to global skills and provide only local facts.
 
@@ -54,6 +62,14 @@
   The first execution turn materializes it under `.mecha/work/<slug>/` before
   changing implementation files.
 - If the user requests revisions rather than execution, keep the contract draft.
+
+### Directed and autonomous work
+
+- The installed global prompt defaults to directed work: inspect and reason,
+  then stop at the next material choice or requested checkpoint before editing.
+- A user can say `autonomous` to authorize reversible, in-scope local changes
+  and verification. Destructive, external, costly, scope-changing, and
+  user-owned decisions still require a pause.
 
 ## Claude Code-specific notes
 

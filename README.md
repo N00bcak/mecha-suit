@@ -24,6 +24,20 @@ Install all skills into the default Codex skill root:
 ./install.sh
 ```
 
+On a fresh Codex setup, installation also copies the default consumer global
+instructions from `templates/global-AGENTS.template.md` to `AGENTS.md` beside
+the skill root. If that file contains non-default instructions, installation
+aborts before changing skills. To back up and replace it with Mecha Suit's
+default prompt, run:
+
+```bash
+./install.sh --use-custom-global-instructions
+```
+
+The backup is kept under `.mecha/backups/global-instructions/` in this checkout.
+`uninstall.sh` removes managed skill links only; it never changes global
+instructions.
+
 Install only selected skills:
 
 ```bash
@@ -58,6 +72,12 @@ Tell the agent what outcome you want and share the context you already have.
 The host normally chooses a matching skill from its description. You do not
 need to memorize the toolbox.
 
+The installed global prompt is directed by default: the agent inspects and
+reasons, then pauses at the next material choice or requested checkpoint before
+editing. Say `autonomous` when you want reversible, in-scope local changes and
+verification completed without that checkpoint. Recognized multi-step work uses
+a compact `.mecha` continuity record; one-step work stays in the conversation.
+
 Four modes start only when you ask for them:
 
 - `product-co-design` shapes a product concept through a multi-turn exchange.
@@ -71,7 +91,8 @@ skill.
 
 Keep project-specific commands, paths, architecture, and restrictions in that
 project's `AGENTS.md` or a repo-local adapter. Global skills should remain
-portable.
+portable. `EXAMPLE_PROMPT.md` shows one concise downstream customization; it is
+not installed and does not define this repository's development rules.
 
 ## Safety
 
@@ -92,7 +113,8 @@ final response.
 
 - `families/` contains the installable skills.
 - `shared/` contains cross-skill runtime contracts and rubrics.
-- `templates/` contains repeatable skill and host-instruction starting points.
+- `templates/` contains repeatable skill and host-instruction starting points,
+  including the installable consumer global AGENTS prompt.
 - `evals/` contains host-neutral routing and interaction cases.
 - `tests/` and `test.sh` contain deterministic checks.
 - `docs/` contains the short human handbook.

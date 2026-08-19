@@ -16,7 +16,9 @@ Each layer has one job:
   for repeated deterministic work.
 - `shared/` owns the few runtime contracts used across skills: lifecycle,
   research integrity, and change discipline.
-- `templates/` owns repeatable authoring shapes and example host instructions.
+- `templates/` owns repeatable authoring shapes, host-instruction starting
+  points, and the canonical consumer global AGENTS prompt installed by
+  `install.sh`.
 - `evals/` owns host-neutral routing and interaction cases. Host adapters add
   invocation syntax and collect observations.
 - `tests/` and `test.sh` own deterministic repository invariants.
@@ -98,6 +100,10 @@ documented adaptation rather than a claim of identical enforcement.
 Project commands, private infrastructure, and repository-specific facts stay
 in local instructions or adapter skills. The global toolbox should not make a
 small local edit require changes across unrelated skills.
+
+The repository-root `AGENTS.md` governs development of Mecha Suit itself. It
+is separate from the consumer prompt under `templates/`; examples may show
+customization but never become install sources.
 
 ## Deliberately Deferred
 

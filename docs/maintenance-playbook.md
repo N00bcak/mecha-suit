@@ -46,6 +46,11 @@ references only when their stated condition applies. Re-read a shared contract
 after context loss, suspected staleness, or a file change; do not create cache
 flags or a registry.
 
+Keep consumer global instructions as one stable, static prefix. Put changing
+project facts and task state in repo-local instructions, artifacts, or the
+conversation. State universal policy once; do not duplicate it in every skill
+or turn a summary into a substitute for primary evidence.
+
 ## Maintain lifecycle-aware leaves
 
 The work index never routes or invokes skills. A participating leaf states its

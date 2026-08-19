@@ -34,8 +34,8 @@ class InteractionEvaluationTests(unittest.TestCase):
         splits = Counter(case["split"] for case in corpus["cases"])
         trigger_cases = [case for case in corpus["cases"] if case["kind"] == "trigger"]
 
-        self.assertEqual(kinds, {"trigger": 20, "interaction": 10})
-        self.assertEqual(splits, {"train": 18, "validation": 12})
+        self.assertEqual(kinds, {"trigger": 20, "interaction": 12})
+        self.assertEqual(splits, {"train": 18, "validation": 14})
         self.assertEqual(
             sum(bool(case["expected"]["loaded_skills"]) for case in trigger_cases),
             10,

@@ -2,6 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(CDPATH= cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+GLOBAL_INSTRUCTIONS_SOURCE="${ROOT_DIR}/templates/global-AGENTS.template.md"
 
 # Install into MECHA_SKILL_ROOT when provided; otherwise use Codex's per-user
 # skill root. Keep this Bash-friendly for macOS, Linux, WSL, and Windows Git
@@ -33,6 +34,8 @@ default_skill_root() {
 
 SKILL_ROOT="${MECHA_SKILL_ROOT:-$(default_skill_root)}"
 MISSING_COUNT=0
+USE_CUSTOM_GLOBAL_INSTRUCTIONS=false
+REQUESTED_SKILLS=()
 
 # Skills are discovered by folder shape so adding a new leaf does not require
 # maintaining a separate registry.
@@ -86,6 +89,67 @@ resolve_symlink_dir() {
     return 1
 }
 
+global_instructions_path() {
+    printf '%s/AGENTS.md\n' "$(dirname "${SKILL_ROOT}")"
+}
+
+backup_global_instructions() {
+    local source_path="$1"
+    local backup_dir="${ROOT_DIR}/.mecha/backups/global-instructions"
+    local timestamp
+    local backup_path
+    local suffix=0
+
+    timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
+    backup_path="${backup_dir}/AGENTS-${timestamp}.md"
+    while [ -e "${backup_path}" ]; do
+        suffix=$((suffix + 1))
+        backup_path="${backup_dir}/AGENTS-${timestamp}-${suffix}.md"
+    done
+
+    (umask 077 && mkdir -p "${backup_dir}" && cp "${source_path}" "${backup_path}")
+    printf '%s\n' "${backup_path}"
+}
+
+provision_global_instructions() {
+    local target_path
+    local backup_path
+
+    target_path="$(global_instructions_path)"
+    if [ ! -e "${target_path}" ] && [ ! -L "${target_path}" ]; then
+        mkdir -p "$(dirname "${target_path}")"
+        cp "${GLOBAL_INSTRUCTIONS_SOURCE}" "${target_path}"
+        printf '[install] global instructions -> %s\n' "${target_path}"
+        return 0
+    fi
+
+    if [ -f "${target_path}" ] && [ ! -s "${target_path}" ]; then
+        cp "${GLOBAL_INSTRUCTIONS_SOURCE}" "${target_path}"
+        printf '[install] global instructions -> %s\n' "${target_path}"
+        return 0
+    fi
+
+    if [ -f "${target_path}" ] && cmp -s "${GLOBAL_INSTRUCTIONS_SOURCE}" "${target_path}"; then
+        printf '[ok] global instructions already installed\n'
+        return 0
+    fi
+
+    if [ "${USE_CUSTOM_GLOBAL_INSTRUCTIONS}" != true ]; then
+        printf '[abort] %s contains non-default global instructions; rerun with --use-custom-global-instructions to back up and replace it\n' "${target_path}" >&2
+        return 1
+    fi
+
+    if [ ! -f "${target_path}" ]; then
+        printf '[abort] %s is not a regular global instruction file\n' "${target_path}" >&2
+        return 1
+    fi
+
+    backup_path="$(backup_global_instructions "${target_path}")"
+    cp "${GLOBAL_INSTRUCTIONS_SOURCE}" "${target_path}"
+    printf '[replace] global instructions -> %s\n' "${target_path}"
+    printf '[backup] previous global instructions -> %s\n' "${backup_path}"
+}
+
 install_skill() {
     local name="$1"
     local source_dir
@@ -127,12 +191,30 @@ install_skill() {
 main() {
     local name
 
-    if [ "$#" -eq 0 ]; then
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            --use-custom-global-instructions)
+                USE_CUSTOM_GLOBAL_INSTRUCTIONS=true
+                ;;
+            --*)
+                printf '[missing] %s is not an install option or skill\n' "$1" >&2
+                return 1
+                ;;
+            *)
+                REQUESTED_SKILLS+=("$1")
+                ;;
+        esac
+        shift
+    done
+
+    provision_global_instructions
+
+    if [ "${#REQUESTED_SKILLS[@]}" -eq 0 ]; then
         while IFS= read -r name; do
             install_skill "${name}"
         done < <(all_skill_names)
     else
-        for name in "$@"; do
+        for name in "${REQUESTED_SKILLS[@]}"; do
             install_skill "${name}"
         done
     fi

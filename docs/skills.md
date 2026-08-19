@@ -25,8 +25,8 @@ shape of the conversation, so the agent will not enter them by accident.
 | Skill | What you bring | What you get |
 | --- | --- | --- |
 | `technical-research` | A bounded software or architecture question | Cited findings, reproducible checks, tradeoffs, and remaining uncertainty |
-| `implementation-spec` | A settled goal, constraints, evidence, and non-goals | An implementation contract with acceptance criteria and behavior scenarios |
-| `work-slicing` | An accepted implementation contract | Ordered, verifiable slices with dependencies and completion conditions |
+| `implementation-spec` | A settled goal, constraints, evidence, and non-goals | A global implementation contract and the current actionable frontier |
+| `work-slicing` | An accepted implementation contract | The next verifiable slice, its dependencies, and its completion condition |
 | `large-codebase-change` | A requested change in a large existing repository | A small, idiomatic, tested, PR-ready diff |
 | `prototype-builder` | A core idea and the behavior it should demonstrate | A runnable vertical slice, basic verification, and clearly named shortcuts |
 | `diagnosing-bugs` | The symptom, expected behavior, and reproduction clues | A reproducer, tested hypotheses, root cause, and—when requested—a verified fix |
@@ -49,4 +49,3 @@ shape of the conversation, so the agent will not enter them by accident.
 | --- | --- | --- |
 | `humanizer` | A writing goal or draft, audience, evidence, and desired voice | Natural long-form prose or a faithful revision that preserves meaning |
 | `blogpost-writing` | A post idea, source material, and author-owned experience | VitePress-ready blog or CTF writeup Markdown in N00bcak's voice |
-

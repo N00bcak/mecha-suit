@@ -461,11 +461,14 @@ metadata_policy_checks() {
 install_uninstall_checks() {
     local tmp_root
     local unrelated_target
+    local backup_path
+    local custom_prompt
 
     tmp_root="$(mktemp -d)"
     trap "rm -rf '${tmp_root}'" EXIT
 
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" >"${tmp_root}/install-all.out"
+    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${tmp_root}/AGENTS.md" || fail "default global instructions were not installed"
     assert_symlink_to "${tmp_root}/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
     assert_symlink_to "${tmp_root}/skills/interview-me" "${ROOT_DIR}/families/collaboration/interview-me"
     assert_symlink_to "${tmp_root}/skills/low-friction-collaboration" "${ROOT_DIR}/families/collaboration/low-friction-collaboration"
@@ -490,6 +493,25 @@ install_uninstall_checks() {
 
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" >"${tmp_root}/install-all-again.out"
     grep -Eq '\[ok\] prototype-builder already installed' "${tmp_root}/install-all-again.out" || fail "install is not idempotent"
+    grep -Eq '\[ok\] global instructions already installed' "${tmp_root}/install-all-again.out" || fail "global instruction install is not idempotent"
+
+    mkdir -p "${tmp_root}/custom/skills"
+    custom_prompt="custom global instructions for ${tmp_root}"
+    printf '%s\n' "${custom_prompt}" >"${tmp_root}/custom/AGENTS.md"
+    if MECHA_SKILL_ROOT="${tmp_root}/custom/skills" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-custom-abort.out" 2>&1; then
+        fail "install should abort when non-default global instructions exist"
+    fi
+    assert_not_exists "${tmp_root}/custom/skills/prototype-builder"
+    grep -Fq '[abort]' "${tmp_root}/install-custom-abort.out" || fail "global instruction conflict output is unclear"
+    grep -Fxq "${custom_prompt}" "${tmp_root}/custom/AGENTS.md" || fail "conflicting global instructions were changed"
+
+    MECHA_SKILL_ROOT="${tmp_root}/custom/skills" "${ROOT_DIR}/install.sh" --use-custom-global-instructions prototype-builder >"${tmp_root}/install-custom-replace.out"
+    assert_symlink_to "${tmp_root}/custom/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
+    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${tmp_root}/custom/AGENTS.md" || fail "custom global instructions were not replaced"
+    backup_path="$(rg -l -F "${custom_prompt}" "${ROOT_DIR}/.mecha/backups/global-instructions" | tail -n 1)"
+    [ -n "${backup_path}" ] || fail "replaced global instructions were not backed up"
+    grep -Fxq "${custom_prompt}" "${backup_path}" || fail "global instruction backup is incomplete"
+    rm "${backup_path}"
 
     MECHA_SKILL_ROOT="${tmp_root}/selected" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-selected.out"
     assert_symlink_to "${tmp_root}/selected/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
@@ -549,6 +571,7 @@ install_uninstall_checks() {
 
     MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-codex-home.out"
     assert_symlink_to "${tmp_root}/codex-home/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
+    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${tmp_root}/codex-home/AGENTS.md" || fail "CODEX_HOME global instructions were not installed"
     MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" "${ROOT_DIR}/uninstall.sh" prototype-builder >"${tmp_root}/uninstall-codex-home.out"
     assert_not_exists "${tmp_root}/codex-home/skills/prototype-builder"
 
