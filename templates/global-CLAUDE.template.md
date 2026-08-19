@@ -19,3 +19,6 @@ Let the host own ordinary selection and clarification. Put Claude-specific
 commands, project layout, and invocation behavior in thin local instructions;
 do not copy project facts into global skills. Matching `.mecha` work state may
 provide continuity, but resume candidates require fresh explicit invocation.
+When native implementation or remediation continues a matching lifecycle
+record, follow its shared code-review iteration contract even when no
+implementation skill is selected.

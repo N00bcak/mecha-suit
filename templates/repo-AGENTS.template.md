@@ -15,6 +15,9 @@ Use this repo-local file to connect project facts to the global skill toolbox.
   and a matching `.mecha/work/<slug>/index.md` exists, follow that leaf's
   work-record contract; unrelated ad-hoc, AI, and writing work remains
   unaffected.
+- Native implementation or remediation with a matching lifecycle record also
+  follows the shared code-review iteration contract and answers open `RF-*`
+  blockers with evidence.
 - Treat resume candidates as advisory context. Use Codex `$skill-name` syntax
   to offer reactivation, and never activate one from the record alone.
 

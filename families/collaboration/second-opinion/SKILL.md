@@ -58,7 +58,9 @@ When separately invoked for work with a matching work record, read
 `../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
 already available in context. Build the non-leading packet from the frozen
 artifact, accepted constraints, and raw evidence. The reviewer may not revise
-intent or lifecycle state.
+intent or lifecycle state. When adjudicating one disputed code-review finding,
+preserve its `RF-*` ID and return evidence for the main process to accept,
+reject, or qualify; do not reopen the broader review.
 
 ## Workflow
 

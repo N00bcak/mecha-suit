@@ -123,6 +123,10 @@ deferrals, promotion signals, and the next step.
 
 In lifecycle mode, record observation separately from interpretation. Prototype
 completion does not waive required review of a requested code deliverable.
+For that deliverable, record the review baseline and head, bounded change,
+criterion evidence, and known verification gaps. During remediation, answer
+each open `RF-*` blocker as fixed with evidence, rebutted with counter-evidence,
+or conflicting with accepted intent.
 
 ## Persistence And Yield
 

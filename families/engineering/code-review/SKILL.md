@@ -29,16 +29,21 @@ the wrong behavior and passing tests cannot mask intent drift.
 ## Returns
 
 - Separate intent-fidelity, behavioral-correctness, and maintainability reports.
-- Findings tied to requirement, evidence, file location, and consequence.
-- Review disposition, verification gaps, and next corrective task shape.
+- A stable `RF-*` finding ledger tied to requirement or invariant, evidence,
+  scope relation, consequence, classification, and corrective action.
+- Review disposition, verification gaps, remediation reconciliation, and next
+  corrective task shape.
 - Updated lifecycle review artifact when lifecycle mode is active.
 
 ## Done Conditions
 
 - The fixed point and reviewed change surface are explicit.
 - Every material finding is reproducible or clearly marked uncertain.
+- Every finding passes separate validity and current-actionability checks.
 - Acceptance criteria and unrequested behavior are accounted for when intent is
   available.
+- Re-review preserves finding identity and distinguishes failed fixes,
+  remediation regressions, late discoveries, and intent conflicts.
 - Lifecycle completion is granted, blocked, or explicitly waived by the user.
 
 ## Workflow
@@ -79,11 +84,42 @@ decisions, and verification evidence before reporting findings.
 - Read `../references/design-decision-discipline.md` for consequential interface
   changes.
 
-### 3. Report And Gate
+### 3. Qualify Findings
 
-For each finding give axis, severity, confidence, file and location, evidence,
-consequence, and smallest corrective action. Keep axes separate and order
-findings by severity within each axis. Say when an axis has no findings.
+Give each finding a stable `RF-*` ID. Record its axis, concrete claim, affected
+file and location, criterion, constraint, invariant, scenario, or authoritative
+rule, evidence, consequence and likelihood, scope relation, state, and smallest
+corrective action with material cost or regression risk.
+
+First test validity. Prefer a reproduced failure, then an accepted contract or
+required check, reachable-path analysis, and established local convention.
+Confidence, emphatic wording, and preference are not evidence. Then test whether
+the finding warrants action in this change. Classify it as `blocking`,
+`non-blocking`, `question`, `deferred`, or `rejected` using
+`../../../shared/rubrics/lifecycle-contract.md` as the policy source even when
+no durable work record exists.
+
+Do not block on an equally valid alternative, polish, speculative future cost,
+or an unrelated pre-existing defect that does not make the current change
+unsafe. A high-consequence uncertainty may request a named decisive check
+without presuming that code must change.
+
+### 4. Reconcile Re-Review
+
+When a prior report exists, reconcile every previous blocker before inspecting
+the complete current bounded diff. A failed fix retains its ID. Give a
+remediation regression a new ID and label its provenance. Do not reopen a
+resolved finding or repeat a rebutted assertion without new evidence. Route
+intent conflicts to the user. Route unchanged evidence disputes to
+adjudication rather than another generic implementation request.
+
+### 5. Report And Gate
+
+Keep axes separate and order actionable findings by consequence. Say when an
+axis has no findings. Use one disposition from the shared contract: `passed`,
+`changes required`, `intent decision required`, `adjudication required`, or
+`waived`. Only open blockers produce `changes required`; optional, deferred,
+rejected, and answered items do not prevent passage.
 
 Lifecycle work may pass only when each criterion is supported by implementation
 evidence, explicitly deferred by the user, or marked inapplicable with a reason,
@@ -95,8 +131,9 @@ waiver does not turn missing verification into passing evidence.
 
 When a matching record exists, read
 `../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
-already available in context. Store and link the report, then route intent,
-correctness, and maintainability gaps to their owning task shapes.
+already available in context. Store and link the finding ledger, summarize its
+disposition and open blocker IDs in the index, then route intent, correctness,
+and maintainability gaps to their owning task shapes.
 
 ## Persistence And Yield
 

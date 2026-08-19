@@ -150,9 +150,12 @@ Update any active work record with verification, risks, files, and one next
 step. Set it complete only when no required work remains.
 
 In lifecycle mode, implementation completion is not lifecycle completion.
-Record the fixed point, diff scope, criterion evidence, and review-ready state,
-then name three-axis review as the next task shape. Keep lifecycle state
-in-progress until `code-review` passes or the user records an explicit waiver.
+Record the review baseline and head, diff scope, criterion evidence, known
+verification gaps, and review-ready state, then name three-axis review as the
+next task shape. For remediation, answer every open `RF-*` blocker as fixed
+with evidence, rebutted with counter-evidence, or conflicting with accepted
+intent. Keep lifecycle state in-progress until `code-review` passes or the user
+records an explicit waiver.
 
 Return the outcome, diff scope, verification, risks, deferrals, and reviewer
 focus. Do not publish Git state unless explicitly requested.

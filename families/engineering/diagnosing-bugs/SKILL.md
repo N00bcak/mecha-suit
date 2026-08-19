@@ -86,7 +86,11 @@ prevention opportunity, verification, and remaining uncertainty.
 When a matching record exists, read
 `../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
 already available in context. Link the reproducer and evidence, map a fix to
-affected `AC-*` criteria, and surface intent contradictions to the user.
+affected `AC-*` criteria, and surface intent contradictions to the user. For an
+authorized code fix, record the review baseline and head, bounded change, and
+verification gaps. During remediation, answer each open `RF-*` blocker as fixed
+with evidence, rebutted with counter-evidence, or conflicting with accepted
+intent.
 
 ## Persistence And Yield
 

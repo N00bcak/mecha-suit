@@ -24,4 +24,6 @@ Use this as a compact global instruction layer when Mecha Suit is installed.
 Put repository commands, paths, conventions, and project architecture in a
 repo-local `AGENTS.md` or adapter skill. Use durable `.mecha` work state only
 when continuity or an accepted lifecycle is active. Resume candidates are
-advisory and require fresh explicit invocation.
+advisory and require fresh explicit invocation. When native implementation or
+code-review remediation continues a matching lifecycle record, read and follow
+its shared lifecycle contract even when no implementation skill is selected.

@@ -30,7 +30,7 @@ shape of the conversation, so the agent will not enter them by accident.
 | `large-codebase-change` | A requested change in a large existing repository | A small, idiomatic, tested, PR-ready diff |
 | `prototype-builder` | A core idea and the behavior it should demonstrate | A runnable vertical slice, basic verification, and clearly named shortcuts |
 | `diagnosing-bugs` | The symptom, expected behavior, and reproduction clues | A reproducer, tested hypotheses, root cause, and—when requested—a verified fix |
-| `code-review` | A fixed diff plus its intended behavior | Findings on intent, correctness, evidence, and maintainability |
+| `code-review` | A fixed diff, intended behavior, and any prior review findings | Evidence-gated findings, remediation reconciliation, and a pass or corrective disposition |
 
 ## AI
 

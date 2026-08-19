@@ -12,6 +12,9 @@
 - Collaboration and engineering leaves share the host-neutral work-index
   contract in `shared/rubrics/lifecycle-contract.md` when durable state is
   active. The contract does not select or invoke skills.
+- Its code-review iteration rules also apply to native implementation or
+  remediation that continues matching lifecycle state; host templates carry
+  this boundary when no implementation leaf is selected.
 - Task skills are the default interaction model. Session overlays and
   interactive loops declare their contract in `SKILL.md`; no registry or
   custom frontmatter field encodes the taxonomy.

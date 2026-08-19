@@ -57,6 +57,12 @@ When the lifecycle contract changes, update
 `templates/work-index.template.md`, focused tests, architecture, and platform
 notes.
 
+For code-review iterations, keep the detailed `RF-*` finding ledger in a linked
+report. The work index holds only the review fixed point, disposition, and open
+blocker summary. Preserve finding IDs across remediation, distinguish validity
+from current actionability, and do not turn preferences or unsupported claims
+into lifecycle blockers.
+
 ## Maintain behavioral evaluations
 
 Keep reusable prompts and expectations in `evals/*.json`. Store explicit skill

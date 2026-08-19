@@ -16,6 +16,9 @@ Use this repo-local file to adapt the global toolbox for Claude Code.
   treat a matching `.mecha/work/<slug>/index.md` as optional host-neutral
   continuity. Resume candidates require fresh explicit invocation; do not
   assume automatic planning-mode support.
+- Native implementation or remediation with matching lifecycle state follows
+  the shared code-review iteration contract and answers open `RF-*` blockers
+  with evidence.
 
 ## Project Commands
 

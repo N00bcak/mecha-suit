@@ -19,6 +19,7 @@ from run_interaction_evals import (  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 ENGINEERING_CORPUS = ROOT / "evals" / "engineering-routing.json"
+REVIEW_CONVERGENCE_CORPUS = ROOT / "evals" / "review-convergence.json"
 
 
 class InteractionEvaluationTests(unittest.TestCase):
@@ -65,6 +66,32 @@ class InteractionEvaluationTests(unittest.TestCase):
             <= loaded
         )
         self.assertTrue(any(not case["expected"]["loaded_skills"] for case in cases))
+
+    def test_review_convergence_corpus_covers_material_boundaries(self) -> None:
+        corpus = load_corpus(REVIEW_CONVERGENCE_CORPUS)
+        cases = corpus["cases"]
+        self.assertEqual(len(cases), 11)
+        behaviors = {
+            behavior
+            for case in cases
+            for behavior in case["expected"]["behaviors"]
+        }
+        self.assertTrue(
+            {
+                "blocks-evidenced-regression",
+                "rejects-unsupported-claim",
+                "preserves-implementer-choice",
+                "defers-safe-preexisting-defect",
+                "requests-decisive-check",
+                "accepts-counter-evidence",
+                "preserves-finding-identity",
+                "routes-stalemate-to-adjudication",
+                "blocks-unsafe-preexisting-defect",
+                "routes-intent-change-to-user",
+                "passes-with-only-non-blocking-items",
+            }
+            <= behaviors
+        )
 
     def test_codex_rendering_adds_host_syntax_outside_corpus_prompt(self) -> None:
         turn = {

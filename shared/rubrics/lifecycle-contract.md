@@ -93,6 +93,72 @@ when:
 
 A review waiver does not turn missing verification into passing evidence.
 
+## Code Review Iterations
+
+Use this protocol for code deliverables. In lifecycle mode, keep the detailed
+finding ledger in a linked review artifact and only summarize its disposition,
+fixed point, and open blocker IDs in the index. In ad-hoc work, use the same
+semantics in the conversation without creating durable state.
+
+Before review, the implementation owner records the bounded diff or artifact,
+its baseline and reviewed head, criterion evidence, relevant checks, and known
+verification gaps. The accepted intent supplies the review basis but does not
+limit correctness review to enumerated criteria.
+
+Every finding receives a stable `RF-*` ID and records:
+
+- review axis, location, and concrete claim;
+- affected criterion, constraint, invariant, scenario, or authoritative rule;
+- reproducible check or evidence;
+- consequence and likelihood;
+- scope relation: introduced, worsened, required by the change, or pre-existing;
+- smallest corrective action and material cost or regression risk;
+- state: `open`, `resolved`, or `waived`, plus any implementation response.
+
+Evaluate the finding in two stages. First decide whether the claim is supported.
+Prefer reproduced failure, then accepted contracts or required checks, reachable
+path analysis, and established local convention. Reviewer confidence, wording,
+and preference are not evidence. Then decide whether action is justified in the
+current change. Classify the result as:
+
+- `blocking`: supported and necessary before acceptance;
+- `non-blocking`: supported but optional in this change;
+- `question`: uncertainty requiring a named check;
+- `deferred`: supported but outside the current change;
+- `rejected`: unsupported, contradicted, unreachable, or preference-only.
+
+A finding may block for an accepted intent, constraint, compatibility, or
+required-check violation; an introduced or worsened material correctness,
+security, privacy, concurrency, resource, or data-integrity defect; missing
+verification for consequential behavior; or a present maintainability hazard
+with a demonstrated current cost. A pre-existing defect blocks only when the
+current change cannot ship safely without addressing it. Otherwise defer it.
+When two approaches are materially equivalent, preserve the implementer's
+choice. Scope additions require user acceptance.
+
+The implementation owner answers every blocker as fixed with evidence, rebutted
+with counter-evidence, or conflicting with accepted intent. Re-review reconciles
+the previous ledger and then inspects the complete current bounded diff. A
+failed remediation retains its finding ID. A remediation regression receives a
+new ID. A newly discovered pre-existing issue states its scope relation, and an
+intent conflict returns to the user rather than becoming implementation scope.
+A rebutted blocker remains open until review accepts the counter-evidence or
+routes the dispute to adjudication. Do not reopen a resolved finding without
+new evidence.
+
+Use these review dispositions:
+
+- `passed`: no open blocker remains;
+- `changes required`: supported open blockers require implementation work;
+- `intent decision required`: accepted intent needs a user decision;
+- `adjudication required`: evidence remains in genuine dispute;
+- `waived`: the user explicitly accepts the visible risk.
+
+Repeating a disputed assertion without new evidence requires adjudication; run
+a decisive check or shape one independent adjudication task rather than
+bouncing the same request back to implementation. Non-blocking, deferred,
+rejected, and answered questions do not prevent `passed`.
+
 ## Planning-Mode Boundary
 
 When the host forbids writes during planning, return the complete intent

@@ -27,6 +27,8 @@ must accomplish before implementation structure can distort its intent.
 
 - Draft or accepted goal, stable acceptance criteria, constraints, and non-goals.
 - Behavior scenarios, affected contracts, verification expectations, and risks.
+- A review basis that distinguishes required behavior and evidence from optional
+  implementation preferences.
 - Explicit assumptions and unresolved user-owned decisions.
 - Updated lifecycle index, or complete proposed content when writes are forbidden.
 
@@ -37,6 +39,8 @@ must accomplish before implementation structure can distort its intent.
 - Acceptance criteria are independently checkable and use stable identifiers.
 - Constraints, non-goals, assumptions, compatibility, and failure behavior are
   explicit where material.
+- Reviewers can judge required outcomes without treating one valid
+  implementation approach as intent.
 - Acceptance is explicit or the artifact remains clearly draft.
 
 ## Workflow
@@ -49,7 +53,9 @@ must accomplish before implementation structure can distort its intent.
    scenarios, compatibility needs, and verification expectations.
 5. Resolve only user-owned semantic gaps that materially change the contract.
    Discover repository facts rather than asking for them.
-6. Present the complete contract for acceptance. Record it as accepted only
+6. Check that the contract defines what must be true and evidenced without
+   prescribing preferences or pre-enumerating every possible code defect.
+7. Present the complete contract for acceptance. Record it as accepted only
    after approval or a request to execute the latest completed planning-mode
    plan.
 
