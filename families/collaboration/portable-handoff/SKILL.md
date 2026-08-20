@@ -60,14 +60,7 @@ that candidates require explicit activation in the destination session.
 
 Do not commit, publish, send, or upload the handoff unless separately requested.
 
-## Lifecycle Participation
-
-When a matching record exists, read
-`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
-already available in context. A handoff reports state but does not complete a
-phase or change intent. Record only a durable, useful handoff pointer.
-
-## Persistence And Yield
+## Progress
 
 Progress is verified transferable state, an accessible pointer, or a resolved
 recipient-context gap. Before yielding, check the packet as the recipient,

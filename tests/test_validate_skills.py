@@ -29,7 +29,7 @@ Do one job.
 ## Done Conditions
 - The output exists.
 
-## Persistence And Yield
+## Progress
 Return the current state.
 """
 

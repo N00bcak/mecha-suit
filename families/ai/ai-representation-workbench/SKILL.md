@@ -59,7 +59,7 @@ If relevant `ML_PIPELINE.md` exists, use it as advisory context and update only
 Representation Workbench plus material risks or recommendations.
 Never require or create it.
 
-## Persistence And Yield
+## Progress
 
 Progress is a working transform, clarified contract, verified invariant,
 informative ablation, or measured constraint. Compare one bounded alternative

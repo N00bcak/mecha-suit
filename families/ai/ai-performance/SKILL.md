@@ -61,7 +61,7 @@ If relevant `ML_PIPELINE.md` exists, use it as advisory context and update only
 Performance, empirical candidate outcomes, and material risks or
 recommendations. Never require or create it.
 
-## Persistence And Yield
+## Progress
 
 Progress is a reproduced baseline, stable run, measured bottleneck, candidate
 result, diagnosed failure, or rejected hypothesis. When resources permit, try

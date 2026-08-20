@@ -119,7 +119,7 @@ interaction_contract_checks() {
     assert_exists "${loop_template}"
 
     for template in "${task_template}" "${overlay_template}" "${loop_template}"; do
-        for heading in Purpose 'Do Not Use' Needs Returns 'Done Conditions' 'Persistence And Yield'; do
+        for heading in Purpose 'Do Not Use' Needs Returns 'Done Conditions' Progress; do
             grep -Fxq "## ${heading}" "${template}" || fail "${template} is missing ${heading}"
         done
     done
@@ -203,7 +203,6 @@ engineering_checks() {
     grep -Fq '`../../../shared/rubrics/change-discipline.md`' "${prototype_skill}" || fail "prototype-builder does not link shared change discipline"
 
     for reference in \
-        session-continuity.md \
         python-practices.md \
         typescript-practices.md \
         go-practices.md \
@@ -221,9 +220,7 @@ engineering_checks() {
         grep -Fq "\`../references/${reference}\`" "${large_skill}" || fail "large-codebase-change does not link shared ${reference}"
     done
 
-    grep -Fq 'Do not create a new scratchpad' "${family_dir}/references/session-continuity.md" || fail "legacy scratchpad boundary drifted"
-    grep -Fq '`../../../shared/rubrics/lifecycle-contract.md`' "${large_skill}" || fail "large-codebase-change lifecycle contract is missing"
-    grep -Fq '`../../../shared/rubrics/lifecycle-contract.md`' "${prototype_skill}" || fail "prototype-builder lifecycle contract is missing"
+    assert_not_exists "${family_dir}/references/session-continuity.md"
     grep -Fq '`../references/behavior-first-development.md`' "${large_skill}" || fail "large-codebase-change behavior-first guidance is missing"
     grep -Fq '`../references/design-decision-discipline.md`' "${large_skill}" || fail "large-codebase-change design guidance is missing"
     grep -Fq '### Phase 5: Mandatory Compression Review' "${large_skill}" || fail "large-codebase-change compression review is missing"
@@ -250,23 +247,20 @@ engineering_checks() {
 lifecycle_checks() {
     local contract="${ROOT_DIR}/shared/rubrics/lifecycle-contract.md"
     local template="${ROOT_DIR}/templates/work-index.template.md"
-    local skill_file
+    local governor="${ROOT_DIR}/families/collaboration/multi-step-governance/SKILL.md"
 
     assert_exists "${contract}"
-    assert_exists "${ROOT_DIR}/shared/rubrics/research-integrity.md"
+    assert_exists "${ROOT_DIR}/shared/rubrics/review-contract.md"
     assert_exists "${template}"
-    grep -Fq '`continuity`' "${contract}" || fail "continuity mode is missing"
-    grep -Fq '`lifecycle`' "${contract}" || fail "lifecycle mode is missing"
-    grep -Fq 'A semantic change requires explicit user authorization.' "${contract}" || fail "intent authority is missing"
-    grep -Fq 'Skill selection alone is not permission to create durable state.' "${contract}" || fail "implicit lifecycle mutation boundary is missing"
-    grep -Fq 'Ad-Hoc Compatibility' "${contract}" || fail "ad-hoc compatibility is missing"
-    grep -Fq 'three-axis code review' "${contract}" || fail "lifecycle review gate is missing"
-    grep -Fq 'supersession note' "${contract}" || fail "legacy scratchpad supersession rule is missing"
-    grep -Fq '## Acceptance Criteria' "${template}" || fail "work-index acceptance criteria are missing"
-    grep -Fq 'Review fixed point:' "${template}" || fail "work-index review fixed point is missing"
-    grep -Fq 'Resume candidates:' "${template}" || fail "work-index resume candidates are missing"
-    grep -Fq '## Revision History' "${template}" || fail "work-index revision history is missing"
-    grep -Fq '.mecha/' "${ROOT_DIR}/.gitignore" || fail ".mecha ignore rule is missing"
+    assert_exists "${governor}"
+    grep -Fq 'sole record writer' "${contract}" || fail "governor authority is missing"
+    grep -Fq 'Governor:' "${template}" || fail "work-index governor field is missing"
+    grep -Fq 'lifecycle-contract.md' "${governor}" || fail "governor lifecycle contract is missing"
+    if find "${ROOT_DIR}/families" -name SKILL.md ! -path '*/multi-step-governance/SKILL.md' -exec grep -El 'lifecycle-contract|\.mecha/work' {} + | grep -q .; then
+        fail "lifecycle behavior leaked into contributors"
+    fi
+    pass "governor lifecycle authority and contributor boundaries"
+    return
 
     for skill_file in \
         "${ROOT_DIR}/families/collaboration/interview-me/SKILL.md" \
@@ -454,7 +448,7 @@ writing_family_checks() {
 metadata_policy_checks() {
     grep -Fq '`ai-pipeline`' "${ROOT_DIR}/CLAUDE.md" || fail "CLAUDE metadata policy does not mention ai-pipeline"
     grep -Fq '`ai-pipeline`' "${ROOT_DIR}/README.md" || fail "README metadata policy does not mention ai-pipeline"
-    grep -Fq '`interview-me`, `product-co-design`, `low-friction-collaboration`, and' "${ROOT_DIR}/docs/platform-notes.md" || fail "platform explicit-mode metadata policy is missing"
+    grep -Fq '`multi-step-governance`' "${ROOT_DIR}/docs/platform-notes.md" || fail "platform explicit-mode metadata policy is missing"
     pass "metadata policy"
 }
 

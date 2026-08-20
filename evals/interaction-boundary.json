@@ -258,7 +258,15 @@
             "kind": "interaction",
             "available_skills": ["work-slicing", "implementation-spec"],
             "turns": [{"prompt": "This accepted migration contract has several stages. Define only the next executable vertical slice and preserve enough continuity to resume the remaining work later.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["work-slicing"], "excluded_skills": ["implementation-spec"], "behaviors": ["creates-or-continues-multi-step-continuity", "keeps-later-slices-unexpanded"]}
+            "expected": {"loaded_skills": ["work-slicing"], "excluded_skills": ["implementation-spec"], "behaviors": ["returns-bounded-frontier", "keeps-later-slices-unexpanded"]}
+        },
+        {
+            "id": "interaction-explicit-multi-step-governance",
+            "split": "validation",
+            "kind": "interaction",
+            "available_skills": ["multi-step-governance", "ai-pipeline"],
+            "turns": [{"prompt": "Manage this Kaggle competition from raw data through a verified final submission.", "explicit_invocations": ["multi-step-governance"]}],
+            "expected": {"loaded_skills": ["multi-step-governance"], "excluded_skills": ["ai-pipeline"], "behaviors": ["governor-owns-durable-frontier"]}
         },
         {
             "id": "interaction-overlay-does-not-create-continuity",
@@ -266,7 +274,7 @@
             "kind": "interaction",
             "available_skills": ["low-friction-collaboration", "implementation-spec"],
             "turns": [{"prompt": "Keep this already-started implementation discussion easy to follow.", "explicit_invocations": ["low-friction-collaboration"]}],
-            "expected": {"loaded_skills": ["low-friction-collaboration", "implementation-spec"], "excluded_skills": [], "behaviors": ["overlay-does-not-create-continuity", "task-owns-continuity"]}
+            "expected": {"loaded_skills": ["low-friction-collaboration", "implementation-spec"], "excluded_skills": [], "behaviors": ["overlay-does-not-create-durable-state", "task-retains-outcome-ownership"]}
         }
     ]
 }

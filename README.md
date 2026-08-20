@@ -78,13 +78,15 @@ editing. Say `autonomous` when you want reversible, in-scope local changes and
 verification completed without that checkpoint. Recognized multi-step work uses
 a compact `.mecha` continuity record; one-step work stays in the conversation.
 
-Four modes start only when you ask for them:
+Five modes start only when you ask for them:
 
 - `product-co-design` shapes a product concept through a multi-turn exchange.
 - `interview-me` runs a focused, one-question-at-a-time interview.
 - `low-friction-collaboration` makes a complex working session easier to
   follow and resume.
 - `ai-pipeline` frames an AI effort and creates an initial pipeline plan.
+- `multi-step-governance` manages an authorized end-to-end effort across
+  dependent specialist stages.
 
 See [Skills at a Glance](docs/skills.md) for the input and output of every
 skill.

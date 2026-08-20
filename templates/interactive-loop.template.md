@@ -53,13 +53,10 @@ output, and completion contracts.
 - <Observable loop outcome.>
 - <Completion, cancellation, pause, or blocker is explicit.>
 
-## Lifecycle Participation
-
-<Link the shared lifecycle contract when the loop may use matching work
-records. Read it only when it is not already available in the current context.
-Do not create durable state merely to remember the loop.>
-
-## Persistence And Yield
+## Progress
 
 <Name a loop-specific progress unit and the exact condition for pausing or
-yielding without repeating generic host persistence instructions.>
+yielding without repeating generic session-orientation instructions.>
+
+<Add `Lifecycle Participation` only when this loop is a multi-step governor
+that owns `.mecha/work/` state.>

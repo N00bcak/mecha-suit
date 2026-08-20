@@ -52,16 +52,6 @@ material finding and why.
 - The main process adjudicates the review rather than treating it as a vote.
 - Any safe, in-scope decisive check is run.
 
-## Lifecycle Participation
-
-When separately invoked for work with a matching work record, read
-`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
-already available in context. Build the non-leading packet from the frozen
-artifact, accepted constraints, and raw evidence. The reviewer may not revise
-intent or lifecycle state. When adjudicating one disputed code-review finding,
-preserve its `RF-*` ID and return evidence for the main process to accept,
-reject, or qualify; do not reopen the broader review.
-
 ## Workflow
 
 1. Check that the host exposes subagent capability. If not, continue with
@@ -82,7 +72,7 @@ decisions remain with the main process. Cancel and collect the reviewer if the
 review becomes unnecessary. Request findings and evidence, never hidden
 chain-of-thought.
 
-## Persistence And Yield
+## Progress
 
 Progress is a completed review, verified finding, rejected weak claim, or
 narrower uncertainty. Collect or stop the reviewer, inspect its evidence, and

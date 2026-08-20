@@ -21,8 +21,8 @@ corpora, or install behavior.
 - Shared `SKILL.md` files follow the portable Agent Skills contract.
 - Codex invocation policy lives in `agents/openai.yaml`; do not assume Claude
   Code enforces those fields.
-- Treat `interview-me`, `product-co-design`, `low-friction-collaboration`, and
-  `ai-pipeline` as explicit-only.
+- Treat `interview-me`, `product-co-design`, `low-friction-collaboration`,
+  `ai-pipeline`, and `multi-step-governance` as explicit-only.
 - Only `parallel-subagents` and `second-opinion` may authorize subagents, when
   the host exposes that capability.
 - Keep Claude-specific invocation and telemetry logic in an adapter rather

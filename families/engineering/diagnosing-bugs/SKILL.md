@@ -81,18 +81,7 @@ Remove tagged instrumentation and temporary harnesses unless a retained
 diagnostic artifact is useful and clearly named. State the supported cause,
 prevention opportunity, verification, and remaining uncertainty.
 
-## Lifecycle Participation
-
-When a matching record exists, read
-`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
-already available in context. Link the reproducer and evidence, map a fix to
-affected `AC-*` criteria, and surface intent contradictions to the user. For an
-authorized code fix, record the review baseline and head, bounded change, and
-verification gaps. During remediation, answer each open `RF-*` blocker as fixed
-with evidence, rebutted with counter-evidence, or conflicting with accepted
-intent.
-
-## Persistence And Yield
+## Progress
 
 Progress is a tighter loop, smaller reproducer, falsified hypothesis,
 discriminating observation, or verified cause. Try one distinct way to raise

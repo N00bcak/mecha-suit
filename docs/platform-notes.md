@@ -9,12 +9,8 @@
 - Routing depends on leaf boundaries and minimum required inputs, not specialist internals.
 - Only `parallel-subagents` and `second-opinion` authorize subagent use, and
   only when the host exposes the required capability.
-- Collaboration and engineering leaves share the host-neutral work-index
-  contract in `shared/rubrics/lifecycle-contract.md` when durable state is
-  active. The contract does not select or invoke skills.
-- Its code-review iteration rules also apply to native implementation or
-  remediation that continues matching lifecycle state; host templates carry
-  this boundary when no implementation leaf is selected.
+- `multi-step-governance` alone owns the host-neutral work-index contract in
+  `shared/rubrics/lifecycle-contract.md`; contributors return bounded evidence.
 - Task skills are the default interaction model. Session overlays and
   interactive loops declare their contract in `SKILL.md`; no registry or
   custom frontmatter field encodes the taxonomy.
@@ -26,8 +22,8 @@
 - Codex reads skill frontmatter `name` and `description` for trigger matching.
 - `agents/openai.yaml` is useful for user-facing skill display and default prompts when metadata materially improves routing or invocation.
 - This toolbox includes explicit-only `agents/openai.yaml` metadata for
-  `interview-me`, `product-co-design`, `low-friction-collaboration`, and
-  `ai-pipeline`.
+  `interview-me`, `product-co-design`, `low-friction-collaboration`,
+  `ai-pipeline`, and `multi-step-governance`.
 - Other collaboration leaves, engineering leaves, and AI execution leaves
   currently rely on frontmatter only.
 - Global installation targets `MECHA_SKILL_ROOT` when set, then `CODEX_HOME/skills` when `CODEX_HOME` is set, otherwise `$HOME/.codex/skills`.

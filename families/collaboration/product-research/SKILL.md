@@ -56,18 +56,7 @@ fitness. When direct research with people is required, return a concrete study,
 interview, observation, or experiment design; do not invent participants or
 results.
 
-## Lifecycle Participation
-
-When a matching work record exists, read
-`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
-already available in context. Save findings under the established convention
-or `.mecha/work/<slug>/research/`, link them, and update evidence and next action
-without rewriting accepted intent.
-
-Without a matching work record, answer in the conversation or persist only
-when the user requests an artifact.
-
-## Persistence And Yield
+## Progress
 
 Progress is a verified claim, rejected assumption, narrower uncertainty, or
 decision-changing finding. When stakes justify it, test one credible contrary

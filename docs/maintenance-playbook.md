@@ -51,12 +51,12 @@ project facts and task state in repo-local instructions, artifacts, or the
 conversation. State universal policy once; do not duplicate it in every skill
 or turn a summary into a substitute for primary evidence.
 
-## Maintain lifecycle-aware leaves
+## Maintain multi-step governance
 
-The work index never routes or invokes skills. A participating leaf states its
-own behavior and links `shared/rubrics/lifecycle-contract.md`. Preserve ad-hoc
-behavior when no record matches. Keep accepted intent user-authoritative and
-put detailed phase output behind artifact links.
+The work index never routes or invokes skills. Only `multi-step-governance`
+updates it; contributors return bounded artifacts and evidence. Preserve
+semi-auto work as session-local orientation, keep accepted intent
+user-authoritative, and put detailed phase output behind artifact links.
 
 When the lifecycle contract changes, update
 `templates/work-index.template.md`, focused tests, architecture, and platform

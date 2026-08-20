@@ -58,7 +58,7 @@ If a relevant `ML_PIPELINE.md` exists, read it as advisory context and update
 only Data Preparation plus material risks or recommendations.
 Never require or create it.
 
-## Persistence And Yield
+## Progress
 
 Progress is a resolved semantic ambiguity, measured quality issue, reproducible
 conversion, or verified artifact. Yield only when another repair or validation

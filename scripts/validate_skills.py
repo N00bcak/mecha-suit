@@ -28,7 +28,7 @@ CORE_SECTIONS = {
     "Needs",
     "Returns",
     "Done Conditions",
-    "Persistence And Yield",
+    "Progress",
 }
 INTERACTION_MARKERS = {
     "Session Overlay Contract",

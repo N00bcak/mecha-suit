@@ -39,16 +39,13 @@ description: <one constructive sentence naming the owned action and enough task 
 Replace `Workflow` with domain-specific active sections when that makes the
 method clearer. Keep runtime boundaries, inputs, outputs, and completion explicit.
 
-## Lifecycle Participation
-
-<Keep this section only when the skill participates in matching work records.
-State the leaf's own behavior and link the shared lifecycle contract. Read that
-contract only when it is not already available in the current context.>
-
-## Persistence And Yield
+## Progress
 
 <Name domain-specific progress and the exact condition for yielding. Do not
-repeat generic host persistence instructions.>
+repeat generic session-orientation instructions.>
+
+<Add `Lifecycle Participation` only for a multi-step governor that owns
+`.mecha/work/` state. Contributors and overlays do not add it.>
 
 ## References
 

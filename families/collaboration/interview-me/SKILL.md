@@ -95,25 +95,7 @@ artifact only when the user requests one.
 - Inferences and unresolved tensions remain visibly distinct from settled facts.
 - The user has a clear next action, decision, or handoff.
 
-## Lifecycle Participation
-
-When the explicitly requested interview belongs to a matching work record,
-read `../../../shared/rubrics/lifecycle-contract.md` unless its current contents
-are already available in context. Use existing intent, evidence, decisions,
-and open questions to avoid repetition. At a meaningful
-transition, record the compact synthesis and next task shape without changing
-accepted intent semantics.
-
-Lifecycle context does not relax the one-question-at-a-time rule or authorize
-questions about discoverable facts. Without a matching record, preserve the
-conversation-first persistence default.
-
-While this loop remains active with a matching durable record, add
-`interview-me` to `Resume candidates`. Keep it while paused. Remove it when the
-loop completes or the user cancels it. Recorded state never activates the loop
-in another session.
-
-## Persistence And Yield
+## Progress
 
 Progress changes the shared model, rules out an interpretation, resolves a
 tension, or sharpens the next question. Reframe one unproductive question;

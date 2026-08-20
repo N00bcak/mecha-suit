@@ -50,14 +50,9 @@ unless the user explicitly asks.
 
 ### Phase 0: Continuity Check
 
-Inspect Git state, relevant TODOs, partial work, and any matching work record.
-Verify recorded claims before resuming and preserve accepted intent when
-correcting stale implementation state. Use
-`../references/session-continuity.md` only for durable work; keep small changes
-in the response. When a matching record requires
-`../../../shared/rubrics/lifecycle-contract.md`, read it only if its current
-contents are not already available in context. Reconcile legacy scratchpads
-without moving or deleting them unless authorized.
+Inspect Git state, relevant TODOs, and partial work. Verify claims against
+current files and tests before resuming; keep the active frontier in the
+session-local working note when it helps.
 
 ### Phase 1: Orient Narrowly
 
@@ -87,9 +82,9 @@ Record explicit file paths and risks. Read
 rollout changes. Read `references/testing-strategy.md` when test selection is
 not obvious.
 
-In lifecycle mode, map the change surface and verification to the accepted
-`AC-*` criteria. Surface implementation evidence that contradicts locked intent
-instead of silently revising the contract.
+When supplied an accepted contract, map the change surface and verification to
+its criteria. Surface evidence that contradicts it instead of silently revising
+the contract.
 
 ### Phase 3: Implement Surgically
 
@@ -146,25 +141,13 @@ affected verification after compression.
 
 ### Phase 6: Close
 
-Update any active work record with verification, risks, files, and one next
-step. Set it complete only when no required work remains.
-
-In lifecycle mode, implementation completion is not lifecycle completion.
-Record the review baseline and head, diff scope, criterion evidence, known
-verification gaps, and review-ready state, then name three-axis review as the
-next task shape. For remediation, answer every open `RF-*` blocker as fixed
-with evidence, rebutted with counter-evidence, or conflicting with accepted
-intent. Keep lifecycle state in-progress until `code-review` passes or the user
-records an explicit waiver.
-
 Return the outcome, diff scope, verification, risks, deferrals, and reviewer
 focus. Do not publish Git state unless explicitly requested.
 
-## Persistence And Yield
+## Progress
 
 Progress is working code, passing tests, a narrower change surface, or a
-verified constraint. Try one distinct bounded alternative before yielding and
-update any active work record.
+verified constraint. Try one distinct bounded alternative before yielding.
 
 ## Pivot Rules
 

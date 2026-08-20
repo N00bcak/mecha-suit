@@ -116,19 +116,7 @@ another applicable specialist.
 - The point, current state, and next action are easy to find.
 - Wording requires no avoidable recall or decoding.
 
-## Lifecycle Participation
-
-When a matching record exists, read
-`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
-already available in context. Read only the state needed to restore the
-outcome and next action; never create a record merely to improve one response.
-
-While this overlay remains active, add `low-friction-collaboration` to `Resume
-candidates` in an existing matching record. Remove it when the user explicitly
-deactivates the overlay. A session boundary leaves it as an advisory candidate,
-not active behavior.
-
-## Persistence And Yield
+## Progress
 
 Progress makes the underlying task more correct or easier to resume. Do not
 shorten merely to finish; preserve verified state, uncertainty, blocker, and

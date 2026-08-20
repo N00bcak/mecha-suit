@@ -108,7 +108,7 @@ Recommend only leaves with material next work:
 
 Stop after the initial pass. Native Codex and the user control later flow.
 
-## Persistence And Yield
+## Progress
 
 Progress is a resolved framing question, clearer evidence status, or credible
 pipeline section. Yield only when further framing would repeat or require

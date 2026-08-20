@@ -27,8 +27,6 @@ description: <one constructive sentence describing the session behavior and expl
 - Preserve instruction priority, correctness, evidence, safety, and the active
   task's output contract when shaping behavior.
 - Remain active until the user deactivates it or the session ends.
-- When durable work state already exists, follow the shared resume-candidate
-  contract without treating recorded state as activation authority.
 
 <Add the overlay's operational behavior in concise domain-specific sections.>
 
@@ -41,13 +39,7 @@ description: <one constructive sentence describing the session behavior and expl
 - <Condition showing the overlay was applied without weakening the task.>
 - <Condition showing state or next action remains clear.>
 
-## Lifecycle Participation
-
-<Link the shared lifecycle contract when the overlay may use matching work
-records. Read it only when it is not already available in the current context.
-Do not create durable state merely to remember the overlay.>
-
-## Persistence And Yield
+## Progress
 
 <Name the overlay-specific progress or stop condition without repeating the
-underlying task or host persistence contract.>
+underlying task or host session-orientation contract.>

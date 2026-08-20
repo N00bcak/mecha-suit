@@ -90,7 +90,7 @@ incomplete scaffold, mark missing material plainly.
   available material.
 - Remaining verification gaps or publication steps are explicit.
 
-## Persistence And Yield
+## Progress
 
 Progress is a settled thesis, resolved evidence gap, verified explanation, or
 completed section. Try one alternate framing when needed; yield only when

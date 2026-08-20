@@ -7,7 +7,7 @@
   only when a user-owned decision materially changes the work.
 - Keep native skill-selection cues in leaf frontmatter.
 - Require explicit invocation for `$interview-me`, `$product-co-design`,
-  `$low-friction-collaboration`, and `$ai-pipeline`.
+  `$low-friction-collaboration`, `$ai-pipeline`, and `$multi-step-governance`.
 - Keep at most one interactive loop active. A session overlay may compose with
   the active loop or task.
 
@@ -22,6 +22,9 @@
   artifacts after compaction, contradiction, or material uncertainty.
 - Do not repeat unchanged history or create a checkpoint for every turn.
   Update compact state only when material evidence, intent, or frontier changes.
+- For semi-auto work, keep an informal session-local working note when it helps
+  survive material turns or compaction. It has no fixed format and is never a
+  repository artifact or durable work record.
 - Use deterministic scripts and existing tools for deterministic parsing,
   extraction, normalization, filtering, validation, and mechanical rewrites.
   Reserve model judgment for ambiguity, interpretation, and decisions.
@@ -41,7 +44,14 @@
 
 Put repository commands, paths, conventions, and project architecture in a
 repo-local `AGENTS.md` or adapter skill. Use durable `.mecha` work state only
-when continuity or an accepted lifecycle is active. Resume candidates are
-advisory and require fresh explicit invocation. When native implementation or
-code-review remediation continues a matching lifecycle record, read and follow
-its shared lifecycle contract even when no implementation skill is selected.
+through `$multi-step-governance`; resume candidates are advisory and require
+fresh explicit invocation.
+
+## Explicit-Mode Offers
+
+Do not activate an explicit skill from recognition alone. When a request is a
+strong fit, briefly name the skill's benefit, its ordinary alternative, and ask
+permission to use it. Offer `$multi-step-governance` only for an end-to-end
+outcome with distinct dependent specialist stages and retained decisions or
+evidence. Offer `$product-co-design` for consequential open product choices and
+`$interview-me` when focused user discovery is better than assumptions.

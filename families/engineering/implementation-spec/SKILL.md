@@ -45,8 +45,7 @@ must accomplish before implementation structure can distort its intent.
 
 ## Workflow
 
-1. Read `../../../shared/rubrics/lifecycle-contract.md`.
-2. Inspect available briefs, research, domain artifacts, decision maps,
+1. Inspect available briefs, research, domain artifacts, decision maps,
    prototypes, repository behavior, and existing tests.
 3. Separate user facts and decisions from evidence, interpretation, and proposal.
 4. Draft the goal, `AC-*` criteria, constraints, non-goals, representative
@@ -69,17 +68,7 @@ When the host forbids writes, return the complete proposed contract in the
 conversation and do not create `.mecha` or edit `.gitignore`. The first
 execution turn materializes the latest accepted plan before changing code.
 
-## Lifecycle Participation
-
-User acceptance of the contract activates or promotes lifecycle mode; implicit
-selection alone does not authorize filesystem writes. Write the accepted
-contract into `.mecha/work/<slug>/index.md` using
-`../../../templates/work-index.template.md`, preserving prior verified
-continuity state. Read `../../../shared/rubrics/lifecycle-contract.md` unless
-its current contents are already available in context, then follow its intent
-authority rules.
-
-## Persistence And Yield
+## Progress
 
 Progress is a checkable criterion, resolved semantic gap, explicit non-goal, or
 accepted revision. Test one normal and one material failure scenario before

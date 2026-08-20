@@ -60,6 +60,11 @@ gap.
 
 ### Interaction lifetime shapes the contract
 
+Skills also have authority roles: bounded contributors return one result,
+multi-turn contributors own a narrow exchange, multi-step governors own an
+authorized durable process, and overlays own no result. Explicit manuals remain
+outside this runtime-role taxonomy.
+
 Every skill uses one interaction model:
 
 - A task skill owns a bounded outcome and then returns control.
@@ -89,11 +94,10 @@ ownership, prohibit nested delegation, and require structured evidence.
 
 ### Durable work does not route
 
-Collaboration and engineering leaves may participate in a matching
-`.mecha/work/<slug>/index.md` record under
-`shared/rubrics/lifecycle-contract.md`. A record connects verified artifacts;
-it does not select or invoke skills. Accepted intent remains user-authoritative.
-Ad-hoc work creates no record. AI and writing leaves do not participate.
+Only `multi-step-governance` may update a matching `.mecha/work/<slug>/index.md`
+record under `shared/rubrics/lifecycle-contract.md`. Contributors return
+verified artifacts; the record does not select or invoke skills. Accepted intent
+remains user-authoritative. Ad-hoc work creates no record.
 
 ## File ownership
 
@@ -115,7 +119,7 @@ default; explicit overlays and loops require explicit-invocation metadata.
 ## Authoring skills
 
 Use the template matching the interaction lifetime. Runtime skills define
-purpose, exclusions, needs, returns, done conditions, and persistence/yield
+purpose, exclusions, needs, returns, done conditions, and progress
 behavior. Add references or scripts only after the core playbook earns them.
 
 Descriptions are constructive routing sentences, normally around 120

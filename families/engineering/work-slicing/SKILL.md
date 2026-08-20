@@ -41,9 +41,8 @@ acceptance criterion, constraint, and non-goal.
 
 ## Workflow
 
-1. Read `../../../shared/rubrics/lifecycle-contract.md` and the accepted intent
-   revision.
-2. Inspect the narrow repository surfaces needed to understand viable seams,
+1. Inspect the accepted intent revision and the narrow repository surfaces
+   needed to understand viable seams,
    tests, compatibility, and rollout.
 3. Draft the smallest end-to-end slices that produce observable behavior or
    independently useful risk reduction.
@@ -59,14 +58,7 @@ then remove the old form after every migration completes.
 Prefer an existing seam. When a new or moved interface is consequential, read
 `../references/design-decision-discipline.md` before fixing the slice shape.
 
-## Lifecycle Participation
-
-When a matching record exists, read
-`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
-already available in context. Store and link the plan, record the next
-unblocked slice, and surface evidence that challenges accepted intent.
-
-## Persistence And Yield
+## Progress
 
 Progress is covered criteria, a smaller coherent slice, corrected dependency,
 or explicit migration sequence. Test one alternate grouping and verify

@@ -48,9 +48,16 @@ VitePress-ready posts and CTF writeups for N00bcak's site. Documentation, code
 comments, interface copy, advertisements, social posts, and short messages
 remain native work.
 
-## Interaction Lifetimes
+## Operating Taxonomy
 
-Every skill uses one of three authoring contracts:
+Authority and interaction lifetime are separate. A bounded contributor owns one
+result and returns control. A multi-turn contributor owns a narrow explicit
+exchange but not the overall process. A multi-step governor owns an explicitly
+authorized cross-skill process and its durable state. A session overlay changes
+how another active skill works without owning its result. Explicit manuals,
+such as `ai-pipeline`, recommend approaches and stop; they are not governors.
+
+Every callable skill uses one of three authoring contracts:
 
 - A task skill owns a bounded outcome and returns control when that outcome is
   complete or blocked.
@@ -65,10 +72,9 @@ task or loop. These are local authoring shapes, not routing metadata.
 
 ## Lifecycle Authority
 
-Collaboration and engineering leaves may participate in a matching
-`.mecha/work/<slug>/index.md` record when durable continuity or an accepted
-lifecycle is useful. The record connects work through verified artifacts; it
-never selects or invokes skills.
+Only `multi-step-governance` may create or update a matching
+`.mecha/work/<slug>/index.md` record. Contributors return verified artifacts;
+the governor links them without selecting or invoking skills.
 
 Accepted goals, criteria, constraints, and non-goals remain user-authoritative.
 New evidence may challenge them but cannot silently rewrite them. Small ad-hoc

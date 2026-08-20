@@ -12,13 +12,9 @@ Use this repo-local file to adapt the global toolbox for Claude Code.
   at most one interactive loop active.
 - Do not authorize subagent use outside the global `parallel-subagents` and
   `second-opinion` skill contracts.
-- When a collaboration or engineering skill declares lifecycle participation,
-  treat a matching `.mecha/work/<slug>/index.md` as optional host-neutral
-  continuity. Resume candidates require fresh explicit invocation; do not
-  assume automatic planning-mode support.
-- Native implementation or remediation with matching lifecycle state follows
-  the shared code-review iteration contract and answers open `RF-*` blockers
-  with evidence.
+- Only `$multi-step-governance` creates or updates `.mecha/work/` state.
+  Resume candidates require fresh explicit invocation; contributors return
+  bounded artifacts and evidence.
 
 ## Project Commands
 

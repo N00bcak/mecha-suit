@@ -60,19 +60,12 @@ do not impose a new vocabulary merely for consistency with this skill.
 ## Promotion
 
 When durable state is active and no tracked convention exists, keep candidates
-in `.mecha/work/<slug>/domain.md`. Offer explicit promotion once a term or
+in a user-requested artifact. Offer explicit promotion once a term or
 decision will matter beyond the current effort. On approval, use the
 repository's chosen location; propose `CONTEXT.md` and `docs/adr/` only as
 defaults, never as hidden requirements.
 
-## Lifecycle Participation
-
-When a matching record exists, read
-`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
-already available in context. Link candidate or promoted domain artifacts and
-update decision evidence without changing accepted intent to match code.
-
-## Persistence And Yield
+## Progress
 
 Progress is a resolved term, tested invariant, exposed contradiction, or
 durable decision. Test the model against one meaningful edge case and available

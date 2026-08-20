@@ -101,7 +101,7 @@ class DocumentationTests(unittest.TestCase):
         self.assertEqual(covered - skills, set())
 
     def test_code_review_convergence_contract_is_aligned(self) -> None:
-        lifecycle = (ROOT / "shared/rubrics/lifecycle-contract.md").read_text()
+        review_contract = (ROOT / "shared/rubrics/review-contract.md").read_text()
         review = (ROOT / "families/engineering/code-review/SKILL.md").read_text()
         work_index = (ROOT / "templates/work-index.template.md").read_text()
 
@@ -119,33 +119,17 @@ class DocumentationTests(unittest.TestCase):
             "`adjudication required`",
             "`waived`",
         }
-        self.assertTrue(classifications <= set(re.findall(r"`[^`]+`", lifecycle)))
-        self.assertTrue(dispositions <= set(re.findall(r"`[^`]+`", lifecycle)))
-        self.assertIn("stable `RF-*` ID", lifecycle)
-        self.assertIn("state: `open`, `resolved`, or `waived`", lifecycle)
-        self.assertIn("pre-existing defect blocks only when", lifecycle)
+        self.assertTrue(classifications <= set(re.findall(r"`[^`]+`", review_contract)))
+        self.assertTrue(dispositions <= set(re.findall(r"`[^`]+`", review_contract)))
+        self.assertIn("stable `RF-*` ID", review_contract)
+        self.assertIn("state: `open`, `resolved`, or `waived`", review_contract)
+        self.assertIn("Preference and speculation do not block", review_contract)
         self.assertIn("validity and current-actionability checks", review)
         self.assertIn("Review disposition:", work_index)
 
-        implementation_owners = (
-            "large-codebase-change",
-            "prototype-builder",
-            "diagnosing-bugs",
-        )
-        for name in implementation_owners:
-            content = (ROOT / f"families/engineering/{name}/SKILL.md").read_text()
-            self.assertIn("`RF-*` blocker", content)
-            self.assertIn("rebutted with counter-evidence", content)
-
-        for name in (
-            "global-AGENTS.template.md",
-            "repo-AGENTS.template.md",
-            "global-CLAUDE.template.md",
-            "repo-CLAUDE.template.md",
-        ):
-            content = (ROOT / "templates" / name).read_text().lower()
-            self.assertIn("native implementation", content)
-            self.assertRegex(content, r"(?:lifecycle|code-review iteration) contract")
+        self.assertIn("review-contract.md", review)
+        governor = (ROOT / "families/collaboration/multi-step-governance/SKILL.md").read_text()
+        self.assertIn("lifecycle-contract.md", governor)
 
 
 if __name__ == "__main__":

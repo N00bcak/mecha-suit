@@ -1,0 +1,6 @@
+interface:
+    display_name: "Multi-Step Governance"
+    short_description: "Govern an authorized end-to-end workflow"
+    default_prompt: "Use $multi-step-governance to manage this end-to-end effort across dependent stages."
+policy:
+    allow_implicit_invocation: false

@@ -58,7 +58,7 @@ If relevant `ML_PIPELINE.md` exists, use it as advisory context and update only
 Insight Development plus material risks or recommendations.
 Never require or create it.
 
-## Persistence And Yield
+## Progress
 
 Progress is a tested hypothesis, rejected explanation, discovered structure, or
 narrower uncertainty. When evidence permits, test one alternate explanation;

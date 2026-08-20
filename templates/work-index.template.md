@@ -3,6 +3,7 @@
 ## Control
 
 - Mode: <continuity | lifecycle>
+- Governor: <multi-step-governance>
 - State: <draft | accepted | in-progress | blocked | complete>
 - Current activity: <current task shape>
 - Intent revision: <not accepted | accepted revision number>

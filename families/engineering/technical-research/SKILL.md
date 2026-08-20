@@ -56,18 +56,7 @@ question with evidence strong enough to guide an engineering decision.
 Do not treat a successful toy example as proof of production fitness. State the
 gap between documented behavior, reproduced behavior, and the target system.
 
-## Lifecycle Participation
-
-When a matching work record exists, read
-`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
-already available in context. Save findings under the established convention
-or `.mecha/work/<slug>/research/`, link them, and update evidence without
-rewriting accepted intent.
-
-Without a matching record, answer in the conversation or persist only when the
-user requests it.
-
-## Persistence And Yield
+## Progress
 
 Progress is a verified claim, eliminated option, measured constraint, or
 narrower compatibility risk. Inspect the owning source and run one reproducible

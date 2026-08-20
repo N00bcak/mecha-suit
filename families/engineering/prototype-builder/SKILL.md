@@ -46,12 +46,8 @@ that skill's large-codebase boundary. Otherwise continue with native Codex.
 
 ### Phase 0: Continuity Check
 
-Inspect partial implementation and any matching work record. Verify recorded
-claims before resuming. Use `../references/session-continuity.md` for durable
-multi-session work; otherwise keep state in the response. When a matching
-record requires `../../../shared/rubrics/lifecycle-contract.md`, read it only
-if its current contents are not already available in context. Reconcile legacy
-scratchpads without moving or deleting them unless authorized.
+Inspect partial implementation and verify claims against current files before
+resuming. Keep useful orientation in the session-local working note.
 
 ### Phase 1: Frame the Demonstration
 
@@ -118,21 +114,10 @@ appears, identify the hardening work. Hand off to
 `large-codebase-change` only if the resulting existing repository also meets
 the large-codebase heuristic; otherwise continue with native Codex.
 
-If using a work record, update runnable state, verification, files changed,
-deferrals, promotion signals, and the next step.
-
-In lifecycle mode, record observation separately from interpretation. Prototype
-completion does not waive required review of a requested code deliverable.
-For that deliverable, record the review baseline and head, bounded change,
-criterion evidence, and known verification gaps. During remediation, answer
-each open `RF-*` blocker as fixed with evidence, rebutted with counter-evidence,
-or conflicting with accepted intent.
-
-## Persistence And Yield
+## Progress
 
 Progress is a working slice, validated stack, clearer scope, or discovered
-constraint. Try one bounded simplification before yielding and update any
-active work record.
+constraint. Try one bounded simplification before yielding.
 
 ## Pivot Rules
 

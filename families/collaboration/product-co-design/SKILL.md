@@ -124,24 +124,7 @@ requires a durable artifact.
 - Validation targets the riskiest relevant assumptions.
 - The next specialist can proceed without reconstructing the product intent.
 
-## Lifecycle Participation
-
-When a matching work record exists, read
-`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
-already available in context. In lifecycle mode, use accepted intent as the
-authority boundary and update the working model and next task shape.
-
-Before intent acceptance, keep user statements, agent interpretations, and
-proposals distinct. After acceptance, propose semantic revisions instead of
-editing goal, criteria, constraints, or non-goals silently. Without a matching
-record, keep the brief in the conversation unless the user requests persistence.
-
-While this loop remains active with a matching durable record, add
-`product-co-design` to `Resume candidates`. Keep it while paused. Remove it
-when the loop completes or the user cancels it. Recorded state never activates
-the loop in another session.
-
-## Persistence And Yield
+## Progress
 
 Progress is a sharper hypothesis, meaningful alternative, resolved
 contradiction, better validation step, or clearer handoff. Try one materially

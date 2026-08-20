@@ -83,7 +83,7 @@ them is part of the task.
 - Voice choices fit the author and genre rather than a generic persona.
 - The result has been checked for formulaic patterns without being flattened.
 
-## Persistence And Yield
+## Progress
 
 Progress is a clearer argument, supported claim, faithful voice, or completed
 section. Try one materially different framing when needed; yield only when

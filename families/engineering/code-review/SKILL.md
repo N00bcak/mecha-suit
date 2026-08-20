@@ -20,7 +20,7 @@ the wrong behavior and passing tests cannot mask intent drift.
 
 ## Needs
 
-- A fixed point or enough lifecycle state to identify the implementation
+- A fixed point or enough repository state to identify the implementation
   baseline.
 - The diff and applicable repository instructions and standards.
 - Accepted intent, specification, acceptance criteria, or an explicit statement
@@ -33,7 +33,6 @@ the wrong behavior and passing tests cannot mask intent drift.
   scope relation, consequence, classification, and corrective action.
 - Review disposition, verification gaps, remediation reconciliation, and next
   corrective task shape.
-- Updated lifecycle review artifact when lifecycle mode is active.
 
 ## Done Conditions
 
@@ -44,14 +43,13 @@ the wrong behavior and passing tests cannot mask intent drift.
   available.
 - Re-review preserves finding identity and distinguishes failed fixes,
   remediation regressions, late discoveries, and intent conflicts.
-- Lifecycle completion is granted, blocked, or explicitly waived by the user.
 
 ## Workflow
 
 ### 1. Freeze The Review Surface
 
-Resolve the user-supplied fixed point. Otherwise use the lifecycle baseline or
-the repository's clear merge base. Ask one focused question if no fixed point
+Resolve the user-supplied fixed point. Otherwise use the repository's clear
+merge base. Ask one focused question if no fixed point
 can be derived safely. Confirm the reference resolves and the bounded diff is
 non-empty before deeper review. Inspect commits, staged and unstaged changes,
 and pre-existing dirty paths. If ownership overlaps and changes the review, ask
@@ -96,8 +94,7 @@ required check, reachable-path analysis, and established local convention.
 Confidence, emphatic wording, and preference are not evidence. Then test whether
 the finding warrants action in this change. Classify it as `blocking`,
 `non-blocking`, `question`, `deferred`, or `rejected` using
-`../../../shared/rubrics/lifecycle-contract.md` as the policy source even when
-no durable work record exists.
+  `../../../shared/rubrics/review-contract.md` as the policy source.
 
 Do not block on an equally valid alternative, polish, speculative future cost,
 or an unrelated pre-existing defect that does not make the current change
@@ -116,26 +113,15 @@ adjudication rather than another generic implementation request.
 ### 5. Report And Gate
 
 Keep axes separate and order actionable findings by consequence. Say when an
-axis has no findings. Use one disposition from the shared contract: `passed`,
+axis has no findings. Use one disposition from the shared review contract: `passed`,
 `changes required`, `intent decision required`, `adjudication required`, or
 `waived`. Only open blockers produce `changes required`; optional, deferred,
 rejected, and answered items do not prevent passage.
 
-Lifecycle work may pass only when each criterion is supported by implementation
-evidence, explicitly deferred by the user, or marked inapplicable with a reason,
-and no blocking finding remains. Record the disposition and evidence for every
-criterion. The user may explicitly waive review with a recorded reason; the
-waiver does not turn missing verification into passing evidence.
+The user may explicitly waive review with a visible reason; the waiver does not
+turn missing verification into passing evidence.
 
-## Lifecycle Participation
-
-When a matching record exists, read
-`../../../shared/rubrics/lifecycle-contract.md` unless its current contents are
-already available in context. Store and link the finding ledger, summarize its
-disposition and open blocker IDs in the index, then route intent, correctness,
-and maintainability gaps to their owning task shapes.
-
-## Persistence And Yield
+## Progress
 
 Progress is a verified finding, cleared criterion, rejected false positive, or
 decisive check. Inspect the full bounded diff and test the highest-risk
