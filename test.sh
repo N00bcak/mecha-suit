@@ -250,75 +250,20 @@ lifecycle_checks() {
     local governor="${ROOT_DIR}/families/collaboration/multi-step-governance/SKILL.md"
 
     assert_exists "${contract}"
-    assert_exists "${ROOT_DIR}/shared/rubrics/review-contract.md"
     assert_exists "${template}"
     assert_exists "${governor}"
     grep -Fq 'sole record writer' "${contract}" || fail "governor authority is missing"
     grep -Fq 'Governor:' "${template}" || fail "work-index governor field is missing"
     grep -Fq 'lifecycle-contract.md' "${governor}" || fail "governor lifecycle contract is missing"
+    if rg -q 'review-contract\.md' "${ROOT_DIR}"; then
+        fail "removed review contract is still referenced"
+    fi
+    grep -Fq 'does not inspect a diff' "${contract}" || fail "review judgment boundary is missing from lifecycle contract"
+    grep -Fq 'Do not inspect a diff' "${governor}" || fail "review judgment boundary is missing from governor"
     if find "${ROOT_DIR}/families" -name SKILL.md ! -path '*/multi-step-governance/SKILL.md' -exec grep -El 'lifecycle-contract|\.mecha/work' {} + | grep -q .; then
         fail "lifecycle behavior leaked into contributors"
     fi
     pass "governor lifecycle authority and contributor boundaries"
-    return
-
-    for skill_file in \
-        "${ROOT_DIR}/families/collaboration/interview-me/SKILL.md" \
-        "${ROOT_DIR}/families/collaboration/low-friction-collaboration/SKILL.md" \
-        "${ROOT_DIR}/families/collaboration/parallel-subagents/SKILL.md" \
-        "${ROOT_DIR}/families/collaboration/product-co-design/SKILL.md" \
-        "${ROOT_DIR}/families/collaboration/product-research/SKILL.md" \
-        "${ROOT_DIR}/families/collaboration/domain-modeling/SKILL.md" \
-        "${ROOT_DIR}/families/collaboration/decision-mapping/SKILL.md" \
-        "${ROOT_DIR}/families/collaboration/portable-handoff/SKILL.md" \
-        "${ROOT_DIR}/families/collaboration/second-opinion/SKILL.md" \
-        "${ROOT_DIR}/families/engineering/technical-research/SKILL.md" \
-        "${ROOT_DIR}/families/engineering/implementation-spec/SKILL.md" \
-        "${ROOT_DIR}/families/engineering/work-slicing/SKILL.md" \
-        "${ROOT_DIR}/families/engineering/large-codebase-change/SKILL.md" \
-        "${ROOT_DIR}/families/engineering/prototype-builder/SKILL.md" \
-        "${ROOT_DIR}/families/engineering/diagnosing-bugs/SKILL.md" \
-        "${ROOT_DIR}/families/engineering/code-review/SKILL.md"
-    do
-        grep -Fq 'lifecycle-contract.md' "${skill_file}" || fail "lifecycle contract link is missing in ${skill_file}"
-    done
-
-    if grep -R -Fq 'matching lifecycle record' "${ROOT_DIR}/families/collaboration" "${ROOT_DIR}/families/engineering"; then
-        fail "work-record participation is incorrectly limited to lifecycle mode"
-    fi
-
-    for skill_file in \
-        "${ROOT_DIR}/families/collaboration/product-research/SKILL.md" \
-        "${ROOT_DIR}/families/collaboration/domain-modeling/SKILL.md" \
-        "${ROOT_DIR}/families/collaboration/decision-mapping/SKILL.md" \
-        "${ROOT_DIR}/families/collaboration/portable-handoff/SKILL.md" \
-        "${ROOT_DIR}/families/engineering/technical-research/SKILL.md" \
-        "${ROOT_DIR}/families/engineering/implementation-spec/SKILL.md" \
-        "${ROOT_DIR}/families/engineering/work-slicing/SKILL.md" \
-        "${ROOT_DIR}/families/engineering/diagnosing-bugs/SKILL.md" \
-        "${ROOT_DIR}/families/engineering/code-review/SKILL.md"
-    do
-        grep -Fq 'Do not spawn, request, or rely on subagents.' "${skill_file}" || fail "new leaf subagent prohibition is missing in ${skill_file}"
-        grep -Fq 'Persistence And Yield' "${skill_file}" || fail "new leaf persistence contract is missing in ${skill_file}"
-    done
-
-    grep -Fq '`../../../shared/rubrics/research-integrity.md`' "${ROOT_DIR}/families/collaboration/product-research/SKILL.md" || fail "product research integrity link is missing"
-    grep -Fq '`../../../shared/rubrics/research-integrity.md`' "${ROOT_DIR}/families/engineering/technical-research/SKILL.md" || fail "technical research integrity link is missing"
-    grep -Fq 'Implicit selection alone does not authorize filesystem writes' "${ROOT_DIR}/families/collaboration/decision-mapping/SKILL.md" || fail "decision-mapping persistence boundary is missing"
-    grep -Fq 'A candidate is not activation authority' "${contract}" || fail "resume candidate authority boundary is missing"
-    grep -Fq 'unfinished candidate loop' "${contract}" || fail "blocking loop resume behavior is missing"
-    grep -Fq 'candidates without blocking otherwise authorized work.' "${contract}" || fail "non-blocking overlay resume behavior is missing"
-    grep -Fq 'advisory resume candidates' "${ROOT_DIR}/families/collaboration/portable-handoff/SKILL.md" || fail "handoff resume-candidate behavior is missing"
-    grep -Fq 'product-research' "${ROOT_DIR}/AGENTS.md" || fail "authoritative specialist inventory is stale"
-    grep -Fq 'code-review' "${ROOT_DIR}/AGENTS.md" || fail "authoritative specialist inventory is stale"
-    grep -Fq 'Keep native skill-selection cues in leaf frontmatter' "${ROOT_DIR}/templates/global-AGENTS.template.md" || fail "global template duplicates routing instead of deferring to frontmatter"
-    grep -Fq 'unrelated ad-hoc, AI, and writing work remains' "${ROOT_DIR}/templates/repo-AGENTS.template.md" || fail "repo template leaks lifecycle behavior into other families"
-
-    if find "${ROOT_DIR}/families/ai" "${ROOT_DIR}/families/writing" -name SKILL.md -exec grep -El 'lifecycle-contract|\.mecha/work' {} + | grep -q .; then
-        fail "lifecycle behavior leaked into AI or writing leaves"
-    fi
-
-    pass "optional lifecycle, intent authority, and routing contracts"
 }
 
 ai_family_checks() {

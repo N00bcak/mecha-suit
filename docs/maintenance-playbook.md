@@ -66,7 +66,9 @@ For code-review iterations, keep the detailed `RF-*` finding ledger in a linked
 report. The work index holds only the review fixed point, disposition, and open
 blocker summary. Preserve finding IDs across remediation, distinguish validity
 from current actionability, and do not turn preferences or unsupported claims
-into lifecycle blockers.
+into lifecycle blockers. `code-review` owns those judgments; the governor only
+records the report outcome and prevents closure while recorded blockers remain
+unless the user explicitly waives them.
 
 ## Maintain behavioral evaluations
 

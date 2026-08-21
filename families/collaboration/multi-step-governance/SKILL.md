@@ -17,6 +17,8 @@ the bounded work.
   is already clear.
 - Do not select, invoke, or delegate to specialist skills.
 - Do not spawn, request, or rely on subagents.
+- Do not inspect a diff, classify or validate review findings, reopen them, or
+  adjudicate technical claims.
 
 ## Needs
 
@@ -46,6 +48,15 @@ the bounded work.
 4. Surface user-owned decisions before changing accepted intent or closing work.
 5. Complete or hand off only when the record has the evidence required by its
    accepted criteria.
+
+When governed implementation is ready for review, return the ordinary next task
+shape: review the bounded diff against accepted criteria and available
+verification evidence. Record the resulting review report link, disposition,
+open blocker IDs, explicit waiver state, and next task without re-evaluating
+any `RF-*` finding. Route `changes required` to implementation or remediation;
+advance after `passed` or explicit `waived` when every other completion
+condition is met; surface `intent decision required` and `adjudication
+required` as user-owned decisions.
 
 ## Returns
 

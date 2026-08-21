@@ -101,7 +101,6 @@ class DocumentationTests(unittest.TestCase):
         self.assertEqual(covered - skills, set())
 
     def test_code_review_convergence_contract_is_aligned(self) -> None:
-        review_contract = (ROOT / "shared/rubrics/review-contract.md").read_text()
         review = (ROOT / "families/engineering/code-review/SKILL.md").read_text()
         work_index = (ROOT / "templates/work-index.template.md").read_text()
 
@@ -119,17 +118,22 @@ class DocumentationTests(unittest.TestCase):
             "`adjudication required`",
             "`waived`",
         }
-        self.assertTrue(classifications <= set(re.findall(r"`[^`]+`", review_contract)))
-        self.assertTrue(dispositions <= set(re.findall(r"`[^`]+`", review_contract)))
-        self.assertIn("stable `RF-*` ID", review_contract)
-        self.assertIn("state: `open`, `resolved`, or `waived`", review_contract)
-        self.assertIn("Preference and speculation do not block", review_contract)
+        self.assertTrue(classifications <= set(re.findall(r"`[^`]+`", review)))
+        self.assertTrue(dispositions <= set(re.findall(r"`[^`]+`", review)))
+        self.assertIn("stable `RF-*` ID", review)
+        self.assertIn("state\n(`open`, `resolved`, or `waived`)", review)
+        self.assertIn("First test validity before current actionability", review)
+        self.assertIn("A supported finding is `blocking` only for", review)
+        self.assertIn("speculative future cost", review)
+        self.assertIn("remediation regression a new ID", review)
+        self.assertIn("Repeated disputes without new evidence require adjudication", review)
+        self.assertIn("does not turn missing verification into passing evidence", review)
         self.assertIn("validity and current-actionability checks", review)
         self.assertIn("Review disposition:", work_index)
 
-        self.assertIn("review-contract.md", review)
         governor = (ROOT / "families/collaboration/multi-step-governance/SKILL.md").read_text()
         self.assertIn("lifecycle-contract.md", governor)
+        self.assertIn("without re-evaluating\nany `RF-*` finding", governor)
 
 
 if __name__ == "__main__":

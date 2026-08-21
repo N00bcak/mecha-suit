@@ -18,7 +18,7 @@ Small work stays in the conversation and may use only session-local orientation.
 ## Authority
 
 The governor is the sole record writer. Contributors return bounded artifacts,
-findings, and evidence; the governor links and evaluates them without granting
+findings, and evidence; the governor links their outcomes without granting
 contributors phase, intent, or completion authority.
 
 `Goal`, `Acceptance Criteria`, `Constraints`, and `Non-Goals` are
@@ -40,9 +40,12 @@ and never blocks otherwise authorized work.
 ## Completion And Review
 
 Governed code work completes only when each criterion is satisfied, deferred,
-or inapplicable with a reason; relevant evidence is visible; and review has no
-open blocker or has an explicit user waiver. Use
-`shared/rubrics/review-contract.md` for finding and disposition semantics.
+or inapplicable with a reason; relevant evidence is visible; and the recorded
+review outcome has no open blocker IDs or has an explicit user waiver. The
+governor records only the detailed review report link, disposition, open blocker
+IDs, waiver state, and next task. It prevents closure while recorded blockers
+remain, but does not inspect a diff, classify or validate findings, reopen them,
+or adjudicate technical claims.
 
 Do not create `SCRATCHPAD.md`. Preserve an existing user scratchpad unless the
 user authorizes a visible migration or supersession.

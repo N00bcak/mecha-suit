@@ -33,8 +33,9 @@ bounded delegation and critique.
 Engineering skills cover technical research, accepted implementation intent,
 work slicing, established-repository changes, greenfield prototypes, difficult
 diagnosis, and review. `implementation-spec` owns accepted intent;
-`work-slicing` may decompose it but may not change it. `code-review` is
-read-only unless the user separately requests fixes.
+`work-slicing` may decompose it but may not change it. `code-review` is the
+sole owner of technical review judgment and is read-only unless the user
+separately requests fixes.
 
 The AI family has five callable execution leaves for data preparation, insight
 development, representation work, problem modeling, and performance. The
@@ -74,7 +75,9 @@ task or loop. These are local authoring shapes, not routing metadata.
 
 Only `multi-step-governance` may create or update a matching
 `.mecha/work/<slug>/index.md` record. Contributors return verified artifacts;
-the governor links them without selecting or invoking skills.
+the governor links them without selecting or invoking skills. For technical
+review, it records the report outcome and gates closure on recorded blockers or
+an explicit waiver; it never evaluates or adjudicates technical claims.
 
 Accepted goals, criteria, constraints, and non-goals remain user-authoritative.
 New evidence may challenge them but cannot silently rewrite them. Small ad-hoc

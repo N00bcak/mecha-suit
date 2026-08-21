@@ -86,20 +86,24 @@ decisions, and verification evidence before reporting findings.
 
 Give each finding a stable `RF-*` ID. Record its axis, concrete claim, affected
 file and location, criterion, constraint, invariant, scenario, or authoritative
-rule, evidence, consequence and likelihood, scope relation, state, and smallest
-corrective action with material cost or regression risk.
+rule, reproducible evidence, consequence and likelihood, scope relation, state
+(`open`, `resolved`, or `waived`), and smallest corrective action with material
+cost or regression risk.
 
-First test validity. Prefer a reproduced failure, then an accepted contract or
-required check, reachable-path analysis, and established local convention.
-Confidence, emphatic wording, and preference are not evidence. Then test whether
-the finding warrants action in this change. Classify it as `blocking`,
-`non-blocking`, `question`, `deferred`, or `rejected` using
-  `../../../shared/rubrics/review-contract.md` as the policy source.
+First test validity before current actionability. Prefer a reproduced failure,
+then an accepted contract or required check, reachable-path analysis, and
+established local convention. Confidence, emphatic wording, and preference are
+not evidence. Then test whether the finding warrants action in this change.
+Classify it as `blocking`, `non-blocking`, `question`, `deferred`, or
+`rejected`.
 
-Do not block on an equally valid alternative, polish, speculative future cost,
-or an unrelated pre-existing defect that does not make the current change
-unsafe. A high-consequence uncertainty may request a named decisive check
-without presuming that code must change.
+A supported finding is `blocking` only for an accepted-intent or constraint
+violation, an introduced or worsened material defect, missing consequential
+verification, or a demonstrated present maintainability cost. Do not block on
+an equally valid alternative, polish, speculative future cost, or an unrelated
+pre-existing defect that does not make the current change unsafe. A
+high-consequence uncertainty may request a named decisive check without
+presuming that code must change.
 
 ### 4. Reconcile Re-Review
 
@@ -113,13 +117,14 @@ adjudication rather than another generic implementation request.
 ### 5. Report And Gate
 
 Keep axes separate and order actionable findings by consequence. Say when an
-axis has no findings. Use one disposition from the shared review contract: `passed`,
-`changes required`, `intent decision required`, `adjudication required`, or
-`waived`. Only open blockers produce `changes required`; optional, deferred,
+axis has no findings. Use one disposition: `passed`, `changes required`,
+`intent decision required`, `adjudication required`, or `waived`. Only open
+blockers produce `changes required`; optional, non-blocking, deferred,
 rejected, and answered items do not prevent passage.
 
-The user may explicitly waive review with a visible reason; the waiver does not
-turn missing verification into passing evidence.
+Repeated disputes without new evidence require adjudication or a decisive
+check. The user may explicitly waive review with a visible reason; the waiver
+makes risk visible but does not turn missing verification into passing evidence.
 
 ## Progress
 
