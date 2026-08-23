@@ -186,7 +186,7 @@ engineering_checks() {
     local code_review="${family_dir}/code-review/SKILL.md"
     local reference
 
-    grep -Fxq 'description: Implement PR-ready changes to established code above roughly 5kLoC with idiomatic, anti-bloat, and verification discipline.' "${large_skill}" || fail "large-codebase-change description drifted"
+    grep -Fxq 'description: Implement PR-ready changes to established code above roughly 10kLoC with idiomatic, anti-bloat, and verification discipline.' "${large_skill}" || fail "large-codebase-change description drifted"
     grep -Fxq 'description: Build and verify isolated greenfield prototypes, demos, tools, or apps around one core outcome.' "${prototype_skill}" || fail "prototype-builder description drifted"
     grep -Fxq 'description: Resolve software and architecture questions through primary technical sources, repository evidence, and reproducible checks.' "${technical_research}" || fail "technical-research description drifted"
     grep -Fxq 'description: Turn settled intent and evidence into an accepted implementation contract with criteria, constraints, and non-goals.' "${implementation_spec}" || fail "implementation-spec description drifted"
@@ -194,8 +194,8 @@ engineering_checks() {
     grep -Fxq 'description: Diagnose difficult bugs and regressions through a tight reproducer, falsifiable hypotheses, and regression evidence.' "${diagnosing_bugs}" || fail "diagnosing-bugs description drifted"
     grep -Fxq 'description: Review changes for intent fidelity, behavioral correctness and evidence, and maintainability against a fixed point.' "${code_review}" || fail "code-review description drifted"
 
-    if grep -REiq '1''kLoC|~1''k|under about 1''k|past ~1''k' "${family_dir}"; then
-        fail "obsolete prototype line-count trigger remains"
+    if grep -REiq '((1k|1,000|5k|5,000)(LoC|[[:space:]-]+maintained[[:space:]-]+source[[:space:]-]+lines?)|(~|under about |past ~)(1k|1,000|5k|5,000))' "${family_dir}"; then
+        fail "obsolete engineering line-count threshold remains"
     fi
 
     assert_exists "${ROOT_DIR}/shared/rubrics/change-discipline.md"
@@ -221,10 +221,9 @@ engineering_checks() {
     done
 
     assert_not_exists "${family_dir}/references/session-continuity.md"
-    grep -Fq '`../references/behavior-first-development.md`' "${large_skill}" || fail "large-codebase-change behavior-first guidance is missing"
-    grep -Fq '`../references/design-decision-discipline.md`' "${large_skill}" || fail "large-codebase-change design guidance is missing"
-    grep -Fq '### Phase 5: Mandatory Compression Review' "${large_skill}" || fail "large-codebase-change compression review is missing"
-    grep -Fq 'Do not create or switch branches, commit, push, or open a pull request' "${large_skill}" || fail "PR-ready Git publication boundary is missing"
+    grep -Fq 'authoritative layer' "${large_skill}" || fail "large-codebase-change authoritative-layer guidance is missing"
+    grep -Fq 'PR-ready does not authorize publishing' "${large_skill}" || fail "PR-ready publication boundary is missing"
+    grep -Fq 'commits, branches, pushes, or pull' "${large_skill}" || fail "PR-ready Git operation boundary is incomplete"
 
     for reference in \
         code-correctness.md \

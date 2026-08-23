@@ -57,4 +57,5 @@ criteria so the flag does not become permanent configuration.
 
 Report migration phases, version compatibility, deployment order, validation
 queries or tests, observability, abort criteria, rollback or recovery limits,
-and the intentionally deferred destructive step.
+and any destructive step deferred by an explicit user decision. Return an
+unresolved required step without that authorization as blocked.

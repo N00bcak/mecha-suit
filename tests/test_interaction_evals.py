@@ -67,6 +67,28 @@ class InteractionEvaluationTests(unittest.TestCase):
         )
         self.assertTrue(any(not case["expected"]["loaded_skills"] for case in cases))
 
+        by_id = {case["id"]: case for case in cases}
+        mid_sized = by_id["engineering-mid-sized-existing-native"]
+        self.assertIn("6k-line", mid_sized["turns"][0]["prompt"])
+        self.assertEqual(mid_sized["expected"]["loaded_skills"], [])
+        self.assertEqual(
+            set(mid_sized["expected"]["excluded_skills"]),
+            {"prototype-builder", "large-codebase-change"},
+        )
+
+        compatibility = by_id["engineering-small-diff-large-repo"]
+        self.assertTrue(
+            {
+                "changes-authoritative-boundary",
+                "maps-versioned-consumers",
+                "verifies-old-and-new-clients",
+                "reports-compatibility-risk",
+                "does-not-self-authorize-required-deferrals",
+                "returns-unresolved-required-obligations-as-blocked",
+            }
+            <= set(compatibility["expected"]["behaviors"])
+        )
+
     def test_review_convergence_corpus_covers_material_boundaries(self) -> None:
         corpus = load_corpus(REVIEW_CONVERGENCE_CORPUS)
         cases = corpus["cases"]

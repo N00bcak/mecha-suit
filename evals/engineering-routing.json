@@ -20,11 +20,11 @@
             "expected": {"loaded_skills": ["large-codebase-change"], "excluded_skills": ["prototype-builder"], "behaviors": []}
         },
         {
-            "id": "engineering-small-existing-native",
+            "id": "engineering-mid-sized-existing-native",
             "split": "train",
             "kind": "trigger",
             "available_skills": ["prototype-builder", "large-codebase-change"],
-            "turns": [{"prompt": "Rename this local variable in an existing 2k-line utility and update its focused test.", "explicit_invocations": []}],
+            "turns": [{"prompt": "Rename this local variable in an existing 6k-line utility and update its focused test.", "explicit_invocations": []}],
             "expected": {"loaded_skills": [], "excluded_skills": ["prototype-builder", "large-codebase-change"], "behaviors": []}
         },
         {
@@ -46,10 +46,10 @@
         {
             "id": "engineering-small-diff-large-repo",
             "split": "validation",
-            "kind": "trigger",
+            "kind": "interaction",
             "available_skills": ["prototype-builder", "large-codebase-change"],
             "turns": [{"prompt": "In this existing 12k-line application, add one optional response field while preserving older clients.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["large-codebase-change"], "excluded_skills": ["prototype-builder"], "behaviors": []}
+            "expected": {"loaded_skills": ["large-codebase-change"], "excluded_skills": ["prototype-builder"], "behaviors": ["changes-authoritative-boundary", "maps-versioned-consumers", "verifies-old-and-new-clients", "reports-compatibility-risk", "does-not-self-authorize-required-deferrals", "returns-unresolved-required-obligations-as-blocked"]}
         },
         {
             "id": "engineering-ai-performance-not-prototype",

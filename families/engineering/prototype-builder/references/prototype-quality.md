@@ -58,4 +58,4 @@ compatibility obligations develop.
 
 Promotion does not automatically select `large-codebase-change`. Use that skill
 only when the resulting existing repository is also clearly above its roughly
-5k maintained-source-line boundary; otherwise use native Codex.
+10k maintained-source-line boundary; otherwise use native Codex.
