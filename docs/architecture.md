@@ -31,8 +31,11 @@ preserve shared language, map decisions, transfer verified state, or provide
 bounded delegation and critique.
 
 Engineering skills cover technical research, accepted implementation intent,
-work slicing, established-repository changes, greenfield prototypes, difficult
-diagnosis, and review. `implementation-spec` owns accepted intent;
+work slicing, context-derived web design and frontend implementation,
+established-repository changes, greenfield prototypes, difficult diagnosis,
+and review. `web-design` owns web UX and visual direction through verified,
+fixture-backed frontend behavior when interface design is the primary outcome.
+`implementation-spec` owns accepted intent;
 `work-slicing` may decompose it but may not change it. `code-review` is the
 sole owner of technical review judgment and is read-only unless the user
 separately requests fixes.

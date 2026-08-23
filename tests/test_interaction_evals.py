@@ -20,6 +20,7 @@ from run_interaction_evals import (  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 ENGINEERING_CORPUS = ROOT / "evals" / "engineering-routing.json"
 REVIEW_CONVERGENCE_CORPUS = ROOT / "evals" / "review-convergence.json"
+WEB_DESIGN_CORPUS = ROOT / "evals" / "web-design-routing.json"
 
 
 class InteractionEvaluationTests(unittest.TestCase):
@@ -113,6 +114,57 @@ class InteractionEvaluationTests(unittest.TestCase):
                 "passes-with-only-non-blocking-items",
             }
             <= behaviors
+        )
+
+    def test_web_design_corpus_covers_artifacts_and_boundaries(self) -> None:
+        corpus = load_corpus(WEB_DESIGN_CORPUS)
+        cases = corpus["cases"]
+        self.assertEqual(len(cases), 8)
+        self.assertEqual(
+            Counter(case["split"] for case in cases),
+            {"train": 4, "validation": 4},
+        )
+
+        by_id = {case["id"]: case for case in cases}
+        for case_id in {
+            "web-design-astro-content-experience",
+            "web-design-standalone-infographic",
+            "web-design-operational-application",
+        }:
+            self.assertEqual(
+                by_id[case_id]["expected"]["loaded_skills"],
+                ["web-design"],
+            )
+
+        for case_id in {
+            "web-design-not-inline-visualization",
+            "web-design-not-small-css-fix",
+        }:
+            self.assertEqual(by_id[case_id]["expected"]["loaded_skills"], [])
+
+        self.assertEqual(
+            by_id["web-design-after-product-direction"]["expected"]["loaded_skills"],
+            ["product-co-design"],
+        )
+        self.assertEqual(
+            by_id["web-design-not-full-stack-change"]["expected"]["loaded_skills"],
+            ["large-codebase-change"],
+        )
+
+        interaction = by_id["web-design-concepts-before-implementation"]
+        self.assertTrue(
+            {
+                "researches-context-before-design",
+                "renders-exactly-three-materially-different-comps",
+                "keeps-comps-outside-production-path",
+                "waits-for-direction-selection",
+                "implements-only-selected-direction",
+                "discloses-fixture-boundary",
+                "covers-material-interface-states",
+                "verifies-responsive-behavior",
+                "checks-wcag-2-2-aa",
+            }
+            <= set(interaction["expected"]["behaviors"])
         )
 
     def test_codex_rendering_adds_host_syntax_outside_corpus_prompt(self) -> None:

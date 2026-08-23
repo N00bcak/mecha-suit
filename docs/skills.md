@@ -28,6 +28,7 @@ shape of the conversation, so the agent will not enter them by accident.
 | `technical-research` | A bounded software or architecture question | Cited findings, reproducible checks, tradeoffs, and remaining uncertainty |
 | `implementation-spec` | A settled goal, constraints, evidence, and non-goals | A global implementation contract and the current actionable frontier |
 | `work-slicing` | An accepted implementation contract | The next verifiable slice, its dependencies, and its completion condition |
+| `web-design` | Web content, tasks, constraints, and an existing project or delivery target | Three contextual design directions when needed, then a responsive, accessible, fixture-backed frontend |
 | `large-codebase-change` | A requested change in a large existing repository | A small, idiomatic, tested, PR-ready diff |
 | `prototype-builder` | A core idea and the behavior it should demonstrate | A runnable vertical slice, basic verification, and clearly named shortcuts |
 | `diagnosing-bugs` | The symptom, expected behavior, and reproduction clues | A reproducer, tested hypotheses, root cause, and—when requested—a verified fix |

@@ -1,0 +1,74 @@
+{
+    "schema_version": 1,
+    "default_runs": 3,
+    "trigger_threshold": 0.5,
+    "cases": [
+        {
+            "id": "web-design-astro-content-experience",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["web-design", "prototype-builder"],
+            "turns": [{"prompt": "Redesign and implement this Astro site for a public-transit history archive. Derive the visual direction from its maps, timetables, and oral-history material rather than using a generic editorial theme.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["web-design"], "excluded_skills": ["prototype-builder"], "behaviors": []}
+        },
+        {
+            "id": "web-design-standalone-infographic",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["web-design", "prototype-builder"],
+            "turns": [{"prompt": "Create a standalone responsive HTML interactive that lets readers explore how a mangrove shoreline changes across wet and dry seasons. The visual form and palette should come from the subject, and the controls must work with realistic fixture data.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["web-design"], "excluded_skills": ["prototype-builder"], "behaviors": []}
+        },
+        {
+            "id": "web-design-operational-application",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["web-design", "large-codebase-change"],
+            "turns": [{"prompt": "Design and implement the frontend for this incident triage queue. Open on the working surface, support dense scanning and keyboard actions, and cover loading, empty, failure, selected, and destructive states using fixtures.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["web-design"], "excluded_skills": ["large-codebase-change"], "behaviors": []}
+        },
+        {
+            "id": "web-design-not-inline-visualization",
+            "split": "train",
+            "kind": "trigger",
+            "available_skills": ["web-design"],
+            "turns": [{"prompt": "Show me an interactive chart in this conversation so I can compare the three scheduling scenarios. Do not create or change a project.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["web-design"], "behaviors": []}
+        },
+        {
+            "id": "web-design-not-small-css-fix",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["web-design", "large-codebase-change"],
+            "turns": [{"prompt": "Fix the existing button label so it remains vertically centered at 125 percent browser zoom. Preserve the current design and change nothing else.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["web-design", "large-codebase-change"], "behaviors": []}
+        },
+        {
+            "id": "web-design-after-product-direction",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["web-design", "product-co-design"],
+            "turns": [{"prompt": "Help me decide whether this should be a knowledge base, a guided workflow, or a marketplace, and who it is really for. Do not design the interface yet.", "explicit_invocations": ["product-co-design"]}],
+            "expected": {"loaded_skills": ["product-co-design"], "excluded_skills": ["web-design"], "behaviors": []}
+        },
+        {
+            "id": "web-design-not-full-stack-change",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["web-design", "large-codebase-change"],
+            "turns": [{"prompt": "In this existing 45k-line application, add the billing-adjustment API, database migration, authorization rules, audit events, and the small form that calls it. Preserve rolling-deploy compatibility.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["large-codebase-change"], "excluded_skills": ["web-design"], "behaviors": []}
+        },
+        {
+            "id": "web-design-concepts-before-implementation",
+            "split": "validation",
+            "kind": "interaction",
+            "available_skills": ["web-design", "prototype-builder"],
+            "turns": [
+                {"prompt": "Design and implement a VitePress reference site for field technicians. There is no visual direction yet; use the actual repair procedures and equipment context rather than a standard documentation theme.", "explicit_invocations": []},
+                {"prompt": "I select direction two, including its proposed navigation hierarchy. Implement that direction with realistic fixtures and verify it at narrow and wide widths.", "explicit_invocations": []}
+            ],
+            "expected": {"loaded_skills": ["web-design"], "excluded_skills": ["prototype-builder"], "behaviors": ["researches-context-before-design", "renders-exactly-three-materially-different-comps", "keeps-comps-outside-production-path", "waits-for-direction-selection", "implements-only-selected-direction", "discloses-fixture-boundary", "covers-material-interface-states", "verifies-responsive-behavior", "checks-wcag-2-2-aa"]}
+        }
+    ]
+}
