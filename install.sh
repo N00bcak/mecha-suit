@@ -4,17 +4,11 @@ set -euo pipefail
 ROOT_DIR="$(CDPATH= cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 GLOBAL_INSTRUCTIONS_SOURCE="${ROOT_DIR}/templates/global-AGENTS.template.md"
 
-# Install into MECHA_SKILL_ROOT when provided; otherwise use Codex's per-user
-# skill root. Keep this Bash-friendly for macOS, Linux, WSL, and Windows Git
-# Bash/MSYS/Cygwin shells.
-default_skill_root() {
+# Install into MECHA_SKILL_ROOT when provided; otherwise use the portable
+# per-user Agent Skills root. Keep this Bash-friendly for macOS, Linux, WSL,
+# and Windows Git Bash/MSYS/Cygwin shells.
+user_home() {
     local user_home
-
-    if [ -n "${CODEX_HOME:-}" ]; then
-        printf '%s/skills\n' "${CODEX_HOME}"
-        return 0
-    fi
-
     user_home="${HOME:-}"
     case "$(uname -s 2>/dev/null || printf unknown)" in
         MINGW*|MSYS*|CYGWIN*)
@@ -25,14 +19,28 @@ default_skill_root() {
     esac
 
     if [ -z "${user_home}" ]; then
-        printf 'MECHA_SKILL_ROOT, CODEX_HOME, or HOME must be set\n' >&2
+        printf 'MECHA_SKILL_ROOT or HOME must be set\n' >&2
         return 1
     fi
 
-    printf '%s/.codex/skills\n' "${user_home}"
+    printf '%s\n' "${user_home}"
+}
+
+default_skill_root() {
+    printf '%s/.agents/skills\n' "$(user_home)"
+}
+
+codex_home() {
+    if [ -n "${CODEX_HOME:-}" ]; then
+        printf '%s\n' "${CODEX_HOME}"
+    else
+        printf '%s/.codex\n' "$(user_home)"
+    fi
 }
 
 SKILL_ROOT="${MECHA_SKILL_ROOT:-$(default_skill_root)}"
+CODEX_CONFIG_ROOT="$(codex_home)"
+LEGACY_SKILL_ROOT="${CODEX_CONFIG_ROOT}/skills"
 MISSING_COUNT=0
 USE_CUSTOM_GLOBAL_INSTRUCTIONS=false
 REQUESTED_SKILLS=()
@@ -90,7 +98,34 @@ resolve_symlink_dir() {
 }
 
 global_instructions_path() {
-    printf '%s/AGENTS.md\n' "$(dirname "${SKILL_ROOT}")"
+    printf '%s/AGENTS.md\n' "${CODEX_CONFIG_ROOT}"
+}
+
+managed_legacy_install_exists() {
+    local name
+    local source_dir
+    local target_path
+    local source_real
+    local target_real
+
+    [ "${SKILL_ROOT}" != "${LEGACY_SKILL_ROOT}" ] || return 1
+    while IFS= read -r name; do
+        source_dir="$(skill_dir_for "${name}")"
+        target_path="${LEGACY_SKILL_ROOT}/${name}"
+        [ -L "${target_path}" ] || continue
+        source_real="$(resolve_dir "${source_dir}")"
+        if target_real="$(resolve_symlink_dir "${target_path}")" && [ "${target_real}" = "${source_real}" ]; then
+            return 0
+        fi
+    done < <(all_skill_names)
+    return 1
+}
+
+warn_about_legacy_install() {
+    if managed_legacy_install_exists; then
+        printf '[legacy] managed skill links also exist under %s; Codex may expose duplicate skills\n' "${LEGACY_SKILL_ROOT}"
+        printf '[action] MECHA_SKILL_ROOT=%q ./uninstall.sh\n' "${LEGACY_SKILL_ROOT}"
+    fi
 }
 
 backup_global_instructions() {
@@ -222,6 +257,8 @@ main() {
     if [ "${MISSING_COUNT}" -gt 0 ]; then
         exit 1
     fi
+
+    warn_about_legacy_install
 }
 
 main "$@"

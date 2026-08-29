@@ -4,14 +4,9 @@ set -euo pipefail
 ROOT_DIR="$(CDPATH= cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 
 # Uninstall from MECHA_SKILL_ROOT when provided; otherwise use the same
-# Codex-first root selection as install.sh.
+# portable Agent Skills root selection as install.sh.
 default_skill_root() {
     local user_home
-
-    if [ -n "${CODEX_HOME:-}" ]; then
-        printf '%s/skills\n' "${CODEX_HOME}"
-        return 0
-    fi
 
     user_home="${HOME:-}"
     case "$(uname -s 2>/dev/null || printf unknown)" in
@@ -23,11 +18,11 @@ default_skill_root() {
     esac
 
     if [ -z "${user_home}" ]; then
-        printf 'MECHA_SKILL_ROOT, CODEX_HOME, or HOME must be set\n' >&2
+        printf 'MECHA_SKILL_ROOT or HOME must be set\n' >&2
         return 1
     fi
 
-    printf '%s/.codex/skills\n' "${user_home}"
+    printf '%s/.agents/skills\n' "${user_home}"
 }
 
 SKILL_ROOT="${MECHA_SKILL_ROOT:-$(default_skill_root)}"

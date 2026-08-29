@@ -51,6 +51,13 @@ project facts and task state in repo-local instructions, artifacts, or the
 conversation. State universal policy once; do not duplicate it in every skill
 or turn a summary into a substitute for primary evidence.
 
+Codex loads at most 8,000 UTF-8 bytes from a selected `SKILL.md`, including its
+frontmatter. The validator fails above that limit and warns at 7,000 bytes so
+authors can preserve headroom. It also reports this repository's estimated
+catalog contribution and warns at 6,400 characters. Catalog pressure remains
+advisory because installed paths and skills from other sources contribute to
+the host's final prompt.
+
 ## Maintain multi-step governance
 
 The work index never routes or invokes skills. Only `multi-step-governance`
@@ -126,5 +133,6 @@ git diff --check
 ```
 
 The suite validates portable frontmatter, interaction contracts, Codex
-metadata, reference ownership, documentation links, evaluation corpora, shell
-syntax, family layout, subagent boundaries, and install/uninstall safety.
+metadata and prompt budgets, source and installed reference resolution,
+documentation links, evaluation corpora, shell syntax, family layout, subagent
+boundaries, and install/uninstall safety.

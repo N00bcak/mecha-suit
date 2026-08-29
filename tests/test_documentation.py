@@ -1,5 +1,6 @@
 import json
 import re
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -11,10 +12,17 @@ RESOURCE_RE = re.compile(r"`([^`]+\.md)`")
 
 
 def repository_markdown() -> list[Path]:
+    completed = subprocess.run(
+        ["git", "ls-files", "--", "*.md"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
     return [
-        path
-        for path in ROOT.rglob("*.md")
-        if not IGNORED_PARTS.intersection(path.relative_to(ROOT).parts)
+        ROOT / relative
+        for relative in completed.stdout.splitlines()
+        if not IGNORED_PARTS.intersection(Path(relative).parts)
     ]
 
 

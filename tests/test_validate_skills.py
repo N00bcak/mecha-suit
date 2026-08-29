@@ -6,9 +6,16 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 from validate_skills import (  # noqa: E402
+    CATALOG_WARNING_CHARACTERS,
+    MAX_SKILL_PROMPT_BYTES,
+    catalog_estimate,
+    catalog_warning,
+    skill_prompt_warning,
     validate_codex_skill,
     validate_portable_skill,
     validate_repository_contract,
+    validate_installed_root,
+    validate_runtime_references,
 )
 
 
@@ -151,6 +158,88 @@ class SkillValidationTests(unittest.TestCase):
             failures = validate_codex_skill(skill)
             self.assertTrue(any("must be a boolean" in failure for failure in failures))
             self.assertTrue(any("must mention $example-skill" in failure for failure in failures))
+
+    def test_codex_prompt_budget_uses_utf8_bytes(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            skill = self.make_skill(Path(directory))
+            skill_md = skill / "SKILL.md"
+            content = skill_md.read_text(encoding="utf-8")
+            exact = content + "x" * (MAX_SKILL_PROMPT_BYTES - len(content.encode("utf-8")))
+            skill_md.write_text(exact, encoding="utf-8")
+            self.assertFalse(any("UTF-8 bytes" in value for value in validate_codex_skill(skill)))
+
+            skill_md.write_text(exact + "x", encoding="utf-8")
+            self.assertTrue(any("8001 UTF-8 bytes" in value for value in validate_codex_skill(skill)))
+            skill_md.write_text(exact + "é", encoding="utf-8")
+            self.assertTrue(any("8002 UTF-8 bytes" in value for value in validate_codex_skill(skill)))
+
+    def test_codex_prompt_warning_starts_at_7000_bytes(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            skill = self.make_skill(Path(directory))
+            skill_md = skill / "SKILL.md"
+            content = skill_md.read_text(encoding="utf-8")
+            skill_md.write_text(
+                content + "x" * (6_999 - len(content.encode("utf-8"))),
+                encoding="utf-8",
+            )
+            self.assertIsNone(skill_prompt_warning(skill))
+            skill_md.write_text(skill_md.read_text(encoding="utf-8") + "x", encoding="utf-8")
+            self.assertIn("7000 UTF-8 bytes", skill_prompt_warning(skill) or "")
+
+    def test_runtime_references_validate_source_and_installed_alias(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            family = root / "families" / "example"
+            skill = self.make_skill(family, body=CORE_BODY + "\nRead `../references/guide.md`.\n")
+            references = family / "references"
+            references.mkdir()
+            (references / "guide.md").write_text("Guide.\n", encoding="utf-8")
+            installed = root / "installed" / skill.name
+            installed.parent.mkdir()
+            installed.symlink_to(skill, target_is_directory=True)
+
+            self.assertEqual(validate_runtime_references(skill), [])
+            self.assertEqual(validate_runtime_references(installed), [])
+            (references / "guide.md").unlink()
+            self.assertIn(
+                "runtime reference '../references/guide.md' does not resolve",
+                validate_runtime_references(installed),
+            )
+
+    def test_runtime_reference_glob_requires_a_match(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            skill = self.make_skill(
+                root,
+                body=CORE_BODY + "\nRead `../references/*-practices.md`.\n",
+            )
+            self.assertTrue(any("does not resolve" in value for value in validate_runtime_references(skill)))
+
+    def test_installed_root_requires_every_source_skill(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.make_skill(root / "source")
+            installed_root = root / "installed"
+            installed_root.mkdir()
+            self.assertEqual(
+                validate_installed_root(installed_root, [source / "SKILL.md"]),
+                ["example-skill: installed SKILL.md is missing or unreadable"],
+            )
+
+    def test_catalog_estimate_includes_rendered_metadata_and_locator(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            skill = self.make_skill(root / "families" / "example")
+            estimate = catalog_estimate([skill / "SKILL.md"], root)
+            self.assertGreater(estimate, len("example-skill"))
+            self.assertLess(estimate, CATALOG_WARNING_CHARACTERS)
+
+    def test_catalog_warning_starts_at_6400_characters(self) -> None:
+        self.assertIsNone(catalog_warning(CATALOG_WARNING_CHARACTERS - 1))
+        self.assertIn(
+            "6400 characters",
+            catalog_warning(CATALOG_WARNING_CHARACTERS) or "",
+        )
 
 
 if __name__ == "__main__":

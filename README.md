@@ -25,8 +25,9 @@ Install all skills into the default Codex skill root:
 ```
 
 On a fresh Codex setup, installation also copies the default consumer global
-instructions from `templates/global-AGENTS.template.md` to `AGENTS.md` beside
-the skill root. If that file contains non-default instructions, installation
+instructions from `templates/global-AGENTS.template.md` to
+`$CODEX_HOME/AGENTS.md`, or `$HOME/.codex/AGENTS.md` when `CODEX_HOME` is not
+set. If that file contains non-default instructions, installation
 aborts before changing skills. To back up and replace it with Mecha Suit's
 default prompt, run:
 
@@ -50,12 +51,15 @@ Choose a different root when needed:
 MECHA_SKILL_ROOT="/path/to/skills" ./install.sh
 ```
 
-The default is `$CODEX_HOME/skills` when `CODEX_HOME` is set, otherwise
-`$HOME/.codex/skills`. On Windows, run the scripts through WSL, Git Bash, MSYS,
-or Cygwin.
+The default skill root is `$HOME/.agents/skills`; `CODEX_HOME` affects global
+Codex instructions, not skill installation. On Windows, run the scripts through
+WSL, Git Bash, MSYS, or Cygwin.
 
 The installer creates symlinks and will not overwrite unrelated files,
-directories, or links. It is safe to run again.
+directories, or links. It is safe to run again. If it finds links managed by
+this checkout in the deprecated `$CODEX_HOME/skills` or `$HOME/.codex/skills`
+location, it leaves them unchanged and prints the exact explicit uninstall
+command. Remove those legacy links to avoid duplicate skill entries.
 
 To remove links managed by this checkout:
 

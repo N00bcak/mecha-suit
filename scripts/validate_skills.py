@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import argparse
+import glob
 import re
 import sys
 from pathlib import Path
@@ -13,6 +15,9 @@ import yaml
 MAX_SKILL_NAME_LENGTH = 64
 MAX_DESCRIPTION_LENGTH = 1024
 MAX_COMPATIBILITY_LENGTH = 500
+MAX_SKILL_PROMPT_BYTES = 8_000
+SKILL_PROMPT_WARNING_BYTES = 7_000
+CATALOG_WARNING_CHARACTERS = 6_400
 PORTABLE_PROPERTIES = {
     "name",
     "description",
@@ -34,6 +39,7 @@ INTERACTION_MARKERS = {
     "Session Overlay Contract",
     "Interactive Loop Contract",
 }
+RUNTIME_REFERENCE_RE = re.compile(r"`((?:\.{1,2}/|references/)[^`]+\.md)`")
 
 
 def read_skill(skill_path: Path) -> tuple[dict[str, Any] | None, str, list[str]]:
@@ -153,6 +159,13 @@ def validate_codex_skill(skill_path: Path) -> list[str]:
     if frontmatter is None:
         return failures
 
+    prompt_bytes = len((skill_path / "SKILL.md").read_bytes())
+    if prompt_bytes > MAX_SKILL_PROMPT_BYTES:
+        failures.append(
+            f"SKILL.md is {prompt_bytes} UTF-8 bytes; Codex loads at most "
+            f"{MAX_SKILL_PROMPT_BYTES} bytes"
+        )
+
     unexpected = set(frontmatter) - CODEX_PROPERTIES
     if unexpected:
         failures.append(f"Codex-incompatible frontmatter keys: {', '.join(sorted(unexpected))}")
@@ -202,23 +215,113 @@ def validate_codex_skill(skill_path: Path) -> list[str]:
     return failures
 
 
+def runtime_references(skill_path: Path) -> list[str]:
+    """Return repo-owned Markdown resource paths named by a skill contract."""
+    skill_md = skill_path / "SKILL.md"
+    if not skill_md.is_file():
+        return []
+    return sorted(set(RUNTIME_REFERENCE_RE.findall(skill_md.read_text(encoding="utf-8"))))
+
+
+def validate_runtime_references(skill_path: Path) -> list[str]:
+    """Validate paths without pre-resolving an installed skill-directory symlink."""
+    failures: list[str] = []
+    for raw_target in runtime_references(skill_path):
+        candidate = skill_path / raw_target
+        matches = [Path(path) for path in glob.glob(str(candidate))]
+        if not matches:
+            failures.append(f"runtime reference {raw_target!r} does not resolve")
+            continue
+        non_files = [path for path in matches if not path.is_file()]
+        if non_files:
+            failures.append(f"runtime reference {raw_target!r} does not resolve to files")
+    return failures
+
+
+def skill_prompt_warning(skill_path: Path) -> str | None:
+    prompt_bytes = len((skill_path / "SKILL.md").read_bytes())
+    if prompt_bytes >= SKILL_PROMPT_WARNING_BYTES:
+        return (
+            f"SKILL.md is {prompt_bytes} UTF-8 bytes; "
+            f"Codex truncates above {MAX_SKILL_PROMPT_BYTES} bytes"
+        )
+    return None
+
+
+def catalog_estimate(skill_files: list[Path], root: Path) -> int:
+    """Estimate this repository's model-visible catalog contribution."""
+    rendered: list[str] = []
+    for skill_file in skill_files:
+        frontmatter, _, failures = read_skill(skill_file.parent)
+        if failures or frontmatter is None:
+            continue
+        name = frontmatter.get("name")
+        description = frontmatter.get("description")
+        if isinstance(name, str) and isinstance(description, str):
+            rendered.append(
+                f"- {name}: {description.strip()} "
+                f"(file: {skill_file.relative_to(root)})\n"
+            )
+    return len("".join(rendered))
+
+
+def catalog_warning(estimate: int) -> str | None:
+    if estimate >= CATALOG_WARNING_CHARACTERS:
+        return (
+            f"estimated Codex catalog contribution is {estimate} characters; "
+            "review descriptions before it exceeds the host budget"
+        )
+    return None
+
+
+def validate_installed_root(installed_root: Path, source_skill_files: list[Path]) -> list[str]:
+    failures: list[str] = []
+    if not installed_root.is_dir():
+        return [f"{installed_root}: installed root is not a directory"]
+
+    for source_skill_file in source_skill_files:
+        name = source_skill_file.parent.name
+        installed_skill = installed_root / name
+        if not (installed_skill / "SKILL.md").is_file():
+            failures.append(f"{name}: installed SKILL.md is missing or unreadable")
+            continue
+        failures.extend(
+            f"{name}: {message}"
+            for message in validate_runtime_references(installed_skill)
+        )
+    return failures
+
+
 def validate_skill(skill_path: Path) -> tuple[bool, str]:
     """Backward-compatible aggregate validation entry point."""
     failures = (
         validate_portable_skill(skill_path)
         + validate_repository_contract(skill_path)
         + validate_codex_skill(skill_path)
+        + validate_runtime_references(skill_path)
     )
     return (not failures, "valid" if not failures else "; ".join(failures))
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--installed-root",
+        type=Path,
+        help="also validate runtime references through an installed skill root",
+    )
+    return parser.parse_args()
+
+
 def main() -> int:
+    args = parse_args()
     root = Path(__file__).resolve().parents[1]
     skill_files = sorted((root / "families").glob("*/*/SKILL.md"))
     layers = {
         "portable": validate_portable_skill,
         "interaction": validate_repository_contract,
         "codex": validate_codex_skill,
+        "resources": validate_runtime_references,
     }
     failures: list[str] = []
 
@@ -230,10 +333,27 @@ def main() -> int:
                 for message in validator(skill_file.parent)
             )
 
+    if args.installed_root is not None:
+        failures.extend(
+            f"[installed-resources] {message}"
+            for message in validate_installed_root(args.installed_root, skill_files)
+        )
+
     if failures:
         for failure in failures:
             print(f"[fail] {failure}", file=sys.stderr)
         return 1
+
+    for skill_file in skill_files:
+        warning = skill_prompt_warning(skill_file.parent)
+        if warning:
+            print(f"[warn] {skill_file.relative_to(root)}: {warning}", file=sys.stderr)
+
+    estimate = catalog_estimate(skill_files, root)
+    print(f"[info] estimated Codex catalog contribution: {estimate} characters")
+    warning = catalog_warning(estimate)
+    if warning:
+        print(f"[warn] {warning}", file=sys.stderr)
 
     metadata_count = sum(
         (skill_file.parent / "agents" / "openai.yaml").is_file()
@@ -242,6 +362,8 @@ def main() -> int:
     print(f"[ok] Agent Skills portable core for {len(skill_files)} skills")
     print(f"[ok] host-neutral interaction contracts for {len(skill_files)} skills")
     print(f"[ok] Codex adapter metadata for {metadata_count} skills")
+    if args.installed_root is not None:
+        print(f"[ok] installed runtime references under {args.installed_root}")
     return 0
 
 

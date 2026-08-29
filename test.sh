@@ -23,6 +23,13 @@ assert_not_exists() {
     [ ! -e "${path}" ] && [ ! -L "${path}" ] || fail "expected ${path} to be absent"
 }
 
+assert_contains_no_files() {
+    local path="$1"
+    if [ -d "${path}" ] && find "${path}" -type f -print -quit | grep -q .; then
+        fail "expected ${path} to contain no files"
+    fi
+}
+
 assert_symlink_to() {
     local link_path="$1"
     local expected_target="$2"
@@ -71,10 +78,10 @@ architecture_checks() {
     assert_exists "${ROOT_DIR}/families/ai/ai-pipeline/SKILL.md"
     assert_exists "${ROOT_DIR}/families/writing/humanizer/SKILL.md"
     assert_exists "${ROOT_DIR}/families/writing/blogpost-writing/SKILL.md"
-    assert_not_exists "${ROOT_DIR}/families/ml"
-    assert_not_exists "${ROOT_DIR}/families/council"
-    assert_not_exists "${ROOT_DIR}/families/routing"
-    assert_not_exists "${ROOT_DIR}/families/orchestration"
+    assert_contains_no_files "${ROOT_DIR}/families/ml"
+    assert_contains_no_files "${ROOT_DIR}/families/council"
+    assert_contains_no_files "${ROOT_DIR}/families/routing"
+    assert_contains_no_files "${ROOT_DIR}/families/orchestration"
     pass "native selection and family layout"
 }
 
@@ -254,7 +261,7 @@ lifecycle_checks() {
     grep -Fq 'sole record writer' "${contract}" || fail "governor authority is missing"
     grep -Fq 'Governor:' "${template}" || fail "work-index governor field is missing"
     grep -Fq 'lifecycle-contract.md' "${governor}" || fail "governor lifecycle contract is missing"
-    if rg -q 'review-contract\.md' "${ROOT_DIR}"; then
+    if git -C "${ROOT_DIR}" grep -q 'review-contract\.md'; then
         fail "removed review contract is still referenced"
     fi
     grep -Fq 'does not inspect a diff' "${contract}" || fail "review judgment boundary is missing from lifecycle contract"
@@ -327,8 +334,8 @@ ai_family_checks() {
     do
         grep -Fq "${section}" "${family_dir}/references/pipeline-contract.md" || fail "pipeline contract section is missing: ${section}"
     done
-    for status in observed assumed hypothesized proposed; do
-        grep -Fq -- "- **${status^}:**" "${family_dir}/references/evidence-integrity.md" || fail "evidence status is missing: ${status}"
+    for status in Observed Assumed Hypothesized Proposed; do
+        grep -Fq -- "- **${status}:**" "${family_dir}/references/evidence-integrity.md" || fail "evidence status is missing: ${status}"
     done
 
     for leaf in \
@@ -401,12 +408,15 @@ install_uninstall_checks() {
     local unrelated_target
     local backup_path
     local custom_prompt
+    local default_codex_home
 
     tmp_root="$(mktemp -d)"
     trap "rm -rf '${tmp_root}'" EXIT
+    default_codex_home="${tmp_root}/codex-config"
+    export CODEX_HOME="${default_codex_home}"
 
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" >"${tmp_root}/install-all.out"
-    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${tmp_root}/AGENTS.md" || fail "default global instructions were not installed"
+    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${default_codex_home}/AGENTS.md" || fail "default global instructions were not installed"
     assert_symlink_to "${tmp_root}/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
     assert_symlink_to "${tmp_root}/skills/interview-me" "${ROOT_DIR}/families/collaboration/interview-me"
     assert_symlink_to "${tmp_root}/skills/low-friction-collaboration" "${ROOT_DIR}/families/collaboration/low-friction-collaboration"
@@ -426,8 +436,8 @@ install_uninstall_checks() {
     assert_symlink_to "${tmp_root}/skills/ai-performance" "${ROOT_DIR}/families/ai/ai-performance"
     assert_symlink_to "${tmp_root}/skills/humanizer" "${ROOT_DIR}/families/writing/humanizer"
     assert_symlink_to "${tmp_root}/skills/blogpost-writing" "${ROOT_DIR}/families/writing/blogpost-writing"
-    assert_exists "${tmp_root}/skills/ai-performance/../references/performance.md"
-    assert_exists "${tmp_root}/skills/ai-performance/../../../shared/rubrics/change-discipline.md"
+    PYTHONDONTWRITEBYTECODE=1 "${DEV_PYTHON}" "${ROOT_DIR}/scripts/validate_skills.py" --installed-root "${tmp_root}/skills" >"${tmp_root}/validate-installed.out"
+    grep -Fq '[ok] installed runtime references' "${tmp_root}/validate-installed.out" || fail "installed runtime references were not validated"
 
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" >"${tmp_root}/install-all-again.out"
     grep -Eq '\[ok\] prototype-builder already installed' "${tmp_root}/install-all-again.out" || fail "install is not idempotent"
@@ -435,18 +445,19 @@ install_uninstall_checks() {
 
     mkdir -p "${tmp_root}/custom/skills"
     custom_prompt="custom global instructions for ${tmp_root}"
-    printf '%s\n' "${custom_prompt}" >"${tmp_root}/custom/AGENTS.md"
-    if MECHA_SKILL_ROOT="${tmp_root}/custom/skills" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-custom-abort.out" 2>&1; then
+    mkdir -p "${tmp_root}/custom-codex"
+    printf '%s\n' "${custom_prompt}" >"${tmp_root}/custom-codex/AGENTS.md"
+    if CODEX_HOME="${tmp_root}/custom-codex" MECHA_SKILL_ROOT="${tmp_root}/custom/skills" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-custom-abort.out" 2>&1; then
         fail "install should abort when non-default global instructions exist"
     fi
     assert_not_exists "${tmp_root}/custom/skills/prototype-builder"
     grep -Fq '[abort]' "${tmp_root}/install-custom-abort.out" || fail "global instruction conflict output is unclear"
-    grep -Fxq "${custom_prompt}" "${tmp_root}/custom/AGENTS.md" || fail "conflicting global instructions were changed"
+    grep -Fxq "${custom_prompt}" "${tmp_root}/custom-codex/AGENTS.md" || fail "conflicting global instructions were changed"
 
-    MECHA_SKILL_ROOT="${tmp_root}/custom/skills" "${ROOT_DIR}/install.sh" --use-custom-global-instructions prototype-builder >"${tmp_root}/install-custom-replace.out"
+    CODEX_HOME="${tmp_root}/custom-codex" MECHA_SKILL_ROOT="${tmp_root}/custom/skills" "${ROOT_DIR}/install.sh" --use-custom-global-instructions prototype-builder >"${tmp_root}/install-custom-replace.out"
     assert_symlink_to "${tmp_root}/custom/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
-    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${tmp_root}/custom/AGENTS.md" || fail "custom global instructions were not replaced"
-    backup_path="$(rg -l -F "${custom_prompt}" "${ROOT_DIR}/.mecha/backups/global-instructions" | tail -n 1)"
+    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${tmp_root}/custom-codex/AGENTS.md" || fail "custom global instructions were not replaced"
+    backup_path="$(grep -rlF "${custom_prompt}" "${ROOT_DIR}/.mecha/backups/global-instructions" | tail -n 1)"
     [ -n "${backup_path}" ] || fail "replaced global instructions were not backed up"
     grep -Fxq "${custom_prompt}" "${backup_path}" || fail "global instruction backup is incomplete"
     rm "${backup_path}"
@@ -507,18 +518,40 @@ install_uninstall_checks() {
     assert_not_exists "${tmp_root}/skills/humanizer"
     assert_not_exists "${tmp_root}/skills/blogpost-writing"
 
-    MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-codex-home.out"
-    assert_symlink_to "${tmp_root}/codex-home/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
+    MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" HOME="${tmp_root}/codex-user" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-codex-home.out"
+    assert_symlink_to "${tmp_root}/codex-user/.agents/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
     cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${tmp_root}/codex-home/AGENTS.md" || fail "CODEX_HOME global instructions were not installed"
-    MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" "${ROOT_DIR}/uninstall.sh" prototype-builder >"${tmp_root}/uninstall-codex-home.out"
     assert_not_exists "${tmp_root}/codex-home/skills/prototype-builder"
+    MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" HOME="${tmp_root}/codex-user" "${ROOT_DIR}/uninstall.sh" prototype-builder >"${tmp_root}/uninstall-codex-home.out"
+    assert_not_exists "${tmp_root}/codex-user/.agents/skills/prototype-builder"
 
     MECHA_SKILL_ROOT= CODEX_HOME= HOME="${tmp_root}/home" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-home-default.out"
-    assert_symlink_to "${tmp_root}/home/.codex/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
+    assert_symlink_to "${tmp_root}/home/.agents/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
+    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${tmp_root}/home/.codex/AGENTS.md" || fail "HOME global instructions were not installed under .codex"
+
+    mkdir -p "${tmp_root}/legacy-codex/skills"
+    ln -s "${ROOT_DIR}/families/engineering/prototype-builder" "${tmp_root}/legacy-codex/skills/prototype-builder"
+    MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/legacy-codex" HOME="${tmp_root}/legacy-home" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-legacy-warning.out"
+    assert_symlink_to "${tmp_root}/legacy-home/.agents/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
+    assert_symlink_to "${tmp_root}/legacy-codex/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
+    grep -Fq '[legacy] managed skill links also exist' "${tmp_root}/install-legacy-warning.out" || fail "managed legacy install did not warn"
+    grep -Fq "MECHA_SKILL_ROOT=${tmp_root}/legacy-codex/skills ./uninstall.sh" "${tmp_root}/install-legacy-warning.out" || fail "legacy cleanup command is missing or incorrect"
+
+    MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/legacy-codex" HOME="${tmp_root}/legacy-home" "${ROOT_DIR}/uninstall.sh" prototype-builder >"${tmp_root}/uninstall-preferred.out"
+    assert_not_exists "${tmp_root}/legacy-home/.agents/skills/prototype-builder"
+    assert_symlink_to "${tmp_root}/legacy-codex/skills/prototype-builder" "${ROOT_DIR}/families/engineering/prototype-builder"
+
+    rm "${tmp_root}/legacy-codex/skills/prototype-builder"
+    ln -s "${tmp_root}/other-target" "${tmp_root}/legacy-codex/skills/prototype-builder"
+    MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/legacy-codex" HOME="${tmp_root}/legacy-home" "${ROOT_DIR}/install.sh" prototype-builder >"${tmp_root}/install-unrelated-legacy.out"
+    if grep -Fq '[legacy]' "${tmp_root}/install-unrelated-legacy.out"; then
+        fail "unrelated legacy symlink produced a cleanup warning"
+    fi
 
     pass "install and uninstall behavior"
     rm -rf "${tmp_root}"
     trap - EXIT
+    unset CODEX_HOME
 }
 
 main() {

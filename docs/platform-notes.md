@@ -26,16 +26,23 @@
   `ai-pipeline`, and `multi-step-governance`.
 - Other collaboration leaves, engineering leaves, and AI execution leaves
   currently rely on frontmatter only.
-- Global installation targets `MECHA_SKILL_ROOT` when set, then `CODEX_HOME/skills` when `CODEX_HOME` is set, otherwise `$HOME/.codex/skills`.
+- Global skill installation targets `MECHA_SKILL_ROOT` when set, otherwise
+  `$HOME/.agents/skills`. The deprecated `$CODEX_HOME/skills` or
+  `$HOME/.codex/skills` root remains discoverable by Codex, so the installer
+  warns about managed legacy links and supplies an explicit cleanup command.
 - `install.sh` also provisions the canonical consumer prompt from
-  `templates/global-AGENTS.template.md` at `AGENTS.md` beside that skill root.
+  `templates/global-AGENTS.template.md` at `$CODEX_HOME/AGENTS.md`, or
+  `$HOME/.codex/AGENTS.md` when `CODEX_HOME` is unset. Global instructions and
+  the portable skill root are resolved independently.
   It aborts on non-default instructions unless
   `--use-custom-global-instructions` is explicit; that replacement backs up
   the old file under this checkout's `.mecha/backups/global-instructions/`.
 - The repository-root `AGENTS.md` governs Mecha Suit development only.
   `EXAMPLE_PROMPT.md` is a downstream customization example, not the installed
   prompt or a development contract.
-- On Windows, run the Bash scripts from WSL, Git Bash, MSYS, or Cygwin. Git Bash/MSYS/Cygwin default to a Unix-style path for `%USERPROFILE%\.codex\skills` when conversion is available.
+- On Windows, run the Bash scripts from WSL, Git Bash, MSYS, or Cygwin. Git
+  Bash/MSYS/Cygwin default to a Unix-style path for
+  `%USERPROFILE%\.agents\skills` when conversion is available.
 - Repo-local `AGENTS.md` files should point to global skills and provide only local facts.
 
 ### Codex resume candidates
@@ -81,7 +88,9 @@
 ## Validation and evaluation layers
 
 - `scripts/validate_skills.py` checks the portable core, Mecha Suit interaction
-  contracts, and Codex metadata as distinct layers.
+  contracts, Codex metadata, prompt budgets, and runtime references as distinct
+  layers. Pass `--installed-root` to verify references through installed skill
+  aliases as well as the source tree.
 - `./test.sh` is deterministic and does not require an agent host, credentials,
   network access, or model calls.
 - `evals/*.json` keeps routing and interaction cases independent of host
