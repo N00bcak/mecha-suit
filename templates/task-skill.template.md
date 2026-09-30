@@ -7,7 +7,8 @@ description: <one constructive sentence naming the owned action and enough task 
 
 ## Purpose
 
-<What bounded outcome this task skill owns.>
+<What bounded outcome this task skill owns, including when a separate artifact
+is useful rather than a prerequisite for ordinary work.>
 
 ## Do Not Use
 
@@ -46,6 +47,10 @@ repeat generic session-orientation instructions.>
 
 <Add `Lifecycle Participation` only for a multi-step governor that owns
 `.mecha/work/` state. Contributors and overlays do not add it.>
+
+<Include a compact worked example only when it clarifies a consequential
+judgment. Contrast observable evidence with a plausible near miss; do not turn
+the example into a mandatory output format.>
 
 ## References
 

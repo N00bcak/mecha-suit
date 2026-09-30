@@ -98,6 +98,14 @@
             "available_skills": ["code-review"],
             "turns": [{"prompt": "Re-review the completed remediation. All evidenced blockers are resolved; only a naming preference and an optional future refactor remain.", "explicit_invocations": []}],
             "expected": {"loaded_skills": ["code-review"], "excluded_skills": [], "behaviors": ["passes-with-only-non-blocking-items", "does-not-request-another-cycle"]}
+        },
+        {
+            "id": "review-empty-diff",
+            "split": "validation",
+            "kind": "interaction",
+            "available_skills": ["code-review"],
+            "turns": [{"prompt": "Review the changes against HEAD. The working tree and index match HEAD.", "explicit_invocations": ["code-review"]}],
+            "expected": {"loaded_skills": ["code-review"], "excluded_skills": [], "behaviors": ["returns-nothing-to-review", "does-not-request-artificial-change", "does-not-issue-passing-disposition"]}
         }
     ]
 }

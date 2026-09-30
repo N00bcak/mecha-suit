@@ -275,6 +275,30 @@
             "available_skills": ["low-friction-collaboration", "implementation-spec"],
             "turns": [{"prompt": "Keep this already-started implementation discussion easy to follow.", "explicit_invocations": ["low-friction-collaboration"]}],
             "expected": {"loaded_skills": ["low-friction-collaboration", "implementation-spec"], "excluded_skills": [], "behaviors": ["overlay-does-not-create-durable-state", "task-retains-outcome-ownership"]}
+        },
+        {
+            "id": "adhoc-plan-execution",
+            "split": "validation",
+            "kind": "interaction",
+            "available_skills": ["implementation-spec", "multi-step-governance"],
+            "turns": [{"prompt": "Execute the latest completed plan. Its criteria and constraints are accepted.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["multi-step-governance"], "behaviors": ["accepts-plan-without-governance", "does-not-create-lifecycle-record"]}
+        },
+        {
+            "id": "contributor-spec-and-slices",
+            "split": "validation",
+            "kind": "interaction",
+            "available_skills": ["implementation-spec", "work-slicing", "multi-step-governance"],
+            "turns": [{"prompt": "Turn these settled decisions into a draft implementation contract. Return it here for review.", "explicit_invocations": []}, {"prompt": "I accept that contract. Return verifiable delivery slices here.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["multi-step-governance"], "behaviors": ["returns-artifacts-without-record-writes", "does-not-silently-accept-contract"]}
+        },
+        {
+            "id": "explicit-governance-record",
+            "split": "validation",
+            "kind": "interaction",
+            "available_skills": ["multi-step-governance"],
+            "turns": [{"prompt": "Govern this accepted migration plan through implementation and verification, keeping a durable work record.", "explicit_invocations": ["multi-step-governance"]}],
+            "expected": {"loaded_skills": ["multi-step-governance"], "excluded_skills": [], "behaviors": ["governor-prepares-accepted-intent-record", "respects-host-write-restrictions", "contributors-return-evidence-only"]}
         }
     ]
 }

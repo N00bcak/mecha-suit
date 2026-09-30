@@ -8,7 +8,9 @@ description: Resolve software and architecture questions through primary technic
 ## Purpose
 
 Resolve a bounded software, API, architecture, compatibility, or standards
-question with evidence strong enough to guide an engineering decision.
+question with evidence strong enough to guide an engineering decision. This
+includes a bounded audit of an existing implementation against a technical
+requirement or source; no diff is required.
 
 ## Do Not Use
 

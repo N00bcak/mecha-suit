@@ -10,6 +10,10 @@ description: Turn settled intent and evidence into an accepted implementation co
 Create a decision-complete, user-owned contract for what an engineering change
 must accomplish before implementation structure can distort its intent.
 
+Use a separate specification when requested or when unresolved complexity
+warrants it. A clear request, approved plan, or project criteria can already
+supply sufficient intent for ordinary implementation.
+
 ## Do Not Use
 
 - Do not use while consequential product or domain decisions remain unresolved.
@@ -30,7 +34,8 @@ must accomplish before implementation structure can distort its intent.
 - A review basis that distinguishes required behavior and evidence from optional
   implementation preferences.
 - Explicit assumptions and unresolved user-owned decisions.
-- Updated lifecycle index, or complete proposed content when writes are forbidden.
+- Complete contract content in the conversation or a requested artifact; no
+  lifecycle record updates.
 
 ## Done Conditions
 
@@ -62,11 +67,20 @@ Keep unstable file paths, code snippets, and task ordering out of accepted
 intent unless their exact form is itself a user-owned requirement. Put current
 implementation structure in work slices.
 
+## Example: Observable Acceptance
+
+For password reset, `AC-1: Reject an expired reset token with an expiry error
+and leave the stored password unchanged` names observable behavior.
+`Use a TokenValidator class` is an implementation preference unless the user
+has made that interface a requirement. Verify AC-1 with an expired token and a
+read of stored credentials; naming a class does not establish acceptance.
+
 ## Planning-Mode Boundary
 
 When the host forbids writes, return the complete proposed contract in the
-conversation and do not create `.mecha` or edit `.gitignore`. The first
-execution turn materializes the latest accepted plan before changing code.
+conversation. A request to execute the latest completed plan accepts its
+contract; acceptance does not activate governance or require durable state.
+Return the contract and evidence without creating or updating lifecycle records.
 
 ## Progress
 

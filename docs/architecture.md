@@ -20,7 +20,9 @@ Each layer has one job:
   points, and the canonical consumer global AGENTS prompt installed by
   `install.sh`.
 - `evals/` owns host-neutral routing and interaction cases. Host adapters add
-  invocation syntax and collect observations.
+  invocation syntax and collect observations. Outcome fixtures compare project
+  instructions alone with the full Mecha stack, retaining objective evidence
+  and ungraded human review criteria separately from routing telemetry.
 - `tests/` and `test.sh` own deterministic repository invariants.
 - `docs/` explains the system to people. It does not define runtime behavior.
 
@@ -38,7 +40,11 @@ fixture-backed frontend behavior when interface design is the primary outcome.
 `implementation-spec` owns accepted intent;
 `work-slicing` may decompose it but may not change it. `code-review` is the
 sole owner of technical review judgment and is read-only unless the user
-separately requests fixes.
+separately requests fixes. Snapshot audits stay outside `code-review`; bounded
+technical audits fit `technical-research`. Large-repository applicability uses
+repository structure and affected contracts, not a source-line threshold.
+Separate specification and slicing artifacts are conditional on the task, not
+prerequisites for ordinary implementation.
 
 The AI family has five callable execution leaves for data preparation, insight
 development, representation work, problem modeling, and performance. The
@@ -83,8 +89,8 @@ review, it records the report outcome and gates closure on recorded blockers or
 an explicit waiver; it never evaluates or adjudicates technical claims.
 
 Accepted goals, criteria, constraints, and non-goals remain user-authoritative.
-New evidence may challenge them but cannot silently rewrite them. Small ad-hoc
-tasks create no record. Resume candidates are advisory and never reactivate an
+New evidence may challenge them but cannot silently rewrite them. Plan
+acceptance does not activate governance. Small ad-hoc tasks create no record. Resume candidates are advisory and never reactivate an
 explicit mode in a new session.
 
 The full runtime rules live in
@@ -116,6 +122,14 @@ small local edit require changes across unrelated skills.
 The repository-root `AGENTS.md` governs development of Mecha Suit itself. It
 is separate from the consumer prompt under `templates/`; examples may show
 customization but never become install sources.
+
+The consumer prompt separates substantive completion from presentation length:
+the request determines both what must be fulfilled and how much explanation is
+useful. Evidence limits qualify the result without making ideal information a
+prerequisite for progress. Investigation remains the agent's responsibility
+within available capabilities; assumptions support analysis but never supply
+missing authorization to edit. These universal rules compose with personal
+preferences without activating an overlay or durable process.
 
 ## Deliberately Deferred
 

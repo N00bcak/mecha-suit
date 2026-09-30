@@ -16,7 +16,7 @@
             "split": "train",
             "kind": "trigger",
             "available_skills": ["prototype-builder", "large-codebase-change"],
-            "turns": [{"prompt": "Implement tenant-aware rate limits in this existing 60k-line service, including configuration, tests, and rollout compatibility.", "explicit_invocations": []}],
+            "turns": [{"prompt": "Implement tenant-aware rate limits in this existing large service with independently deployed clients, including configuration, tests, and rollout compatibility.", "explicit_invocations": []}],
             "expected": {"loaded_skills": ["large-codebase-change"], "excluded_skills": ["prototype-builder"], "behaviors": []}
         },
         {
@@ -24,7 +24,7 @@
             "split": "train",
             "kind": "trigger",
             "available_skills": ["prototype-builder", "large-codebase-change"],
-            "turns": [{"prompt": "Rename this local variable in an existing 6k-line utility and update its focused test.", "explicit_invocations": []}],
+            "turns": [{"prompt": "Rename this local variable in an existing small utility and update its focused test.", "explicit_invocations": []}],
             "expected": {"loaded_skills": [], "excluded_skills": ["prototype-builder", "large-codebase-change"], "behaviors": []}
         },
         {
@@ -48,8 +48,8 @@
             "split": "validation",
             "kind": "interaction",
             "available_skills": ["prototype-builder", "large-codebase-change"],
-            "turns": [{"prompt": "In this existing 12k-line application, add one optional response field while preserving older clients.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["large-codebase-change"], "excluded_skills": ["prototype-builder"], "behaviors": ["changes-authoritative-boundary", "maps-versioned-consumers", "verifies-old-and-new-clients", "reports-compatibility-risk", "does-not-self-authorize-required-deferrals", "returns-unresolved-required-obligations-as-blocked"]}
+            "turns": [{"prompt": "In this existing large multi-module application, add one optional response field while preserving older clients.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["large-codebase-change"], "excluded_skills": ["prototype-builder"], "behaviors": ["changes-authoritative-boundary", "maps-versioned-consumers", "verifies-old-and-new-clients", "reports-compatibility-risk", "does-not-self-authorize-required-deferrals", "returns-unresolved-required-obligations-as-blocked", "does-not-count-source-lines"]}
         },
         {
             "id": "engineering-ai-performance-not-prototype",
@@ -66,6 +66,14 @@
             "available_skills": ["prototype-builder", "large-codebase-change"],
             "turns": [{"prompt": "Write a tiny standalone script that prints the current directory. No demo or broader app is needed.", "explicit_invocations": []}],
             "expected": {"loaded_skills": [], "excluded_skills": ["prototype-builder", "large-codebase-change"], "behaviors": []}
+        },
+        {
+            "id": "engineering-snapshot-audit",
+            "split": "validation",
+            "kind": "trigger",
+            "available_skills": ["code-review", "technical-research"],
+            "turns": [{"prompt": "Audit this existing cache implementation against its documented invalidation contract. There is no proposed change. Use repository evidence to assess compliance.", "explicit_invocations": []}],
+            "expected": {"loaded_skills": ["technical-research"], "excluded_skills": ["code-review"], "behaviors": []}
         }
     ]
 }

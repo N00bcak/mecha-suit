@@ -62,17 +62,20 @@
 - When planning mode forbids writes, return the complete intent contract and
   slices in the conversation. Do not create `.mecha` or edit `.gitignore`.
 - A later request to execute the latest completed plan accepts that contract.
-  The first execution turn materializes it under `.mecha/work/<slug>/` before
-  changing implementation files.
+  Acceptance does not activate governance or require durable state. Only an
+  explicitly active `multi-step-governance` creates or updates its work record;
+  contributors return the accepted contract and evidence.
 - If the user requests revisions rather than execution, keep the contract draft.
 
-### Directed and autonomous work
+### Authority and initiative
 
-- The installed global prompt defaults to directed work: inspect and reason,
-  then stop at the next material choice or requested checkpoint before editing.
-- A user can say `autonomous` to authorize reversible, in-scope local changes
-  and verification. Destructive, external, costly, scope-changing, and
-  user-owned decisions still require a pause.
+- Review, research, explanation, and planning requests authorize inspection and
+  analysis. An explicit implementation request or approval of proposed changes
+  authorizes edits and supporting checks within the agreed scope without
+  repeated approval. Unclear implementation intent requires approval before edits.
+- The agent seeks agreement for unresolved user-owned decisions or commitments
+  beyond existing authorization. Host mode restrictions still apply; planning
+  mode does not authorize implementation.
 
 ## Claude Code-specific notes
 
@@ -95,10 +98,28 @@
   network access, or model calls.
 - `evals/*.json` keeps routing and interaction cases independent of host
   invocation syntax.
-- `scripts/run_interaction_evals.py` is opt-in. Its Codex adapter infers skill
-  use from `SKILL.md` read commands and labels the evidence as heuristic.
+- `scripts/run_interaction_evals.py` is opt-in. Its Codex app-server adapter
+  binds explicit skills structurally and runs every turn in an interaction case
+  through one ephemeral thread. It still infers implicit skill use from
+  `SKILL.md` read commands and labels that evidence as heuristic.
 - The JSON corpora contain no `$` or `/` invocation syntax; adapters add it at
   execution time.
+
+### Codex outcome comparisons
+
+The separate `scripts/run_outcome_evals.py` adapter verifies model, effort,
+instruction sources, enabled skills, configuration provenance, and sandbox
+settings before sending a user turn. It was checked against the local Codex
+0.146.0 app-server schema. Missing telemetry or incompatible host behavior
+produces an inconclusive result; it never silently relaxes isolation. Built-in
+skills are disabled in both arms. Integration tools and subagent capability are
+disabled equally in this bounded comparison; runtime skill authorization rules
+are unchanged. This measures the isolated Mecha stack, not every installed
+plugin or a user's ambient host customization.
+
+Evaluator commands use the app-server command API under a read-only sandbox.
+They do not start model turns. See the maintenance playbook for opt-in runs and
+interpretation; deterministic tests use a fake app server without credentials.
 
 ### Planning-mode adapter stub
 

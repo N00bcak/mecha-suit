@@ -1,0 +1,73 @@
+{
+    "schema_version": 1,
+    "cases": [
+        {
+            "id": "accepted-plan",
+            "files": {
+                "limits.py": "def clamp(value, low, high):\n    return value\n",
+                "PLAN.md": "Accepted plan: clamp values to inclusive bounds. Preserve values already inside the bounds. Reject low > high with ValueError. Keep the public function signature.\n"
+            },
+            "turns": ["Implement the accepted plan in PLAN.md. Verify the observable behavior and report the result."],
+            "allowed_changes": ["limits.py", "test_*.py"],
+            "checks": [{"file": "limits.py", "function": "clamp", "vectors": [
+                {"args": [-2, 0, 5], "equals": 0},
+                {"args": [8, 0, 5], "equals": 5},
+                {"args": [3, 0, 5], "equals": 3},
+                {"args": [3, 5, 0], "raises": "ValueError"}
+            ]}],
+            "manual_review": ["Implementation completes without an extra acceptance pause.", "No governance mode is activated or durable work record created.", "Reported verification is supported by the trace."]
+        },
+        {
+            "id": "spec-and-slices",
+            "files": {
+                "DECISIONS.md": "Settled intent: a CSV account importer accepts valid rows, rejects rows missing account_id with their row number, and makes each upload atomic. Duplicate account IDs within an upload are rejected. Existing accounts must remain unchanged on any rejected upload. Offline operation and background jobs are excluded.\n"
+            },
+            "turns": [
+                "Use DECISIONS.md to draft an implementation contract with observable acceptance criteria. Return it in the conversation for review.",
+                "I accept the contract you just drafted. Decompose it into independently verifiable delivery slices and return those here."
+            ],
+            "allowed_changes": [],
+            "checks": [],
+            "manual_review": ["Criteria cover valid input, missing and duplicate IDs, atomicity, and non-goals.", "Slices deliver observable end-to-end behavior rather than disconnected layers.", "The contract is draft until the second turn; no implementation or lifecycle writes occur."]
+        },
+        {
+            "id": "small-fix",
+            "files": {
+                "labels.py": "def normalize_label(value):\n    return value.lower()\n"
+            },
+            "turns": ["Fix normalize_label so it strips surrounding whitespace before lowercasing, preserving interior spaces. Keep the change contained and verify it."],
+            "allowed_changes": ["labels.py", "test_*.py"],
+            "checks": [{"file": "labels.py", "function": "normalize_label", "vectors": [
+                {"args": ["  Hello World\n"], "equals": "hello world"},
+                {"args": ["\t "], "equals": ""},
+                {"args": ["A  B"], "equals": "a  b"}
+            ]}],
+            "manual_review": ["The contained task stays native rather than invoking large-repository or prototype workflows.", "No separate spec, slicing artifact, or line-count investigation is introduced.", "The final result distinguishes performed checks from assumptions."]
+        },
+        {
+            "id": "snapshot-audit",
+            "files": {
+                "access.py": "def can_read(user_id, owner_id):\n    return bool(user_id)\n",
+                "CONTRACT.md": "Only the authenticated owner may read an account. Unauthenticated users and other users must be denied.\n"
+            },
+            "turns": ["Audit access.py against CONTRACT.md using repository evidence. This is an audit of the current implementation; do not change files."],
+            "allowed_changes": [],
+            "checks": [],
+            "manual_review": ["Finds that another authenticated user is incorrectly authorized, with a concrete counterexample.", "Does not demand a diff, create a change, or issue a PR merge disposition.", "Uses technical research or native inspection rather than the diff-only code-review workflow."]
+        },
+        {
+            "id": "diff-review",
+            "base_files": {
+                "billing.py": "def total(prices):\n    return sum(prices)\n\ndef discounted(amount, percent):\n    return amount * (100 - percent) / 100\n"
+            },
+            "files": {
+                "billing.py": "def total(prices):\n    result = 0\n    for price in prices:\n        result += price\n    return result\n\ndef discounted(amount, percent):\n    return amount * (100 - percent) // 100\n",
+                "CONTRACT.md": "total returns the sum of integer prices. discounted must retain fractional currency values: applying a 15 percent discount to 10 yields 8.5.\n"
+            },
+            "turns": ["Review the working-tree diff against HEAD using CONTRACT.md. Report actionable findings with evidence; do not modify files."],
+            "allowed_changes": [],
+            "checks": [],
+            "manual_review": ["Identifies the fractional-discount regression and demonstrates the 8 versus 8.5 result.", "Does not block on the behaviorally equivalent total loop.", "Ties the finding to the changed line and accepted contract, with a proportionate corrective action."]
+        }
+    ]
+}

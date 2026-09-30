@@ -10,6 +10,9 @@ description: Decompose an accepted implementation contract into verifiable verti
 Turn accepted intent into executable engineering slices while preserving every
 acceptance criterion, constraint, and non-goal.
 
+Use when decomposition is requested or dependent work needs separate verifiable
+outcomes. A contained change with a clear next action needs no slicing artifact.
+
 ## Do Not Use
 
 - Do not invent, reinterpret, or accept product intent.
@@ -28,7 +31,8 @@ acceptance criterion, constraint, and non-goal.
 - Ordered vertical slices with acceptance mapping and dependency edges.
 - Per-slice observable outcome, verification, risks, and completion condition.
 - Explicit expand-migrate-contract sequencing for unavoidable wide changes.
-- Updated lifecycle artifact pointers and next executable slice.
+- Slice artifacts, supporting evidence, and the next executable slice; no
+  lifecycle record updates.
 
 ## Done Conditions
 
@@ -57,6 +61,15 @@ then remove the old form after every migration completes.
 
 Prefer an existing seam. When a new or moved interface is consequential, read
 `../references/design-decision-discipline.md` before fixing the slice shape.
+
+## Example: A Vertical Slice
+
+For reservations, one slice creates a reservation through the public entrypoint,
+stores it, and verifies it can be read back. A dependent slice cancels that
+reservation and verifies it no longer occupies capacity. Each has an observable
+outcome.
+Separate tasks to add all models, then all storage, then all handlers leave
+integration unverified and are not independently useful slices.
 
 ## Progress
 

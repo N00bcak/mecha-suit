@@ -76,11 +76,12 @@ Tell the agent what outcome you want and share the context you already have.
 The host normally chooses a matching skill from its description. You do not
 need to memorize the toolbox.
 
-The installed global prompt is directed by default: the agent inspects and
-reasons, then pauses at the next material choice or requested checkpoint before
-editing. Say `autonomous` when you want reversible, in-scope local changes and
-verification completed without that checkpoint. Recognized multi-step work uses
-a compact `.mecha` continuity record; one-step work stays in the conversation.
+The installed global prompt treats review, research, explanation, and planning
+requests as authorization for inspection and analysis. An explicit implementation
+request or approval of proposed changes authorizes edits and supporting checks
+within the agreed scope without repeated approval. The agent seeks agreement
+for unresolved user-owned decisions or commitments beyond existing authorization.
+Durable `.mecha` work state requires explicitly invoked `multi-step-governance`.
 
 Five modes start only when you ask for them:
 
@@ -151,5 +152,20 @@ uv run python scripts/run_interaction_evals.py \
     --runs 3
 ```
 
-The runner adapts the host-neutral corpus to Codex. Skill-file-read evidence is
-heuristic, so review live results rather than treating them as a merge gate.
+The runner adapts the host-neutral corpus to Codex through an ephemeral app-server
+thread per run. Turns in one interaction case share that thread; unrelated cases
+remain isolated. Explicit skills use structured bindings, while implicit
+skill-file-read evidence remains heuristic. Review live responses rather than
+treating them as a merge gate.
+
+For paired task-outcome comparisons, start with the offline fixture preview:
+
+```bash
+uv run python scripts/run_outcome_evals.py --dry-run
+```
+
+The outcome runner compares project instructions alone against the same
+project with Mecha's global prompt and full catalog. Live runs require explicit
+model and effort settings and remain optional. See the
+[maintenance playbook](docs/maintenance-playbook.md#compare-actual-outcomes)
+for isolation requirements and manual review of the resulting evidence.

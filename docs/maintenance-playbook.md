@@ -23,7 +23,9 @@ or registry for interaction lifetime.
    persistence/yield behavior in `SKILL.md`.
 4. Add a reference only for passive detail with a direct loading cue. Add a
    script only for repeated deterministic work.
-5. Add positive and near-miss cases to `evals/*.json`.
+5. Add positive and near-miss cases to `evals/*.json`. Use a compact worked
+   example when a consequential judgment remains ambiguous; keep examples
+   illustrative rather than prescribing a universal output shape.
 6. Update `docs/skills.md` when the public catalog changes.
 7. Run the validator and full deterministic suite.
 
@@ -51,6 +53,14 @@ project facts and task state in repo-local instructions, artifacts, or the
 conversation. State universal policy once; do not duplicate it in every skill
 or turn a summary into a substitute for primary evidence.
 
+Compose global prompt changes as one coherent contract: replace overlapping
+instructions and resolve competing requirements as each rule is written.
+Keep response depth tied to the user's purpose while preserving substantive
+coverage. Intellectual honesty includes useful progress with imperfect evidence,
+not an expectation that the user can supply ideal information. Keep analysis
+and implementation authorization distinct, and keep consumer examples limited
+to personal preferences rather than duplicated or overriding universal rules.
+
 Codex loads at most 8,000 UTF-8 bytes from a selected `SKILL.md`, including its
 frontmatter. The validator fails above that limit and warns at 7,000 bytes so
 authors can preserve headroom. It also reports this repository's estimated
@@ -61,7 +71,8 @@ the host's final prompt.
 ## Maintain multi-step governance
 
 The work index never routes or invokes skills. Only `multi-step-governance`
-updates it; contributors return bounded artifacts and evidence. Preserve
+updates it; contributors return bounded artifacts and evidence. Executing an
+accepted plan does not activate governance or require a record. Preserve
 semi-auto work as session-local orientation, keep accepted intent
 user-authoritative, and put detailed phase output behind artifact links.
 
@@ -95,9 +106,61 @@ uv run python scripts/run_interaction_evals.py \
     --runs 1
 ```
 
-Codex skill-file-read observations are heuristic. An explicit binding without
-an observable read is inconclusive. Keep live evaluation outside deterministic
-tests and review responses manually.
+Codex explicit invocations use structured app-server skill inputs and therefore
+do not depend on an observable file read. Multi-turn cases reuse one ephemeral
+thread per run so their state is realistic without contaminating other cases.
+Implicit skill-file-read observations remain heuristic. Keep live evaluation
+outside deterministic tests and review interaction behaviors manually.
+
+### Compare actual outcomes
+
+Use `scripts/run_outcome_evals.py` for the five fixture-backed cases in
+`evals/outcomes/cases.json`. They cover accepted-plan execution, specification
+and slicing, a contained fix, a snapshot audit, and an evidenced diff review.
+The existing routing runner remains a selection/interaction probe; loading a
+skill is not evidence of correct task completion.
+
+Inspect the cases offline:
+
+```bash
+uv run python scripts/run_outcome_evals.py --dry-run
+```
+
+For an opt-in live comparison, substitute the model and supported effort you
+want to evaluate:
+
+```bash
+uv run python scripts/run_outcome_evals.py \
+    --case small-fix --model MODEL --effort EFFORT --runs 3 \
+    --output /tmp/mecha-outcomes.json
+```
+
+Each pair uses the same fixture and user turns, fresh workspaces and threads,
+and the same explicit model/effort. Baseline has only project instructions;
+treatment adds the consumer global prompt and all Mecha skills with native
+selection. The order alternates across repetitions. The runner isolates host
+configuration, checks instruction sources and the enabled catalog, and marks
+unverified or failed host execution inconclusive. It disables external tool
+network access and permits writes only in the disposable workspace. It imports
+file-backed Codex authentication or an API key, not personal configuration.
+Keychain-only authentication is not copied; use a file-authenticated CLI or an
+API-key environment for a live run. Custom provider configurations are not
+imported. This is a Codex adapter, not a portable execution guarantee.
+
+The JSON report retains messages, tool events, partial artifacts, objective
+checks, scope violations, timing, available usage, and configuration/version
+fingerprints before cleanup. Its Markdown companion compares both arms and
+leaves manual criteria ungraded. Review unnecessary pauses, unsupported claims,
+completion, and actual evidence in the traces. Report objective check results
+separately; a completed turn or passing scope check does not mean good work.
+Unavailable usage remains null. Do not infer improvement from a tiny sample or
+from deterministic tests. Live evaluation is not a merge gate.
+
+Keep evaluator checks outside the agent-editable workspace. The two coding
+fixtures use independent input/output vectors; planning and review quality
+requires manual judgment. Test each oracle against known broken and corrected
+artifacts. Add cases from observed failures rather than expanding a speculative
+benchmark matrix. Keep examples used in skills distinct from evaluation tasks.
 
 ## Preserve persistence without flailing
 

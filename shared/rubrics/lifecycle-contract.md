@@ -14,6 +14,8 @@ Create or update a record only after the user authorizes governed work. A
 matching legacy record may be resumed, but its claims must be verified against
 current files, Git state, tests, and referenced artifacts before reliance.
 Small work stays in the conversation and may use only session-local orientation.
+Accepting or executing a plan does not activate governance. Only an explicitly
+active governor materializes accepted intent and updates the matching record.
 
 ## Authority
 

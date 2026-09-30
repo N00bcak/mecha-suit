@@ -57,5 +57,6 @@ durable data appears, uptime matters, production integration begins, or
 compatibility obligations develop.
 
 Promotion does not automatically select `large-codebase-change`. Use that skill
-only when the resulting existing repository is also clearly above its roughly
-10k maintained-source-line boundary; otherwise use native Codex.
+only when the resulting existing repository is large and its affected modules,
+consumers, or compatibility boundaries warrant that method; otherwise use
+native host behavior.

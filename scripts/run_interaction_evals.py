@@ -1,26 +1,163 @@
 #!/usr/bin/env python3
 """Render or run host-neutral interaction evaluations through a host adapter.
 
-Codex does not currently emit a stable implicit-skill invocation event. The
-Codex adapter therefore labels observations as heuristic and infers skill use
-only from command events that read a candidate SKILL.md.
+The Codex adapter uses structured inputs for explicit skills and labels
+implicit skill-file-read observations as heuristic.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import queue
 import shutil
 import subprocess
 import sys
 import tempfile
+import threading
+import time
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CORPUS = ROOT / "evals" / "interaction-boundary.json"
 VALID_SPLITS = {"train", "validation"}
 VALID_KINDS = {"trigger", "interaction"}
+
+
+class AppServerError(RuntimeError):
+    """Raised when the Codex app-server protocol cannot complete a request."""
+
+
+class AppServerClient:
+    """Small synchronous JSON-RPC client for Codex's stdio app server."""
+
+    def __init__(
+        self, command: list[str] | None = None, *,
+        env: dict[str, str] | None = None, cwd: Path | None = None,
+    ) -> None:
+        self.process = subprocess.Popen(
+            command or ["codex", "app-server", "--stdio"],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            bufsize=1,
+            env=env,
+            cwd=cwd,
+        )
+        self.messages: queue.Queue[dict[str, Any] | None] = queue.Queue()
+        self.backlog: list[dict[str, Any]] = []
+        self.stderr_lines: list[str] = []
+        self.next_request_id = 1
+        self.stdout_thread = threading.Thread(target=self._read_stdout, daemon=True)
+        self.stderr_thread = threading.Thread(target=self._read_stderr, daemon=True)
+        self.stdout_thread.start()
+        self.stderr_thread.start()
+
+    def _read_stdout(self) -> None:
+        assert self.process.stdout is not None
+        for line in self.process.stdout:
+            try:
+                self.messages.put(json.loads(line))
+            except json.JSONDecodeError:
+                self.messages.put({"_malformed": line.rstrip("\n")})
+        self.messages.put(None)
+
+    def _read_stderr(self) -> None:
+        assert self.process.stderr is not None
+        self.stderr_lines.extend(self.process.stderr)
+
+    def _send(self, message: dict[str, Any]) -> None:
+        if self.process.stdin is None or self.process.poll() is not None:
+            raise AppServerError("Codex app server is not running")
+        self.process.stdin.write(json.dumps(message, separators=(",", ":")) + "\n")
+        self.process.stdin.flush()
+
+    def _next_message(self, deadline: float) -> dict[str, Any]:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError("timed out waiting for Codex app server")
+        try:
+            message = self.messages.get(timeout=remaining)
+        except queue.Empty as error:
+            raise TimeoutError("timed out waiting for Codex app server") from error
+        if message is None:
+            stderr = "".join(self.stderr_lines).strip()
+            detail = f": {stderr}" if stderr else ""
+            raise AppServerError(f"Codex app server exited unexpectedly{detail}")
+        if "_malformed" in message:
+            raise AppServerError(f"invalid JSON from Codex app server: {message['_malformed']}")
+        return message
+
+    def request(self, method: str, params: dict[str, Any], timeout: int) -> Any:
+        request_id = self.next_request_id
+        self.next_request_id += 1
+        self._send({"id": request_id, "method": method, "params": params})
+        deadline = time.monotonic() + timeout
+        while True:
+            message = self._next_message(deadline)
+            if message.get("id") == request_id and "method" not in message:
+                if "error" in message:
+                    raise AppServerError(f"{method} failed: {message['error']}")
+                return message.get("result")
+            if "id" in message and "method" in message:
+                raise AppServerError(
+                    f"unsupported app-server request during {method}: {message['method']}"
+                )
+            self.backlog.append(message)
+
+    def notify(self, method: str) -> None:
+        self._send({"method": method})
+
+    def next_notification(self, timeout: int) -> dict[str, Any]:
+        if self.backlog:
+            return self.backlog.pop(0)
+        message = self._next_message(time.monotonic() + timeout)
+        if "id" in message and "method" in message:
+            raise AppServerError(f"unsupported app-server request: {message['method']}")
+        return message
+
+    def initialize(self, timeout: int) -> None:
+        self.request(
+            "initialize",
+            {
+                "clientInfo": {"name": "mecha-suit-evals", "version": "1"},
+                "capabilities": {"experimentalApi": True},
+            },
+            timeout,
+        )
+        self.notify("initialized")
+
+    @property
+    def stderr(self) -> str:
+        return "".join(self.stderr_lines).strip()
+
+    def close(self) -> None:
+        if self.process.stdin is not None and not self.process.stdin.closed:
+            try:
+                self.process.stdin.close()
+            except BrokenPipeError:
+                pass
+        if self.process.poll() is None:
+            self.process.terminate()
+            try:
+                self.process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                self.process.kill()
+                self.process.wait(timeout=5)
+        self.stdout_thread.join(timeout=1)
+        self.stderr_thread.join(timeout=1)
+        if self.process.stdout is not None and not self.process.stdout.closed:
+            self.process.stdout.close()
+        if self.process.stderr is not None and not self.process.stderr.closed:
+            self.process.stderr.close()
+
+    def __enter__(self) -> AppServerClient:
+        return self
+
+    def __exit__(self, *_: object) -> None:
+        self.close()
 
 
 def skill_names(root: Path = ROOT) -> set[str]:
@@ -186,129 +323,313 @@ def link_skills(workspace: Path, names: list[str]) -> None:
         (target / name).symlink_to(by_name[name], target_is_directory=True)
 
 
-def parse_codex_events(stdout: str, candidate_skills: list[str]) -> tuple[set[str], str, bool]:
-    observed: set[str] = set()
-    final_response = ""
-    completed = False
-    for line in stdout.splitlines():
+def skill_path(workspace: Path, name: str) -> Path:
+    return workspace / ".agents" / "skills" / name / "SKILL.md"
+
+
+def turn_input(turn: dict[str, Any], workspace: Path) -> list[dict[str, str]]:
+    inputs = [{"type": "text", "text": render_turn(turn, "codex")}]
+    inputs.extend(
+        {"type": "skill", "name": name, "path": str(skill_path(workspace, name))}
+        for name in turn["explicit_invocations"]
+    )
+    return inputs
+
+
+def skill_filter_config(
+    listed_skills: list[dict[str, Any]], workspace: Path, available_skills: list[str]
+) -> dict[str, Any]:
+    candidate_paths = {
+        skill_path(workspace, name).resolve()
+        for name in available_skills
+    }
+    disabled: list[dict[str, Any]] = []
+    for skill in listed_skills:
+        path = skill.get("path")
+        if not isinstance(path, str):
+            continue
         try:
-            event = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        if event.get("type") == "turn.completed":
-            completed = True
-        item = event.get("item")
-        if not isinstance(item, dict):
-            continue
-        if item.get("type") == "agent_message" and isinstance(item.get("text"), str):
-            final_response = item["text"]
-        if item.get("type") != "command_execution":
-            continue
-        serialized = json.dumps(item, sort_keys=True)
-        for name in candidate_skills:
-            if f"/{name}/SKILL.md" in serialized or f"\\{name}\\SKILL.md" in serialized:
-                observed.add(name)
-    return observed, final_response, completed
+            resolved = Path(path).resolve()
+        except OSError:
+            resolved = Path(path)
+        if resolved not in candidate_paths:
+            disabled.append({"path": path, "enabled": False})
+    config: dict[str, Any] = {"user_instructions": ""}
+    if disabled:
+        config["skills"] = {"config": disabled}
+    return config
 
 
-def classify_run(case: dict[str, Any], observed: set[str], completed: bool) -> str:
+def observe_skill_reads(item: dict[str, Any], candidates: list[str]) -> set[str]:
+    if item.get("type") != "commandExecution":
+        return set()
+    serialized = json.dumps(item, sort_keys=True)
+    return {
+        name
+        for name in candidates
+        if f"/{name}/SKILL.md" in serialized or f"\\{name}\\SKILL.md" in serialized
+    }
+
+
+def collect_turn(
+    client: AppServerClient,
+    thread_id: str,
+    turn_id: str,
+    candidates: list[str],
+    timeout: int,
+    on_event: Callable[[dict[str, Any]], None] | None = None,
+) -> dict[str, Any]:
+    messages: list[str] = []
+    warnings: list[str] = []
+    observed: set[str] = set()
+    deadline = time.monotonic() + timeout
+    status = "inProgress"
+    error: Any = None
+
+    while status == "inProgress":
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise TimeoutError(f"turn {turn_id} timed out after {timeout} seconds")
+        notification = client.next_notification(max(1, int(remaining + 0.999)))
+        method = notification.get("method")
+        params = notification.get("params")
+        if not isinstance(params, dict):
+            continue
+        notification_thread = params.get("threadId")
+        if notification_thread is not None and notification_thread != thread_id:
+            continue
+
+        if on_event is not None:
+            on_event(notification)
+
+        if method == "warning" and isinstance(params.get("message"), str):
+            warnings.append(params["message"])
+            continue
+        if method == "item/completed" and params.get("turnId") == turn_id:
+            item = params.get("item")
+            if not isinstance(item, dict):
+                continue
+            if item.get("type") == "agentMessage" and isinstance(item.get("text"), str):
+                messages.append(item["text"])
+            observed.update(observe_skill_reads(item, candidates))
+            continue
+        if method == "turn/completed":
+            turn = params.get("turn")
+            if not isinstance(turn, dict) or turn.get("id") != turn_id:
+                continue
+            status = str(turn.get("status", "failed"))
+            error = turn.get("error")
+
+    return {
+        "turn_id": turn_id,
+        "status": status,
+        "agent_messages": messages,
+        "final_response": messages[-1] if messages else "",
+        "warnings": warnings,
+        "observed_skill_reads": sorted(observed),
+        "error": error,
+    }
+
+
+def listed_skills_for_workspace(
+    client: AppServerClient, workspace: Path, timeout: int
+) -> list[dict[str, Any]]:
+    response = client.request(
+        "skills/list",
+        {"cwds": [str(workspace)], "forceReload": True},
+        timeout,
+    )
+    data = response.get("data") if isinstance(response, dict) else None
+    if not isinstance(data, list) or not data:
+        raise AppServerError("skills/list returned no workspace entry")
+    entry = data[0]
+    if not isinstance(entry, dict):
+        raise AppServerError("skills/list returned an invalid workspace entry")
+    errors = entry.get("errors")
+    if isinstance(errors, list) and errors:
+        raise AppServerError(f"skills/list reported errors: {errors}")
+    skills = entry.get("skills")
+    if not isinstance(skills, list):
+        raise AppServerError("skills/list returned no skill metadata")
+    return [skill for skill in skills if isinstance(skill, dict)]
+
+
+def classify_run(
+    case: dict[str, Any],
+    observed: set[str],
+    explicit_bindings: set[str],
+    completed: bool,
+    skill_warnings: list[str] | None = None,
+) -> str:
     if not completed:
         return "inconclusive"
+    if skill_warnings:
+        return "inconclusive"
     expected = case["expected"]
-    if observed & set(expected["excluded_skills"]):
+    loaded_evidence = observed | explicit_bindings
+    if loaded_evidence & set(expected["excluded_skills"]):
         return "failed"
-    missing = set(expected["loaded_skills"]) - observed
+    missing = set(expected["loaded_skills"]) - loaded_evidence
     if not missing:
         return "passed"
-    explicitly_invoked = {
-        name
-        for turn in case["turns"]
-        for name in turn["explicit_invocations"]
-    }
-    if missing <= explicitly_invoked:
-        return "inconclusive"
     return "failed"
 
 
-def run_codex_case(case: dict[str, Any], runs: int, timeout: int) -> dict[str, Any]:
-    if len(case["turns"]) != 1:
-        return {
-            "id": case["id"],
-            "status": "manual-review-required",
-            "reason": "the Codex exec adapter does not simulate multi-turn state",
-            "expected_behaviors": case["expected"]["behaviors"],
-        }
+def run_classification(
+    case: dict[str, Any],
+    observed: set[str],
+    explicit_bindings: set[str],
+    completed: bool,
+    skill_warnings: list[str],
+) -> str:
+    if not completed or skill_warnings:
+        return "inconclusive"
+    if case["kind"] == "interaction":
+        return "manual-review"
+    return classify_run(
+        case,
+        observed,
+        explicit_bindings,
+        completed,
+        skill_warnings,
+    )
 
+
+def run_codex_case(case: dict[str, Any], runs: int, timeout: int) -> dict[str, Any]:
     results: list[dict[str, Any]] = []
-    observed_counts = {name: 0 for name in case["available_skills"]}
+    loaded_counts = {name: 0 for name in case["available_skills"]}
+    read_counts = {name: 0 for name in case["available_skills"]}
     successful_runs = 0
     for run_number in range(1, runs + 1):
         with tempfile.TemporaryDirectory(prefix="mecha-eval-") as directory:
             workspace = Path(directory)
             link_skills(workspace, case["available_skills"])
-            prompt = render_turn(case["turns"][0], "codex")
-            command = [
-                "codex",
-                "exec",
-                "--ephemeral",
-                "--ignore-user-config",
-                "--skip-git-repo-check",
-                "--sandbox",
-                "read-only",
-                "--json",
-                "--cd",
-                str(workspace),
-                prompt,
-            ]
+            client: AppServerClient | None = None
             try:
-                completed = subprocess.run(
-                    command,
-                    capture_output=True,
-                    text=True,
-                    timeout=timeout,
-                    check=False,
+                client = AppServerClient()
+                client.initialize(timeout)
+                listed_skills = listed_skills_for_workspace(client, workspace, timeout)
+                config = skill_filter_config(
+                    listed_skills, workspace, case["available_skills"]
                 )
-                observed, response, turn_completed = parse_codex_events(
-                    completed.stdout, case["available_skills"]
+                thread_response = client.request(
+                    "thread/start",
+                    {
+                        "cwd": str(workspace),
+                        "ephemeral": True,
+                        "approvalPolicy": "never",
+                        "sandbox": "read-only",
+                        "config": config,
+                    },
+                    timeout,
                 )
-                run_succeeded = completed.returncode == 0 and turn_completed
+                if not isinstance(thread_response, dict):
+                    raise AppServerError("thread/start returned an invalid response")
+                thread = thread_response.get("thread")
+                if not isinstance(thread, dict) or not isinstance(thread.get("id"), str):
+                    raise AppServerError("thread/start returned no thread id")
+                thread_id = thread["id"]
+
+                turns: list[dict[str, Any]] = []
+                explicit_bindings: set[str] = set()
+                observed: set[str] = set()
+                skill_warnings: list[str] = []
+                for turn_number, turn in enumerate(case["turns"], start=1):
+                    explicit_bindings.update(turn["explicit_invocations"])
+                    turn_response = client.request(
+                        "turn/start",
+                        {
+                            "threadId": thread_id,
+                            "input": turn_input(turn, workspace),
+                        },
+                        timeout,
+                    )
+                    if not isinstance(turn_response, dict):
+                        raise AppServerError("turn/start returned an invalid response")
+                    started_turn = turn_response.get("turn")
+                    if not isinstance(started_turn, dict) or not isinstance(
+                        started_turn.get("id"), str
+                    ):
+                        raise AppServerError("turn/start returned no turn id")
+                    turn_result = collect_turn(
+                        client,
+                        thread_id,
+                        started_turn["id"],
+                        case["available_skills"],
+                        timeout,
+                    )
+                    turn_result["turn"] = turn_number
+                    turn_result["explicit_bindings"] = sorted(turn["explicit_invocations"])
+                    turns.append(turn_result)
+                    observed.update(turn_result["observed_skill_reads"])
+                    skill_warnings.extend(
+                        warning
+                        for warning in turn_result["warnings"]
+                        if "skill" in warning.casefold()
+                    )
+                    if turn_result["status"] != "completed":
+                        break
+
+                run_succeeded = (
+                    len(turns) == len(case["turns"])
+                    and all(turn["status"] == "completed" for turn in turns)
+                    and not skill_warnings
+                )
                 if run_succeeded:
                     successful_runs += 1
+                    for name in observed | explicit_bindings:
+                        loaded_counts[name] += 1
                     for name in observed:
-                        observed_counts[name] += 1
-                classification = (
-                    "manual-review"
-                    if case["kind"] == "interaction"
-                    else classify_run(case, observed, turn_completed)
+                        read_counts[name] += 1
+                classification = run_classification(
+                    case,
+                    observed,
+                    explicit_bindings,
+                    run_succeeded,
+                    skill_warnings,
                 )
                 results.append(
                     {
                         "run": run_number,
                         "classification": classification,
+                        "explicit_bindings": sorted(explicit_bindings),
                         "observed_skill_reads": sorted(observed),
-                        "exit_code": completed.returncode,
-                        "stderr": completed.stderr.strip(),
-                        "final_response": response,
+                        "turns": turns,
+                        "skill_warnings": skill_warnings,
+                        "app_server_stderr": client.stderr,
                     }
                 )
-            except subprocess.TimeoutExpired:
+            except (AppServerError, OSError, TimeoutError) as error:
                 results.append(
                     {
                         "run": run_number,
                         "classification": "inconclusive",
+                        "explicit_bindings": [],
                         "observed_skill_reads": [],
-                        "error": f"timed out after {timeout} seconds",
+                        "turns": [],
+                        "error": str(error),
+                        "app_server_stderr": client.stderr if client else "",
                     }
                 )
+            finally:
+                if client is not None:
+                    client.close()
 
     result = {
         "id": case["id"],
-        "telemetry": "heuristic-skill-file-read",
+        "telemetry": {
+            "explicit": "structured-skill-input",
+            "implicit": "heuristic-skill-file-read",
+        },
         "runs": results,
         "successful_runs": successful_runs,
-        "observed_rates": {
-            name: observed_counts[name] / successful_runs if successful_runs else 0.0
-            for name in sorted(observed_counts)
+        "loaded_rates": {
+            name: loaded_counts[name] / successful_runs if successful_runs else 0.0
+            for name in sorted(loaded_counts)
+        },
+        "observed_read_rates": {
+            name: read_counts[name] / successful_runs if successful_runs else 0.0
+            for name in sorted(read_counts)
         },
     }
     if case["kind"] == "interaction":
@@ -318,19 +639,21 @@ def run_codex_case(case: dict[str, Any], runs: int, timeout: int) -> dict[str, A
 
 
 def summarize_case(case: dict[str, Any], result: dict[str, Any], threshold: float) -> None:
-    if case["kind"] != "trigger" or "observed_rates" not in result:
+    if case["kind"] != "trigger" or "loaded_rates" not in result:
         return
     if result.get("successful_runs", 0) == 0:
         result["evaluation"] = "inconclusive-host-failure"
         return
     expected = case["expected"]
-    loaded_pass = all(result["observed_rates"][name] > threshold for name in expected["loaded_skills"])
-    excluded_pass = all(result["observed_rates"][name] < threshold for name in expected["excluded_skills"])
-    explicit = any(turn["explicit_invocations"] for turn in case["turns"])
-    if explicit and not loaded_pass:
-        result["evaluation"] = "inconclusive-explicit-binding-is-not-observable"
-    else:
-        result["evaluation"] = "heuristic-pass" if loaded_pass and excluded_pass else "heuristic-fail"
+    loaded_pass = all(
+        result["loaded_rates"][name] > threshold
+        for name in expected["loaded_skills"]
+    )
+    excluded_pass = all(
+        result["loaded_rates"][name] < threshold
+        for name in expected["excluded_skills"]
+    )
+    result["evaluation"] = "evidence-pass" if loaded_pass and excluded_pass else "evidence-fail"
 
 
 def parse_args() -> argparse.Namespace:
@@ -371,7 +694,10 @@ def main() -> int:
             summarize_case(by_id[result["id"]], result, corpus["trigger_threshold"])
         report = {
             "host": args.host,
-            "telemetry": "heuristic; Codex exposes no stable implicit-skill invocation event",
+            "telemetry": {
+                "explicit": "structured skill input",
+                "implicit": "heuristic; Codex exposes no stable implicit-skill invocation event",
+            },
             "runs_per_trigger_case": runs,
             "trigger_threshold": corpus["trigger_threshold"],
             "results": results,

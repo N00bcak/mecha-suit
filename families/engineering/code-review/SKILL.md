@@ -12,6 +12,8 @@ the wrong behavior and passing tests cannot mask intent drift.
 
 ## Do Not Use
 
+- Snapshot audits without a diff are outside this skill. Bounded software or
+  architecture questions fit `technical-research`; other audits remain native.
 - Do not edit the reviewed change unless the user separately requests fixes.
 - Do not merge the three axes into one score or let one passing axis excuse
   another.
@@ -50,8 +52,9 @@ the wrong behavior and passing tests cannot mask intent drift.
 
 Resolve the user-supplied fixed point. Otherwise use the repository's clear
 merge base. Ask one focused question if no fixed point
-can be derived safely. Confirm the reference resolves and the bounded diff is
-non-empty before deeper review. Inspect commits, staged and unstaged changes,
+can be derived safely. Confirm the reference resolves. If the bounded diff is
+empty, return "nothing to review" without requesting an artificial change or
+issuing a passing review disposition. Inspect commits, staged and unstaged changes,
 and pre-existing dirty paths. If ownership overlaps and changes the review, ask
 before attributing the diff.
 
@@ -104,6 +107,17 @@ an equally valid alternative, polish, speculative future cost, or an unrelated
 pre-existing defect that does not make the current change unsafe. A
 high-consequence uncertainty may request a named decisive check without
 presuming that code must change.
+
+### Example: Evidence Versus Preference
+
+`RF-1: The new retry branch writes twice after a timeout. The focused retry test
+fails with two records against the accepted one-record criterion. Blocking;
+make the retry idempotent and rerun that test.` This connects a changed path,
+observable failure, intent, and corrective action.
+
+`Add a plugin interface because more implementations might be needed later`
+has no demonstrated present cost or requirement. Reject it as an unsupported
+blocker; do not make a speculative refactor a condition of passing review.
 
 ### 4. Reconcile Re-Review
 

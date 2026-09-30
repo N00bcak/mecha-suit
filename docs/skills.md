@@ -26,13 +26,18 @@ shape of the conversation, so the agent will not enter them by accident.
 | Skill | What you bring | What you get |
 | --- | --- | --- |
 | `technical-research` | A bounded software or architecture question | Cited findings, reproducible checks, tradeoffs, and remaining uncertainty |
-| `implementation-spec` | A settled goal, constraints, evidence, and non-goals | A global implementation contract and the current actionable frontier |
+| `implementation-spec` | A settled goal, constraints, evidence, and non-goals | A draft or accepted implementation contract with observable criteria and evidence |
 | `work-slicing` | An accepted implementation contract | The next verifiable slice, its dependencies, and its completion condition |
 | `web-design` | Web content, tasks, constraints, and an existing project or delivery target | Three contextual design directions when needed, then a responsive, accessible, fixture-backed frontend |
 | `large-codebase-change` | A requested change in a large existing repository | A small, idiomatic, tested, PR-ready diff |
 | `prototype-builder` | A core idea and the behavior it should demonstrate | A runnable vertical slice, basic verification, and clearly named shortcuts |
 | `diagnosing-bugs` | The symptom, expected behavior, and reproduction clues | A reproducer, tested hypotheses, root cause, and—when requested—a verified fix |
-| `code-review` | A fixed diff, intended behavior, and any prior review findings | Evidence-gated findings, remediation reconciliation, and a pass or corrective disposition |
+| `code-review` | A bounded non-empty diff, intended behavior, and any prior review findings | Evidence-gated findings, remediation reconciliation, and a pass or corrective disposition |
+
+A clear request, approved plan, or project criteria can be enough for ordinary
+implementation; specification and slicing are separate outcomes when useful.
+Snapshot audits do not require a diff: bounded technical audits fit
+`technical-research`, while other audits use native host behavior.
 
 ## AI
 

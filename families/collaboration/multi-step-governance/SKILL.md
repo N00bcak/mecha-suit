@@ -42,7 +42,9 @@ the bounded work.
 
 1. Establish the desired outcome, constraints, evidence, and whether durable
    governance is authorized.
-2. Create or restore the governed record only when authorized.
+2. Create or restore the governed record only when authorized. Executing an
+   accepted plan alone does not activate this loop; when explicitly active,
+   materialize accepted intent in the record and link contributor evidence.
 3. Keep accepted intent, linked contributor artifacts, verified evidence, open
    questions, and one next task shape current.
 4. Surface user-owned decisions before changing accepted intent or closing work.

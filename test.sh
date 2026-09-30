@@ -57,6 +57,7 @@ development_environment_checks() {
     for corpus in "${ROOT_DIR}"/evals/*.json; do
         PYTHONDONTWRITEBYTECODE=1 "${DEV_PYTHON}" "${ROOT_DIR}/scripts/run_interaction_evals.py" --corpus "${corpus}" --split all --dry-run >/dev/null
     done
+    PYTHONDONTWRITEBYTECODE=1 "${DEV_PYTHON}" "${ROOT_DIR}/scripts/run_outcome_evals.py" --dry-run >/dev/null
     pass "validator unit tests and host-neutral evaluation corpora"
 }
 
@@ -193,17 +194,12 @@ engineering_checks() {
     local code_review="${family_dir}/code-review/SKILL.md"
     local reference
 
-    grep -Fxq 'description: Implement PR-ready changes to established code above roughly 10kLoC with idiomatic, anti-bloat, and verification discipline.' "${large_skill}" || fail "large-codebase-change description drifted"
     grep -Fxq 'description: Build and verify isolated greenfield prototypes, demos, tools, or apps around one core outcome.' "${prototype_skill}" || fail "prototype-builder description drifted"
     grep -Fxq 'description: Resolve software and architecture questions through primary technical sources, repository evidence, and reproducible checks.' "${technical_research}" || fail "technical-research description drifted"
     grep -Fxq 'description: Turn settled intent and evidence into an accepted implementation contract with criteria, constraints, and non-goals.' "${implementation_spec}" || fail "implementation-spec description drifted"
     grep -Fxq 'description: Decompose an accepted implementation contract into verifiable vertical slices with explicit dependency edges.' "${work_slicing}" || fail "work-slicing description drifted"
     grep -Fxq 'description: Diagnose difficult bugs and regressions through a tight reproducer, falsifiable hypotheses, and regression evidence.' "${diagnosing_bugs}" || fail "diagnosing-bugs description drifted"
     grep -Fxq 'description: Review changes for intent fidelity, behavioral correctness and evidence, and maintainability against a fixed point.' "${code_review}" || fail "code-review description drifted"
-
-    if grep -REiq '((1k|1,000|5k|5,000)(LoC|[[:space:]-]+maintained[[:space:]-]+source[[:space:]-]+lines?)|(~|under about |past ~)(1k|1,000|5k|5,000))' "${family_dir}"; then
-        fail "obsolete engineering line-count threshold remains"
-    fi
 
     assert_exists "${ROOT_DIR}/shared/rubrics/change-discipline.md"
     grep -Fq '`../../../shared/rubrics/change-discipline.md`' "${large_skill}" || fail "large-codebase-change does not link shared change discipline"

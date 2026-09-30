@@ -1,6 +1,6 @@
 ---
 name: large-codebase-change
-description: Implement PR-ready changes to established code above roughly 10kLoC with idiomatic, anti-bloat, and verification discipline.
+description: Implement verified changes in large established repositories across affected modules, consumers, and compatibility boundaries.
 ---
 
 # Large Codebase Change
@@ -12,7 +12,7 @@ large repository.
 
 ## Do Not Use
 
-- Repositories clearly below the size/complexity boundary.
+- Contained work in small repositories; use native host behavior.
 - Isolated greenfield work; use `prototype-builder`.
 - Uncertain-cause bugs; diagnose first.
 - Work whose primary outcome is AI or CTF analysis.
@@ -21,7 +21,9 @@ large repository.
 ## Needs
 
 - Requested outcome, acceptance criteria, repository access, local instructions,
-  commands, and material compatibility or rollout constraints.
+  commands, and material compatibility or rollout constraints. A clear request,
+  approved plan, or existing project criteria suffices; separate specification
+  and slicing artifacts are not prerequisites.
 
 ## Returns
 
@@ -44,9 +46,10 @@ requests.
 ## Workflow
 
 1. **Orient:** read `../../../shared/rubrics/change-discipline.md` and verify
-    resumed claims against current evidence. If the large-codebase boundary
-    remains unclear after inspecting repository structure, count only maintained
-    source lines.
+    resumed claims against current evidence. Establish applicability from the
+    large repository's modules, consumers, and affected contracts without
+    counting source lines. If inspection shows a contained small-repository
+    task, continue with native host behavior.
 2. **Map:** locate the authoritative layer for the requested behavior. Identify
     independently deployed or version-skewed producers and consumers, and map
     acceptance criteria across their contracts, persistence, configuration, and

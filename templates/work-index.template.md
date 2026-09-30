@@ -1,5 +1,8 @@
 # Work — <short title>
 
+<Create this record only under explicitly active multi-step-governance; accepting
+or executing a plan alone does not authorize it. Contributors supply artifacts.>
+
 ## Control
 
 - Mode: <continuity | lifecycle>
