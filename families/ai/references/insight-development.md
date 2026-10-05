@@ -1,5 +1,8 @@
 # Insight Development Playbook
 
+This stage summary supports `ai-pipeline` planning. At runtime, the
+`ai-insight-development` Workflow governs.
+
 1. Turn the objective and domain knowledge into a small set of testable
    questions.
 2. Inspect distributions, relationships, cohorts, time or spatial structure,

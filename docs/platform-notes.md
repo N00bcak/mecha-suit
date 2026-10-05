@@ -22,8 +22,8 @@
 - Codex reads skill frontmatter `name` and `description` for trigger matching.
 - `agents/openai.yaml` is useful for user-facing skill display and default prompts when metadata materially improves routing or invocation.
 - This toolbox includes explicit-only `agents/openai.yaml` metadata for
-  `user-interview`, `product-co-design`, `low-friction-collaboration`,
-  `ai-pipeline`, and `multi-step-governance`.
+  `user-interview`, `product-co-design`, `ai-pipeline`, and
+  `multi-step-governance`.
 - Other collaboration leaves, engineering leaves, and AI execution leaves
   currently rely on frontmatter only.
 - Global skill installation targets `MECHA_SKILL_ROOT` when set, otherwise
@@ -37,6 +37,10 @@
   It aborts on non-default instructions unless
   `--use-custom-global-instructions` is explicit; that replacement backs up
   the old file under this checkout's `.mecha/backups/global-instructions/`.
+- Both hosts receive the same rendered global instructions: `install.sh`
+  replaces `{{MECHA_ROOT}}` with the checkout path so the use-case stubs name
+  readable files. Stubs are plain paths rather than Claude `@` imports, which
+  Codex lacks and which would load every guide eagerly.
 - The repository-root `AGENTS.md` governs Mecha Suit development only.
   `EXAMPLE_PROMPT.md` is a downstream customization example, not the installed
   prompt or a development contract.

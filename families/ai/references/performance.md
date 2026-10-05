@@ -1,5 +1,8 @@
 # Performance Playbook
 
+This stage summary supports `ai-pipeline` planning. At runtime, the
+`ai-performance` Workflow governs.
+
 Training or construction and evaluation are one evidence loop. Do not optimize
 against a changing or invalid evaluation contract.
 
@@ -20,6 +23,6 @@ against a changing or invalid evaluation contract.
 8. Save or document the evaluated artifact and a reproducible run path when
    requested.
 
-Ask before materially expensive or remote jobs. End with an evaluated solution
-and explicit production-promotion needs; do not silently expand into serving or
-deployment.
+Ask before jobs beyond the authorized compute, or remote jobs with external
+cost. End with an evaluated solution and explicit production-promotion needs;
+do not silently expand into serving or deployment.

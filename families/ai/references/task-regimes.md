@@ -25,8 +25,9 @@ Identify input and output structure, supervision, available pretrained assets,
 compute and memory limits, acceptable latency, and the cheapest experiment
 that can falsify the architecture choice.
 
-Prefer one primary architecture. Add cheap baselines, ablations, or one
-material challenger instead of a broad expensive search.
+Start from one primary architecture with cheap baselines, ablations, or a
+material challenger rather than a broad expensive search. Let a challenger
+displace it when evidence and the authorized budget justify.
 
 ## GOFAI
 

@@ -15,6 +15,14 @@ Task skills are the default. Overlays and loops declare their contract in the
 body and require `metadata.invocation: explicit` plus the matching host
 adapters. Do not add a frontmatter field or registry for interaction lifetime.
 
+## Revise use-case expectations
+
+Thresholds that differ between software engineering, CTF, and AI work (how far
+to explore, when to stop or escalate, how to report) belong in
+`shared/use-cases/`, not in skills or the global instructions. Each guide needs
+a matching `{{MECHA_ROOT}}` stub in `templates/global-AGENTS.template.md`;
+`install.sh` renders that placeholder to the checkout path for both hosts.
+
 ## Add or revise a skill
 
 1. Start from the applicable template under `families/<family>/<skill>/`.
@@ -77,7 +85,8 @@ the host's final prompt.
 The work index never routes or invokes skills. Only `multi-step-governance`
 updates it; contributors return bounded artifacts and evidence. Executing an
 accepted plan does not activate governance or require a record. Preserve
-semi-auto work as session-local orientation, keep accepted intent
+semi-auto work as session-local orientation or `.mecha/logs/` working notes,
+keep accepted intent
 user-authoritative, and put detailed phase output behind artifact links.
 
 When the lifecycle contract changes, update

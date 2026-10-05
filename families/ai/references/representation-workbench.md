@@ -1,5 +1,8 @@
 # Representation Workbench Playbook
 
+This stage summary supports `ai-pipeline` planning. At runtime, the
+`ai-representation-workbench` Workflow governs.
+
 1. Define what information the representation may use and when it is available.
 2. Start from the simplest representation that preserves task-relevant
    structure.

@@ -46,7 +46,7 @@ class InteractionEvaluationTests(unittest.TestCase):
         self.assertEqual(set(splits), {"train", "validation"})
         self.assertEqual(
             sum(bool(case["expected"]["loaded_skills"]) for case in trigger_cases),
-            10,
+            9,
         )
 
     def test_contract_regressions_have_observable_cases(self) -> None:
@@ -185,11 +185,11 @@ class InteractionEvaluationTests(unittest.TestCase):
     def test_codex_rendering_adds_host_syntax_outside_corpus_prompt(self) -> None:
         turn = {
             "prompt": "Discuss the concept with me.",
-            "explicit_invocations": ["product-co-design", "low-friction-collaboration"],
+            "explicit_invocations": ["product-co-design", "user-interview"],
         }
         self.assertEqual(
             render_turn(turn, "codex"),
-            "$product-co-design $low-friction-collaboration Discuss the concept with me.",
+            "$product-co-design $user-interview Discuss the concept with me.",
         )
 
     def test_codex_turn_input_adds_structured_explicit_skills(self) -> None:
@@ -372,7 +372,7 @@ class InteractionEvaluationTests(unittest.TestCase):
         case = next(
             case
             for case in corpus["cases"]
-            if case["id"] == "trigger-clearer-writing-without-explicit-overlay"
+            if case["id"] == "trigger-product-concept-without-explicit-mode"
         )
         result = {
             "loaded_rates": {name: 0.0 for name in case["available_skills"]},

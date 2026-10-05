@@ -2,7 +2,18 @@
 set -euo pipefail
 
 ROOT_DIR="$(CDPATH= cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-GLOBAL_INSTRUCTIONS_SOURCE="${ROOT_DIR}/templates/global-AGENTS.template.md"
+
+# Installed global instructions name this checkout so their use-case stubs
+# resolve on every host; the template keeps a portable placeholder.
+render_global_instructions() {
+    local root_escaped
+    root_escaped="$(printf '%s' "${ROOT_DIR}" | sed 's/[\\&|]/\\&/g')"
+    sed "s|{{MECHA_ROOT}}|${root_escaped}|g" "${ROOT_DIR}/templates/global-AGENTS.template.md"
+}
+
+GLOBAL_INSTRUCTIONS_SOURCE="$(mktemp "${TMPDIR:-/tmp}/mecha-global.XXXXXX")"
+trap 'rm -f "${GLOBAL_INSTRUCTIONS_SOURCE}"' EXIT
+render_global_instructions >"${GLOBAL_INSTRUCTIONS_SOURCE}"
 
 # Install into MECHA_SKILL_ROOT when provided; otherwise use the portable
 # per-user Agent Skills root. Keep this Bash-friendly for macOS, Linux, WSL,
@@ -310,19 +321,52 @@ install_skill() {
     link_skill "${CLAUDE_SKILL_ROOT}" "${name}" "${claude_source}" "claude/${name}"
 }
 
+# Rendered adapters of removed skills are real directories, so links to them
+# never dangle. Remove each render whose source skill is gone first.
+prune_stale_renders() {
+    local rendered
+    local family
+    local name
+
+    [ -d "${CLAUDE_RENDER_ROOT}/families" ] || return 0
+    for rendered in "${CLAUDE_RENDER_ROOT}"/families/*/*; do
+        [ -d "${rendered}" ] && [ ! -L "${rendered}" ] || continue
+        family="$(basename "$(dirname "${rendered}")")"
+        name="$(basename "${rendered}")"
+        if [ ! -f "${ROOT_DIR}/families/${family}/${name}/SKILL.md" ]; then
+            rm -rf "${rendered}"
+            printf '[prune] %s no longer has a source skill\n' "${rendered}"
+        fi
+    done
+}
+
+# Links store the physical render path, which differs from CLAUDE_RENDER_ROOT
+# when the Claude config path contains a symlink.
+physical_render_root() {
+    local parent
+    parent="$(dirname "${CLAUDE_RENDER_ROOT}")"
+    if [ -d "${parent}" ]; then
+        printf '%s/%s\n' "$(cd "${parent}" && pwd -P)" "$(basename "${CLAUDE_RENDER_ROOT}")"
+    else
+        printf '%s\n' "${CLAUDE_RENDER_ROOT}"
+    fi
+}
+
 # Renamed or removed skills leave managed links to paths that no longer exist.
 # Remove only dangling links that point into this checkout or its render tree.
 prune_stale_links() {
     local skill_root="$1"
     local link_path
     local raw_target
+    local render_real
 
     [ -d "${skill_root}" ] || return 0
+    render_real="$(physical_render_root)"
     for link_path in "${skill_root}"/*; do
         [ -L "${link_path}" ] && [ ! -e "${link_path}" ] || continue
         raw_target="$(readlink "${link_path}")"
         case "${raw_target}" in
-            "${ROOT_DIR}/families/"*|"${CLAUDE_RENDER_ROOT}/"*)
+            "${ROOT_DIR}/families/"*|"${CLAUDE_RENDER_ROOT}/"*|"${render_real}/"*)
                 rm "${link_path}"
                 printf '[prune] %s -> %s no longer exists\n' "${link_path}" "${raw_target}"
                 ;;
@@ -356,6 +400,7 @@ main() {
     prune_stale_links "${SKILL_ROOT}"
     if [ "${INSTALL_CLAUDE}" = true ]; then
         provision_global_instructions "${CLAUDE_CONFIG_ROOT}/CLAUDE.md" CLAUDE "Claude global instructions"
+        prune_stale_renders
         prune_stale_links "${CLAUDE_SKILL_ROOT}"
     fi
 

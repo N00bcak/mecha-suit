@@ -1,7 +1,10 @@
 # Change Discipline
 
 Use local instructions and nearby code as the primary standard. These gates
-prevent Codex from turning a focused outcome into a framework.
+govern code changes: software engineering, including security and AI tooling
+and code written during AI work. They limit implementation scope, not how far
+to investigate or experiment, and prevent an agent from turning a focused
+outcome into a framework.
 
 ## Before Editing
 

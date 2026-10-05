@@ -80,6 +80,28 @@ Task skills are the default. Overlays and loops require explicit invocation in
 each session. At most one loop may be active; an overlay may compose with one
 task or loop. These are local authoring shapes, not routing metadata.
 
+No session overlay currently ships. The former `low-friction-collaboration`
+overlay described communication that proved useful in every session, so its
+rules now live in the global instructions' Communication section, with their
+basis in `docs/communication-evidence.md`. The overlay shape remains available
+for behavior that should apply only when explicitly invoked.
+
+## Working Relationship And Use Cases
+
+The global instructions own what holds in every session: grasping intent,
+preserving requirements and user work, respecting authorization, separating
+evidence from guesses, owning authorized work through completion, and plain
+communication. Thresholds whose right value depends on the work (how far to
+explore, when to stop or escalate, what a report contains) live in sibling
+use-case guides under `shared/use-cases/` for software engineering, CTF, and
+AI challenges. Earlier, engineering thresholds sat in the global layer and
+leaked into CTF and AI work.
+
+The requested outcome selects the guide; repository context supplies facts.
+Guides are loaded on demand from stubs and never select or invoke skills, so
+native selection stays the top layer. CTF has a guide but no skill until a
+skill-shaped ownership gap is demonstrated.
+
 ## Lifecycle Authority
 
 Only `multi-step-governance` may create or update a matching
@@ -90,8 +112,10 @@ an explicit waiver; it never evaluates or adjudicates technical claims.
 
 Accepted goals, criteria, constraints, and non-goals remain user-authoritative.
 New evidence may challenge them but cannot silently rewrite them. Plan
-acceptance does not activate governance. Small ad-hoc tasks create no record. Resume candidates are advisory and never reactivate an
-explicit mode in a new session.
+acceptance does not activate governance. Small ad-hoc tasks create no record.
+Working notes under `.mecha/logs/` are not records: they never route,
+activate, or resume a skill. Resume candidates are advisory and never
+reactivate an explicit mode in a new session.
 
 The full runtime rules live in
 [`shared/rubrics/lifecycle-contract.md`](../shared/rubrics/lifecycle-contract.md).

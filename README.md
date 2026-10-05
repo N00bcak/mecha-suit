@@ -94,12 +94,10 @@ within the agreed scope without repeated approval. The agent seeks agreement
 for unresolved user-owned decisions or commitments beyond existing authorization.
 Durable `.mecha` work state requires explicitly invoked `multi-step-governance`.
 
-Five modes start only when you ask for them:
+Four modes start only when you ask for them:
 
 - `product-co-design` shapes a product concept through a multi-turn exchange.
 - `user-interview` runs a focused, one-question-at-a-time interview.
-- `low-friction-collaboration` makes a complex working session easier to
-  follow and resume.
 - `ai-pipeline` frames an AI effort and creates an initial pipeline plan.
 - `multi-step-governance` manages an authorized end-to-end effort across
   dependent specialist stages.

@@ -41,13 +41,21 @@ leakage or unexplained information loss.
 
 ## Workflow
 
-1. Read `../references/representation-workbench.md` and
-   `../references/evidence-integrity.md`.
-2. Start with the simplest representation preserving relevant structure.
-3. Implement or specify transformations, features, states, knowledge, or
-   heuristics with provenance.
-4. Verify semantics, information boundaries, cost, and reload behavior.
-5. Use ablation or controlled comparison when complexity needs evidence.
+1. Read `../references/evidence-integrity.md`.
+2. Define what information the representation may use and when it is
+   available.
+3. Start from the simplest representation that preserves task-relevant
+   structure.
+4. For ML, design transformations, features, selections, aggregations,
+   embeddings, or pretrained representations with provenance and fit scope.
+   For GOFAI, design states, operators, constraints, knowledge, abstractions,
+   symmetries, or heuristics with explicit semantics.
+5. Implement a reproducible transformation or construction path when execution
+   is requested.
+6. Check dimensionality, sparsity, collisions, unknown values, invariants,
+   leakage, compute and memory cost, and serialization.
+7. Use ablation or controlled comparison when evidence is needed to justify a
+   complex representation.
 
 When writing code, read `../../../shared/rubrics/change-discipline.md` and
 `../references/ai-coding-discipline.md`. Load
@@ -67,7 +75,6 @@ when it can discriminate, then return evidence and the next action.
 
 ## References
 
-- `../references/representation-workbench.md` — stage playbook
 - `../references/evidence-integrity.md` — evidence and leakage integrity
 - `../references/pipeline-contract.md` — optional pipeline context
 - `../references/ai-coding-discipline.md` — AI implementation quality

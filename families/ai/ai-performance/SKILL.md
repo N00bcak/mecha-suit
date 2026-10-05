@@ -13,7 +13,8 @@ reproducible evidence contract.
 ## Do Not Use
 
 - Do not train against an undefined or changing validation contract.
-- Do not start materially expensive or remote jobs without user approval.
+- Do not start jobs beyond the authorized compute, or remote jobs with external
+  cost, without user approval.
 - Do not silently expand into serving, deployment, or production monitoring.
 - Do not spawn, request, or rely on subagents.
 
@@ -40,15 +41,23 @@ reproducible evidence contract.
 
 ## Workflow
 
-1. Read `../references/performance.md` and
-   `../references/evidence-integrity.md`.
-2. Reproduce the simplest baseline and validate the artifact path.
-3. Implement, train, construct, or search using repository-native tools.
-4. Evaluate quality, failures, uncertainty, calibration, and resource use as
-   applicable.
-5. Compare candidates or ensembles fairly.
-6. Perform error analysis and identify the stage implicated by the evidence.
-7. Save or document evaluated artifacts and the run path when requested.
+1. Read `../references/evidence-integrity.md`.
+2. Reproduce the simplest baseline and verify the data, representation,
+   objective, metric, and artifact path.
+3. Implement the candidate using repository-native frameworks and conventions.
+   For ML or DL, train with visible configuration, checkpoints where material,
+   learning diagnostics, and bounded tuning. For GOFAI, construct and tune the
+   solver, planner, rules, constraints, or heuristic under explicit cutoff and
+   guarantee policies.
+4. Evaluate on untouched valid evidence; report uncertainty, calibration,
+   subgroup or instance-class behavior, failure modes, and resource use when
+   material.
+5. Compare candidates under the same contract. Evaluate ensembles only when
+   their gain justifies inference and maintenance cost.
+6. Perform error analysis and decide whether evidence points to performance,
+   problem modeling, representation, insights, or preparation.
+7. Save or document the evaluated artifact and a reproducible run path when
+   requested.
 
 When writing code, read `../../../shared/rubrics/change-discipline.md` and
 `../references/ai-coding-discipline.md`. Load
@@ -64,12 +73,14 @@ recommendations. Never require or create it.
 ## Progress
 
 Progress is a reproduced baseline, stable run, measured bottleneck, candidate
-result, diagnosed failure, or rejected hypothesis. When resources permit, try
-one diagnostic or fallback before returning evidence and the next action.
+result, diagnosed failure, or rejected hypothesis. Keep iterating within the
+authorized budget, choosing each experiment by what it could change, until the
+objective is met, resources are spent, or no remaining experiment's expected
+gain justifies its cost given validation noise and the remaining budget; then
+return evidence and the next action.
 
 ## References
 
-- `../references/performance.md` — stage playbook
 - `../references/evidence-integrity.md` — comparison integrity
 - `../references/pipeline-contract.md` — optional pipeline context
 - `../references/ai-coding-discipline.md` — AI implementation quality

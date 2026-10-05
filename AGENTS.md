@@ -96,6 +96,8 @@ future concepts in `docs/architecture.md` until then.
 - Contributors return verified artifacts; the record does not select or invoke
   skills.
 - Accepted intent remains user-authoritative. Ad-hoc work creates no record.
+- `.mecha/logs/` holds non-authoritative working notes that any use case may
+  write; they never select, activate, or resume a skill.
 
 ## File ownership
 
@@ -108,6 +110,8 @@ future concepts in `docs/architecture.md` until then.
 - `templates/`: repeatable authoring shapes and host-instruction starting points.
 - `docs/`: the human handbook; no runtime behavior.
 - `shared/`: cross-skill runtime contracts with multiple direct consumers.
+  `shared/use-cases/` holds use-case guides whose direct consumer is the global
+  instructions' stubs.
 
 Do not move active instructions into references merely to shrink `SKILL.md`.
 Every reference must have a direct consumer and a clear loading cue. Do not add

@@ -1,7 +1,8 @@
 # Communication Evidence
 
-This reference records the basis for the runtime rules. It is maintenance
-context, not a substitute for the active instructions in `SKILL.md`.
+This note records the basis for the Communication rules in
+`templates/global-AGENTS.template.md`. It is maintenance context, not a
+substitute for those instructions.
 
 ## Cognitive Load
 

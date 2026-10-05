@@ -95,6 +95,15 @@ class DocumentationTests(unittest.TestCase):
         orphaned = sorted(str(path.relative_to(ROOT)) for path in references - consumed)
         self.assertEqual(orphaned, [])
 
+    def test_use_case_guides_match_global_stubs(self) -> None:
+        template = (ROOT / "templates/global-AGENTS.template.md").read_text()
+        stubs = set(re.findall(r"`\{\{MECHA_ROOT\}\}/([^`]+)`", template))
+        guides = {
+            str(path.relative_to(ROOT))
+            for path in (ROOT / "shared/use-cases").glob("*.md")
+        }
+        self.assertEqual(stubs, guides)
+
     def test_every_skill_has_positive_routing_coverage(self) -> None:
         skills = {
             skill.parent.name for skill in ROOT.glob("families/*/*/SKILL.md")

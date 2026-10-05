@@ -1,5 +1,8 @@
 # Data Preparation Playbook
 
+This stage summary supports `ai-pipeline` planning. At runtime, the
+`ai-data-preparation` Workflow governs.
+
 1. Identify data sources, ownership, modality, observation unit, and raw
    preservation policy.
 2. Classify fields by semantic role, not only inferred storage type: identifiers,

@@ -30,10 +30,18 @@ assert_contains_no_files() {
     fi
 }
 
+# Installed global instructions replace the template's {{MECHA_ROOT}} with
+# this checkout.
+rendered_global_template() {
+    local root_escaped
+    root_escaped="$(printf '%s' "${ROOT_DIR}" | sed 's/[\\&|]/\\&/g')"
+    sed "s|{{MECHA_ROOT}}|${root_escaped}|g" "${ROOT_DIR}/templates/global-AGENTS.template.md"
+}
+
 assert_template_copy() {
     local path="$1"
     [ -f "${path}" ] && [ ! -L "${path}" ] || fail "expected ${path} to be a regular file"
-    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${path}" || fail "expected ${path} to match the global template"
+    cmp -s <(rendered_global_template) "${path}" || fail "expected ${path} to match the rendered global template"
 }
 
 assert_symlink_to() {
@@ -69,7 +77,6 @@ development_environment_checks() {
 
 architecture_checks() {
     assert_exists "${ROOT_DIR}/families/collaboration/user-interview/SKILL.md"
-    assert_exists "${ROOT_DIR}/families/collaboration/low-friction-collaboration/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/parallel-subagents/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/product-co-design/SKILL.md"
     assert_exists "${ROOT_DIR}/families/collaboration/second-opinion/SKILL.md"
@@ -143,7 +150,6 @@ interaction_contract_checks() {
     if grep -R -Eq '^## (Stub Status|Designer Notes|Future Workflow Outline)$' "${ROOT_DIR}/families"; then
         fail "obsolete skill-development sections remain in runtime skills"
     fi
-    grep -Fxq '## Session Overlay Contract' "${ROOT_DIR}/families/collaboration/low-friction-collaboration/SKILL.md" || fail "low-friction collaboration is not the session overlay"
     grep -Fxq '## Interactive Loop Contract' "${ROOT_DIR}/families/collaboration/user-interview/SKILL.md" || fail "user-interview is not an interactive loop"
     grep -Fxq '## Interactive Loop Contract' "${ROOT_DIR}/families/collaboration/product-co-design/SKILL.md" || fail "product-co-design is not an interactive loop"
 
@@ -151,8 +157,8 @@ interaction_contract_checks() {
 }
 
 collaboration_checks() {
-    local low_friction_file="${ROOT_DIR}/families/collaboration/low-friction-collaboration/SKILL.md"
-    local low_friction_reference="${ROOT_DIR}/families/collaboration/low-friction-collaboration/references/communication-evidence.md"
+    local global_instructions="${ROOT_DIR}/templates/global-AGENTS.template.md"
+    local communication_evidence="${ROOT_DIR}/docs/communication-evidence.md"
     local parallel="${ROOT_DIR}/families/collaboration/parallel-subagents/SKILL.md"
     local second_opinion="${ROOT_DIR}/families/collaboration/second-opinion/SKILL.md"
     local product_research="${ROOT_DIR}/families/collaboration/product-research/SKILL.md"
@@ -161,16 +167,14 @@ collaboration_checks() {
     local portable_handoff="${ROOT_DIR}/families/collaboration/portable-handoff/SKILL.md"
     local product_co_design="${ROOT_DIR}/families/collaboration/product-co-design/SKILL.md"
 
-    assert_exists "${low_friction_reference}"
+    assert_exists "${communication_evidence}"
     grep -Fq 'Keep at most one interactive loop active.' "${product_co_design}" || fail "product co-design exclusive-loop contract is missing"
-    grep -Fq 'Think as thoroughly as the task requires before writing.' "${low_friction_file}" || fail "low-friction reasoning safeguard is missing"
-    grep -Fq "Prefer the words the user used" "${low_friction_file}" || fail "low-friction vocabulary continuity is missing"
-    grep -Fq 'Do not coin labels, frameworks, categories, or slogans' "${low_friction_file}" || fail "low-friction invented-term guard is missing"
-    grep -Fq 'Use prose for an argument.' "${low_friction_file}" || fail "low-friction discursive prose guidance is missing"
-    grep -Fq 'Restore this state after interruptions' "${low_friction_file}" || fail "low-friction continuity guidance is missing"
-    grep -Fq 'Do not impose an arbitrary item limit' "${low_friction_file}" || fail "low-friction list discipline is missing"
-    grep -Fq '## Edit The Language' "${low_friction_file}" || fail "low-friction Orwell editing guidance is missing"
-    grep -Fq 'Do not use, spawn, request, or rely on subagents.' "${low_friction_file}" || fail "low-friction subagent boundary is missing"
+    grep -Fq 'Think as thoroughly as the task requires before writing.' "${global_instructions}" || fail "communication reasoning safeguard is missing"
+    grep -Fq "Prefer the words the user used" "${global_instructions}" || fail "communication vocabulary continuity is missing"
+    grep -Fq 'Do not coin labels, frameworks, categories, or slogans' "${global_instructions}" || fail "communication invented-term guard is missing"
+    grep -Fq 'Use prose for an argument.' "${global_instructions}" || fail "communication discursive prose guidance is missing"
+    grep -Fq 'Restore this state after interruptions' "${global_instructions}" || fail "communication continuity guidance is missing"
+    grep -Fq 'Do not impose an arbitrary item limit' "${global_instructions}" || fail "communication list discipline is missing"
     grep -Fxq 'description: Delegate independent bounded subtasks concurrently and integrate their evidence into one verified outcome. Use when independent parts of a task can run in parallel.' "${parallel}" || fail "parallel-subagents description drifted"
     grep -Fxq 'description: Obtain an independent evidence-backed critique of a consequential conclusion, diagnosis, plan, or diff. Use before committing to a costly or hard-to-reverse decision.' "${second_opinion}" || fail "second-opinion description drifted"
     grep -Fxq 'description: Develop evidence-backed findings about users, workflows, terminology, alternatives, and product assumptions. Use when a product decision depends on what users or markets do.' "${product_research}" || fail "product-research description drifted"
@@ -183,8 +187,8 @@ collaboration_checks() {
     assert_not_exists "${ROOT_DIR}/families/collaboration/domain-modeling/agents/openai.yaml"
     assert_not_exists "${ROOT_DIR}/families/collaboration/decision-mapping/agents/openai.yaml"
     assert_not_exists "${ROOT_DIR}/families/collaboration/portable-handoff/agents/openai.yaml"
-    if grep -Eiq 'use (this skill )?(for|on) every message|the reader has ADHD|ADHD brain' "${low_friction_file}"; then
-        fail "low-friction skill contains universal or diagnostic routing"
+    if grep -Eiq 'the reader has ADHD|ADHD brain' "${global_instructions}"; then
+        fail "communication rules contain diagnostic framing"
     fi
     pass "collaboration routing boundaries"
 }
@@ -362,6 +366,17 @@ ai_family_checks() {
         grep -Fq '`../references/search-performance.md`' "${family_dir}/${leaf}/SKILL.md" || fail "${leaf} lacks search performance guidance"
     done
 
+    # Each leaf Workflow is its single runtime playbook; stage summaries serve
+    # ai-pipeline only.
+    for reference in data-preparation insight-development representation-workbench problem-modeling performance; do
+        for leaf in ai-data-preparation ai-insight-development ai-representation-workbench ai-problem-modeling ai-performance; do
+            if grep -Fq "\`../references/${reference}.md\`" "${family_dir}/${leaf}/SKILL.md"; then
+                fail "${leaf} still loads the ${reference} stage summary"
+            fi
+        done
+    done
+    grep -Fq 'beyond the authorized compute' "${family_dir}/ai-performance/SKILL.md" || fail "ai-performance approval rule ignores authorized compute"
+    grep -Fq 'beyond the authorized compute' "${family_dir}/references/performance.md" || fail "performance summary approval rule ignores authorized compute"
     assert_not_exists "${ROOT_DIR}/families/engineering/references/change-discipline.md"
 
     pass "AI routing, pipeline, coding, and performance contracts"
@@ -418,10 +433,9 @@ install_uninstall_checks() {
     export CLAUDE_CONFIG_DIR="${tmp_root}/claude"
 
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" >"${tmp_root}/install-all.out"
-    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${default_codex_home}/AGENTS.md" || fail "default global instructions were not installed"
+    cmp -s <(rendered_global_template) "${default_codex_home}/AGENTS.md" || fail "default global instructions were not installed"
     assert_symlink_to "${tmp_root}/skills/prototype-build" "${ROOT_DIR}/families/engineering/prototype-build"
     assert_symlink_to "${tmp_root}/skills/user-interview" "${ROOT_DIR}/families/collaboration/user-interview"
-    assert_symlink_to "${tmp_root}/skills/low-friction-collaboration" "${ROOT_DIR}/families/collaboration/low-friction-collaboration"
     assert_symlink_to "${tmp_root}/skills/parallel-subagents" "${ROOT_DIR}/families/collaboration/parallel-subagents"
     assert_symlink_to "${tmp_root}/skills/product-co-design" "${ROOT_DIR}/families/collaboration/product-co-design"
     assert_symlink_to "${tmp_root}/skills/second-opinion" "${ROOT_DIR}/families/collaboration/second-opinion"
@@ -457,6 +471,19 @@ install_uninstall_checks() {
     [ -L "${tmp_root}/skills/foreign-skill" ] || fail "install pruned an unrelated dangling link"
     [ "$(grep -c '^\[prune\]' "${tmp_root}/install-prune.out")" = 2 ] || fail "stale managed links were not reported"
     rm "${tmp_root}/skills/foreign-skill"
+    # A removed explicit-only skill leaves a real rendered directory behind.
+    mkdir -p "${CLAUDE_CONFIG_DIR}/.mecha-render/families/collaboration/removed-explicit"
+    printf 'stale\n' >"${CLAUDE_CONFIG_DIR}/.mecha-render/families/collaboration/removed-explicit/SKILL.md"
+    ln -s "${CLAUDE_CONFIG_DIR}/.mecha-render/families/collaboration/removed-explicit" "${CLAUDE_CONFIG_DIR}/skills/removed-explicit"
+    MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" >"${tmp_root}/install-prune-render.out"
+    assert_not_exists "${CLAUDE_CONFIG_DIR}/.mecha-render/families/collaboration/removed-explicit"
+    [ ! -L "${CLAUDE_CONFIG_DIR}/skills/removed-explicit" ] || fail "install kept a link to a removed explicit-only skill"
+    # Links store physical paths even when the config path contains a symlink.
+    ln -s "${CLAUDE_CONFIG_DIR}" "${tmp_root}/claude-alias"
+    ln -s "$(cd "${CLAUDE_CONFIG_DIR}" && pwd -P)/.mecha-render/families/collaboration/renamed-skill" "${CLAUDE_CONFIG_DIR}/skills/renamed-skill"
+    CLAUDE_CONFIG_DIR="${tmp_root}/claude-alias" MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" >"${tmp_root}/install-prune-alias.out"
+    [ ! -L "${CLAUDE_CONFIG_DIR}/skills/renamed-skill" ] || fail "install missed a physical-path link under a symlinked config path"
+    rm "${tmp_root}/claude-alias"
     printf 'stale\n' >"${CLAUDE_CONFIG_DIR}/.mecha-render/families/collaboration/user-interview/SKILL.md"
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" user-interview >"${tmp_root}/install-rerender.out"
     grep -Fq 'disable-model-invocation: true' "${CLAUDE_CONFIG_DIR}/skills/user-interview/SKILL.md" || fail "install did not re-render a stale Claude adapter"
@@ -474,7 +501,7 @@ install_uninstall_checks() {
 
     CODEX_HOME="${tmp_root}/custom-codex" MECHA_SKILL_ROOT="${tmp_root}/custom/skills" "${ROOT_DIR}/install.sh" --use-custom-global-instructions prototype-build >"${tmp_root}/install-custom-replace.out"
     assert_symlink_to "${tmp_root}/custom/skills/prototype-build" "${ROOT_DIR}/families/engineering/prototype-build"
-    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${tmp_root}/custom-codex/AGENTS.md" || fail "custom global instructions were not replaced"
+    cmp -s <(rendered_global_template) "${tmp_root}/custom-codex/AGENTS.md" || fail "custom global instructions were not replaced"
     backup_path="$(grep -rlF "${custom_prompt}" "${ROOT_DIR}/.mecha/backups/global-instructions" | tail -n 1)"
     [ -n "${backup_path}" ] || fail "replaced global instructions were not backed up"
     grep -Fxq "${custom_prompt}" "${backup_path}" || fail "global instruction backup is incomplete"
@@ -483,9 +510,8 @@ install_uninstall_checks() {
     MECHA_SKILL_ROOT="${tmp_root}/selected" "${ROOT_DIR}/install.sh" prototype-build >"${tmp_root}/install-selected.out"
     assert_symlink_to "${tmp_root}/selected/prototype-build" "${ROOT_DIR}/families/engineering/prototype-build"
 
-    MECHA_SKILL_ROOT="${tmp_root}/selected-collaboration" "${ROOT_DIR}/install.sh" user-interview low-friction-collaboration parallel-subagents product-co-design second-opinion >"${tmp_root}/install-selected-collaboration.out"
+    MECHA_SKILL_ROOT="${tmp_root}/selected-collaboration" "${ROOT_DIR}/install.sh" user-interview parallel-subagents product-co-design second-opinion >"${tmp_root}/install-selected-collaboration.out"
     assert_symlink_to "${tmp_root}/selected-collaboration/user-interview" "${ROOT_DIR}/families/collaboration/user-interview"
-    assert_symlink_to "${tmp_root}/selected-collaboration/low-friction-collaboration" "${ROOT_DIR}/families/collaboration/low-friction-collaboration"
     assert_symlink_to "${tmp_root}/selected-collaboration/parallel-subagents" "${ROOT_DIR}/families/collaboration/parallel-subagents"
     assert_symlink_to "${tmp_root}/selected-collaboration/product-co-design" "${ROOT_DIR}/families/collaboration/product-co-design"
     assert_symlink_to "${tmp_root}/selected-collaboration/second-opinion" "${ROOT_DIR}/families/collaboration/second-opinion"
@@ -517,13 +543,15 @@ install_uninstall_checks() {
 
     ln -s "${ROOT_DIR}/families/writing/renamed-skill" "${tmp_root}/skills/renamed-skill"
     ln -s "${tmp_root}/elsewhere" "${tmp_root}/skills/foreign-skill"
+    mkdir -p "${CLAUDE_CONFIG_DIR}/.mecha-render/families/collaboration/removed-explicit"
+    ln -s "${CLAUDE_CONFIG_DIR}/.mecha-render/families/collaboration/removed-explicit" "${CLAUDE_CONFIG_DIR}/skills/removed-explicit"
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/uninstall.sh" >"${tmp_root}/uninstall-all.out"
     assert_not_exists "${tmp_root}/skills/renamed-skill"
+    [ ! -L "${CLAUDE_CONFIG_DIR}/skills/removed-explicit" ] || fail "full uninstall left a link to a removed rendered adapter"
     [ -L "${tmp_root}/skills/foreign-skill" ] || fail "uninstall pruned an unrelated dangling link"
     rm "${tmp_root}/skills/foreign-skill"
     assert_not_exists "${tmp_root}/skills/prototype-build"
     assert_not_exists "${tmp_root}/skills/user-interview"
-    assert_not_exists "${tmp_root}/skills/low-friction-collaboration"
     assert_not_exists "${tmp_root}/skills/parallel-subagents"
     assert_not_exists "${tmp_root}/skills/product-co-design"
     assert_not_exists "${tmp_root}/skills/second-opinion"
@@ -563,14 +591,14 @@ install_uninstall_checks() {
 
     MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" HOME="${tmp_root}/codex-user" "${ROOT_DIR}/install.sh" prototype-build >"${tmp_root}/install-codex-home.out"
     assert_symlink_to "${tmp_root}/codex-user/.agents/skills/prototype-build" "${ROOT_DIR}/families/engineering/prototype-build"
-    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${tmp_root}/codex-home/AGENTS.md" || fail "CODEX_HOME global instructions were not installed"
+    cmp -s <(rendered_global_template) "${tmp_root}/codex-home/AGENTS.md" || fail "CODEX_HOME global instructions were not installed"
     assert_not_exists "${tmp_root}/codex-home/skills/prototype-build"
     MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" HOME="${tmp_root}/codex-user" "${ROOT_DIR}/uninstall.sh" prototype-build >"${tmp_root}/uninstall-codex-home.out"
     assert_not_exists "${tmp_root}/codex-user/.agents/skills/prototype-build"
 
     MECHA_SKILL_ROOT= CODEX_HOME= HOME="${tmp_root}/home" "${ROOT_DIR}/install.sh" prototype-build >"${tmp_root}/install-home-default.out"
     assert_symlink_to "${tmp_root}/home/.agents/skills/prototype-build" "${ROOT_DIR}/families/engineering/prototype-build"
-    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${tmp_root}/home/.codex/AGENTS.md" || fail "HOME global instructions were not installed under .codex"
+    cmp -s <(rendered_global_template) "${tmp_root}/home/.codex/AGENTS.md" || fail "HOME global instructions were not installed under .codex"
     MECHA_SKILL_ROOT= CODEX_HOME= CLAUDE_CONFIG_DIR= HOME="${tmp_root}/claude-home" "${ROOT_DIR}/install.sh" prototype-build >"${tmp_root}/install-claude-home-default.out"
     assert_symlink_to "${tmp_root}/claude-home/.claude/skills/prototype-build" "${ROOT_DIR}/families/engineering/prototype-build"
     assert_template_copy "${tmp_root}/claude-home/.claude/CLAUDE.md"
@@ -615,15 +643,30 @@ claude_install_checks() {
     MECHA_SKILL_ROOT="${tmp_root}/migrate-skills" CLAUDE_CONFIG_DIR="${tmp_root}/migrate-claude" "${ROOT_DIR}/install.sh" prototype-build >"${tmp_root}/install-migrate.out"
     assert_template_copy "${tmp_root}/migrate-claude/CLAUDE.md"
     grep -Fq '[migrate] Claude global instructions link replaced with a copy' "${tmp_root}/install-migrate.out" || fail "instruction link migration was not reported"
-    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${CODEX_HOME}/AGENTS.md" || fail "migration wrote through the old link"
+    cmp -s <(rendered_global_template) "${CODEX_HOME}/AGENTS.md" || fail "migration wrote through the old link"
     assert_symlink_to "${claude_skills}/prototype-build" "${ROOT_DIR}/families/engineering/prototype-build"
-    for name in user-interview product-co-design low-friction-collaboration multi-step-governance ai-pipeline; do
+    for name in user-interview product-co-design multi-step-governance ai-pipeline; do
         grep -Fxq 'disable-model-invocation: true' "${claude_skills}/${name}/SKILL.md" || fail "${name} Claude adapter does not disable model invocation"
     done
     rendered="$(find "${CLAUDE_CONFIG_DIR}/.mecha-render/families" -mindepth 2 -maxdepth 2 -type d | wc -l | tr -d ' ')"
-    [ "${rendered}" = 5 ] || fail "expected 5 rendered Claude adapters, got ${rendered}"
+    [ "${rendered}" = 4 ] || fail "expected 4 rendered Claude adapters, got ${rendered}"
     PYTHONDONTWRITEBYTECODE=1 "${DEV_PYTHON}" "${ROOT_DIR}/scripts/validate_skills.py" --claude-installed-root "${claude_skills}" >"${tmp_root}/validate-claude.out"
     grep -Fq '[ok] Claude adapters' "${tmp_root}/validate-claude.out" || fail "Claude adapters were not validated"
+}
+
+use_case_checks() {
+    local use_cases="${ROOT_DIR}/shared/use-cases"
+    local guide
+
+    grep -Fq 'Never make checks pass by weakening them' "${use_cases}/software-engineering.md" || fail "software engineering check-integrity rule is missing"
+    grep -Fq 'analyse the mechanism instead' "${use_cases}/ctf.md" || fail "CTF novel-challenge method is missing"
+    grep -Fq 'Draw on your own knowledge deliberately.' "${use_cases}/ai.md" || fail "AI knowledge elicitation is missing"
+    for guide in ctf ai; do
+        grep -Fq '.mecha/logs/<slug>.md' "${use_cases}/${guide}.md" || fail "${guide} working log is missing"
+        grep -Fq 'it never activates or resumes a skill' "${use_cases}/${guide}.md" || fail "${guide} working log claims authority"
+    done
+    grep -Fq '`.mecha/work/` records require multi-step-governance' "${ROOT_DIR}/templates/global-AGENTS.template.md" || fail "global .mecha boundary is not scoped to work records"
+    pass "use-case guides and working notes"
 }
 
 main() {
@@ -635,6 +678,7 @@ main() {
     collaboration_checks
     engineering_checks
     lifecycle_checks
+    use_case_checks
     ai_family_checks
     writing_family_checks
     metadata_policy_checks

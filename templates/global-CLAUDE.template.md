@@ -8,9 +8,11 @@ use `EXAMPLE_PROMPT.md` as an example of a concise downstream customization.
 
 - `install.sh` copies the global template to `~/.claude/CLAUDE.md`; use this
   file only when maintaining a separate Claude prompt.
+- `install.sh` replaces `{{MECHA_ROOT}}` with the checkout path; a manual copy
+  must do the same so the use-case stubs resolve.
 - Claude Code does not read Codex `agents/openai.yaml` metadata. Installed
   Claude copies of `user-interview`, `product-co-design`,
-  `low-friction-collaboration`, `ai-pipeline`, and `multi-step-governance`
+  `ai-pipeline`, and `multi-step-governance`
   carry `disable-model-invocation: true`; manual copies must preserve that.
 Let the host own ordinary selection and clarification. Put Claude-specific
 commands, project layout, and invocation behavior in thin local instructions;

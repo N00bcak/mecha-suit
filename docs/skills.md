@@ -12,7 +12,6 @@ shape of the conversation, so the agent will not enter them by accident.
 | --- | --- | --- |
 | `product-co-design` **(ask for it)** | An idea, audience, constraints, or even a half-formed problem | A pressure-tested product concept, key choices, risks, and next step |
 | `user-interview` **(ask for it)** | A topic you want to think through | A focused one-question-at-a-time interview and a useful synthesis |
-| `low-friction-collaboration` **(ask for it)** | A complex task or conversation | The same depth of work, explained more clearly and kept easy to resume |
 | `multi-step-governance` **(ask for it)** | An end-to-end outcome with dependent stages | An authorized durable frontier, evidence, and next task shape |
 | `product-research` | A product question, audience, and decision to inform | Evidence-backed findings, limitations, and decision implications |
 | `domain-modeling` | Domain language, examples, code, or existing rules | Clear terms, relationships, invariants, and unresolved contradictions |

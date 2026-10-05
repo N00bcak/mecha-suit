@@ -168,7 +168,8 @@ def install_treatment(home: Path) -> dict[str, str]:
     for source in sorted((toolbox / "families").glob("*/*/SKILL.md")):
         (skills / source.parent.name).symlink_to(source.parent, target_is_directory=True)
         expected[source.parent.name] = str(source.resolve())
-    shutil.copyfile(ROOT / "templates/global-AGENTS.template.md", home / ".codex/AGENTS.md")
+    template = (ROOT / "templates/global-AGENTS.template.md").read_text()
+    (home / ".codex/AGENTS.md").write_text(template.replace("{{MECHA_ROOT}}", str(toolbox.resolve())))
     return expected
 
 

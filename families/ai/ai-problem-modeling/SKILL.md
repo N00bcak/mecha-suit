@@ -42,15 +42,21 @@ justified portfolio of solution candidates.
 
 ## Workflow
 
-1. Read `../references/task-regimes.md`,
-   `../references/problem-modeling.md`, and
+1. Read `../references/task-regimes.md` and
    `../references/evidence-integrity.md`.
-2. Formalize the problem and operational validation contract.
-3. Establish naive and simple baselines.
-4. Select a domain-calibrated candidate portfolio.
-5. Define architecture, algorithm, inference, loss, search, or constraint
-   details needed for execution.
-6. Assign evidence requirements, resource costs, and pruning conditions.
+2. Formalize inputs, outputs, states, actions, targets, objectives,
+   constraints, and the conditions under which a solution will be used.
+3. Choose validation units, metrics, naive and simple baselines, and resource
+   measures before selecting the main candidate.
+4. Identify candidate statistical, neural, symbolic, search, constraint, or
+   hybrid solution families that fit the evidence and constraints, and keep a
+   domain-calibrated portfolio as `task-regimes.md` describes.
+5. For neural candidates, specify input/output structure, inductive biases,
+   pretrained assets, losses, capacity, and memory or latency constraints. For
+   GOFAI candidates, specify representation, search or inference procedure,
+   guarantees, heuristic assumptions, and resource bounds.
+6. Give each candidate a rationale, evidence requirement, relative cost, and
+   pruning condition.
 
 When writing specification or prototype code, read
 `../../../shared/rubrics/change-discipline.md` and
@@ -70,7 +76,6 @@ formulation when the regime supports it, then return the next experiment.
 ## References
 
 - `../references/task-regimes.md` — task and portfolio recognition
-- `../references/problem-modeling.md` — stage playbook
 - `../references/evidence-integrity.md` — validation integrity
 - `../references/pipeline-contract.md` — optional pipeline context
 - `../references/ai-coding-discipline.md` — AI implementation quality

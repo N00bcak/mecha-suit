@@ -40,13 +40,21 @@ representations, problem formulation, or solution choice.
 
 ## Workflow
 
-1. Read `../references/insight-development.md` and
-   `../references/evidence-integrity.md`.
-2. Convert the objective into a bounded set of questions.
-3. Inspect distributions, relationships, structure, rare cases, labels,
-   invariants, or transitions as applicable.
-4. Challenge findings with alternate slices and explanations.
-5. Record evidence, confidence, limitations, and implications.
+1. Read `../references/evidence-integrity.md`.
+2. Turn the objective and domain knowledge into a small set of testable
+   questions.
+3. Inspect distributions, relationships, cohorts, time or spatial structure,
+   label behavior, missingness mechanisms, and rare cases that can change the
+   solution. For GOFAI, inspect invariants, symmetries, constraints,
+   transition structure, bottlenecks, and failure examples.
+4. Use visual, statistical, or structural evidence appropriate to the data and
+   sampling process.
+5. Challenge attractive findings with alternate slices, confounders, leakage
+   checks, and simple null explanations.
+6. Record each insight with evidence, confidence, limitations, and its
+   implication for representations or problem modeling.
+
+Do not silently turn exploratory associations into confirmatory claims.
 
 When writing analysis code, read
 `../../../shared/rubrics/change-discipline.md` and
@@ -66,7 +74,6 @@ yield with limitations and the next discriminating action.
 
 ## References
 
-- `../references/insight-development.md` — stage playbook
 - `../references/evidence-integrity.md` — claim and validation discipline
 - `../references/pipeline-contract.md` — optional pipeline context
 - `../references/ai-coding-discipline.md` — AI implementation quality

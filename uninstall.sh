@@ -3,6 +3,14 @@ set -euo pipefail
 
 ROOT_DIR="$(CDPATH= cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 
+# Installed global instructions name this checkout so their use-case stubs
+# resolve on every host; the template keeps a portable placeholder.
+render_global_instructions() {
+    local root_escaped
+    root_escaped="$(printf '%s' "${ROOT_DIR}" | sed 's/[\\&|]/\\&/g')"
+    sed "s|{{MECHA_ROOT}}|${root_escaped}|g" "${ROOT_DIR}/templates/global-AGENTS.template.md"
+}
+
 # Uninstall from MECHA_SKILL_ROOT when provided; otherwise use the same
 # portable Agent Skills root selection as install.sh.
 user_home() {
@@ -161,19 +169,33 @@ uninstall_skill() {
     fi
 }
 
+# Links store the physical render path, which differs from CLAUDE_RENDER_ROOT
+# when the Claude config path contains a symlink.
+physical_render_root() {
+    local parent
+    parent="$(dirname "${CLAUDE_RENDER_ROOT}")"
+    if [ -d "${parent}" ]; then
+        printf '%s/%s\n' "$(cd "${parent}" && pwd -P)" "$(basename "${CLAUDE_RENDER_ROOT}")"
+    else
+        printf '%s\n' "${CLAUDE_RENDER_ROOT}"
+    fi
+}
+
 # Renamed or removed skills leave managed links that no current skill name
 # matches. Remove only dangling links that point into this checkout or its render tree.
 prune_stale_links() {
     local skill_root="$1"
     local link_path
     local raw_target
+    local render_real
 
     [ -d "${skill_root}" ] || return 0
+    render_real="$(physical_render_root)"
     for link_path in "${skill_root}"/*; do
         [ -L "${link_path}" ] && [ ! -e "${link_path}" ] || continue
         raw_target="$(readlink "${link_path}")"
         case "${raw_target}" in
-            "${ROOT_DIR}/families/"*|"${CLAUDE_RENDER_ROOT}/"*)
+            "${ROOT_DIR}/families/"*|"${CLAUDE_RENDER_ROOT}/"*|"${render_real}/"*)
                 rm "${link_path}"
                 printf '[prune] %s -> %s no longer exists\n' "${link_path}" "${raw_target}"
                 ;;
@@ -189,7 +211,7 @@ uninstall_claude_shared() {
     # Remove the default copy, or a link left by an earlier installer; keep
     # anything the user customized.
     if { [ -L "${instructions}" ] && [ "$(readlink "${instructions}")" = "$(codex_home)/AGENTS.md" ]; } \
-        || { [ -f "${instructions}" ] && [ ! -L "${instructions}" ] && cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${instructions}"; }; then
+        || { [ -f "${instructions}" ] && [ ! -L "${instructions}" ] && cmp -s <(render_global_instructions) "${instructions}"; }; then
         rm "${instructions}"
         printf '[remove] %s\n' "${instructions}"
     fi
@@ -224,8 +246,10 @@ main() {
         done < <(all_skill_names)
         prune_stale_links "${SKILL_ROOT}"
         if [ "${UNINSTALL_CLAUDE}" = true ]; then
-            prune_stale_links "${CLAUDE_SKILL_ROOT}"
+            # Prune after the render tree is gone so links to removed skills
+            # rendered adapters dangle and are caught.
             uninstall_claude_shared
+            prune_stale_links "${CLAUDE_SKILL_ROOT}"
         fi
     else
         for name in "${REQUESTED_SKILLS[@]}"; do

@@ -20,14 +20,6 @@
             "expected": {"loaded_skills": ["user-interview"], "excluded_skills": [], "behaviors": []}
         },
         {
-            "id": "trigger-explicit-low-friction",
-            "split": "train",
-            "kind": "trigger",
-            "available_skills": ["low-friction-collaboration", "implementation-spec"],
-            "turns": [{"prompt": "Keep this technical discussion easy to follow while we work.", "explicit_invocations": ["low-friction-collaboration"]}],
-            "expected": {"loaded_skills": ["low-friction-collaboration"], "excluded_skills": [], "behaviors": []}
-        },
-        {
             "id": "trigger-product-concept-without-explicit-mode",
             "split": "train",
             "kind": "trigger",
@@ -42,14 +34,6 @@
             "available_skills": ["user-interview", "product-research"],
             "turns": [{"prompt": "Could you ask me a few questions about this migration before answering?", "explicit_invocations": []}],
             "expected": {"loaded_skills": [], "excluded_skills": ["user-interview"], "behaviors": []}
-        },
-        {
-            "id": "trigger-clearer-writing-without-explicit-overlay",
-            "split": "train",
-            "kind": "trigger",
-            "available_skills": ["low-friction-collaboration", "prose-voice"],
-            "turns": [{"prompt": "Please make your explanation of this stack trace easier to follow.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": [], "excluded_skills": ["low-friction-collaboration"], "behaviors": []}
         },
         {
             "id": "trigger-product-research-users",
@@ -140,28 +124,12 @@
             "expected": {"loaded_skills": [], "excluded_skills": ["product-co-design"], "behaviors": []}
         },
         {
-            "id": "trigger-meeting-clarity-not-overlay",
-            "split": "validation",
-            "kind": "trigger",
-            "available_skills": ["low-friction-collaboration"],
-            "turns": [{"prompt": "Draft five guidelines our team can use to make architecture meetings less confusing.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": [], "excluded_skills": ["low-friction-collaboration"], "behaviors": []}
-        },
-        {
             "id": "trigger-product-advice-with-adjacent-task",
             "split": "validation",
             "kind": "trigger",
             "available_skills": ["product-co-design", "product-research", "implementation-spec"],
             "turns": [{"prompt": "Explain whether an audit-log explorer sounds useful, but do not start a co-design session.", "explicit_invocations": []}],
             "expected": {"loaded_skills": [], "excluded_skills": ["product-co-design"], "behaviors": []}
-        },
-        {
-            "id": "trigger-mention-low-friction-skill",
-            "split": "validation",
-            "kind": "trigger",
-            "available_skills": ["low-friction-collaboration"],
-            "turns": [{"prompt": "Does low-friction-collaboration change reasoning depth, or only presentation?", "explicit_invocations": []}],
-            "expected": {"loaded_skills": [], "excluded_skills": ["low-friction-collaboration"], "behaviors": []}
         },
         {
             "id": "interaction-product-loop-owns-exchange",
@@ -201,24 +169,6 @@
             "expected": {"loaded_skills": ["product-co-design", "user-interview"], "excluded_skills": [], "behaviors": ["preserves-compact-synthesis", "switches-loop-ownership"]}
         },
         {
-            "id": "interaction-overlay-composes-with-task",
-            "split": "train",
-            "kind": "interaction",
-            "available_skills": ["low-friction-collaboration", "implementation-spec"],
-            "turns": [{"prompt": "Turn the settled decisions into an implementation contract, and keep the discussion easy to follow.", "explicit_invocations": ["low-friction-collaboration"]}],
-            "expected": {"loaded_skills": ["low-friction-collaboration", "implementation-spec"], "excluded_skills": [], "behaviors": ["overlay-composes-with-task", "task-retains-outcome-ownership"]}
-        },
-        {
-            "id": "interaction-overlay-composes-with-loop",
-            "split": "train",
-            "kind": "interaction",
-            "hosts": ["codex"],
-            "hosts_reason": "Claude Code runs only the first /skill in a message, and explicit-only skills cannot be loaded by the model, so two explicit modes cannot be invoked in one turn.",
-            "available_skills": ["low-friction-collaboration", "product-co-design"],
-            "turns": [{"prompt": "Shape this observability product with me while keeping the conversation easy to follow.", "explicit_invocations": ["product-co-design", "low-friction-collaboration"]}],
-            "expected": {"loaded_skills": ["product-co-design", "low-friction-collaboration"], "excluded_skills": [], "behaviors": ["overlay-composes-with-loop", "loop-retains-primary-ownership"]}
-        },
-        {
             "id": "interaction-task-contribution-does-not-steal-loop",
             "split": "validation",
             "kind": "interaction",
@@ -238,25 +188,6 @@
             "expected": {"loaded_skills": [], "excluded_skills": ["product-co-design"], "behaviors": ["surfaces-resume-candidate-once", "waits-for-explicit-reactivation"]}
         },
         {
-            "id": "interaction-overlay-resume-does-not-block",
-            "split": "validation",
-            "kind": "interaction",
-            "available_skills": ["low-friction-collaboration", "implementation-spec"],
-            "turns": [{"prompt": "A matching work record lists low-friction-collaboration as a resume candidate. Finish the already-authorized implementation specification.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["implementation-spec"], "excluded_skills": ["low-friction-collaboration"], "behaviors": ["mentions-overlay-candidate-once", "does-not-block-authorized-work"]}
-        },
-        {
-            "id": "interaction-overlay-deactivation-ends-composition",
-            "split": "validation",
-            "kind": "interaction",
-            "available_skills": ["low-friction-collaboration", "implementation-spec"],
-            "turns": [
-                {"prompt": "Keep this implementation discussion easy to follow.", "explicit_invocations": ["low-friction-collaboration"]},
-                {"prompt": "Deactivate that overlay and continue the underlying task normally.", "explicit_invocations": []}
-            ],
-            "expected": {"loaded_skills": ["low-friction-collaboration"], "excluded_skills": [], "behaviors": ["deactivates-overlay", "underlying-task-continues"]}
-        },
-        {
             "id": "interaction-frontier-slice-creates-continuity",
             "split": "validation",
             "kind": "interaction",
@@ -271,14 +202,6 @@
             "available_skills": ["multi-step-governance", "ai-pipeline"],
             "turns": [{"prompt": "Manage this Kaggle competition from raw data through a verified final submission.", "explicit_invocations": ["multi-step-governance"]}],
             "expected": {"loaded_skills": ["multi-step-governance"], "excluded_skills": ["ai-pipeline"], "behaviors": ["governor-owns-durable-frontier"]}
-        },
-        {
-            "id": "interaction-overlay-does-not-create-continuity",
-            "split": "validation",
-            "kind": "interaction",
-            "available_skills": ["low-friction-collaboration", "implementation-spec"],
-            "turns": [{"prompt": "Keep this already-started implementation discussion easy to follow.", "explicit_invocations": ["low-friction-collaboration"]}],
-            "expected": {"loaded_skills": ["low-friction-collaboration", "implementation-spec"], "excluded_skills": [], "behaviors": ["overlay-does-not-create-durable-state", "task-retains-outcome-ownership"]}
         },
         {
             "id": "adhoc-plan-execution",

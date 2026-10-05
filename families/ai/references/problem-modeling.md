@@ -1,5 +1,8 @@
 # Problem Modeling Playbook
 
+This stage summary supports `ai-pipeline` planning. At runtime, the
+`ai-problem-modeling` Workflow governs.
+
 1. Formalize inputs, outputs, states, actions, targets, objectives, constraints,
    and the conditions under which a solution will be used.
 2. Choose validation units, metrics, baselines, and resource measures before

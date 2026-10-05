@@ -30,7 +30,8 @@ the wrong behavior and passing tests cannot mask intent drift.
 
 ## Returns
 
-- Separate intent-fidelity, behavioral-correctness, and maintainability reports.
+- Distinct intent-fidelity, behavioral-correctness, and maintainability
+  results, with written detail scaled to the change.
 - A stable `RF-*` finding ledger tied to requirement or invariant, evidence,
   scope relation, consequence, classification, and corrective action.
 - Review disposition, verification gaps, remediation reconciliation, and next
@@ -131,7 +132,10 @@ adjudication rather than another generic implementation request.
 ### 5. Report And Gate
 
 Keep axes separate and order actionable findings by consequence. Say when an
-axis has no findings. Use one disposition: `passed`, `changes required`,
+axis has no findings. Scale the written report to the change: a small
+single-pass review may cover the three axes in one compact report, while
+substantial changes and re-reviews get separate axis reports. Every reported
+finding keeps its `RF-*` ID, evidence, classification, and corrective action. Use one disposition: `passed`, `changes required`,
 `intent decision required`, `adjudication required`, or `waived`. Only open
 blockers produce `changes required`; optional, non-blocking, deferred,
 rejected, and answered items do not prevent passage.
