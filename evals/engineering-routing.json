@@ -7,73 +7,73 @@
             "id": "engineering-greenfield-prototype",
             "split": "train",
             "kind": "trigger",
-            "available_skills": ["prototype-builder", "large-codebase-change"],
+            "available_skills": ["prototype-build", "large-codebase-change"],
             "turns": [{"prompt": "Build a new isolated demo from scratch that proves users can upload a CSV and preview validation errors.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["prototype-builder"], "excluded_skills": ["large-codebase-change"], "behaviors": []}
+            "expected": {"loaded_skills": ["prototype-build"], "excluded_skills": ["large-codebase-change"], "behaviors": []}
         },
         {
             "id": "engineering-large-existing-change",
             "split": "train",
             "kind": "trigger",
-            "available_skills": ["prototype-builder", "large-codebase-change"],
+            "available_skills": ["prototype-build", "large-codebase-change"],
             "turns": [{"prompt": "Implement tenant-aware rate limits in this existing large service with independently deployed clients, including configuration, tests, and rollout compatibility.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["large-codebase-change"], "excluded_skills": ["prototype-builder"], "behaviors": []}
+            "expected": {"loaded_skills": ["large-codebase-change"], "excluded_skills": ["prototype-build"], "behaviors": []}
         },
         {
             "id": "engineering-mid-sized-existing-native",
             "split": "train",
             "kind": "trigger",
-            "available_skills": ["prototype-builder", "large-codebase-change"],
+            "available_skills": ["prototype-build", "large-codebase-change"],
             "turns": [{"prompt": "Rename this local variable in an existing small utility and update its focused test.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": [], "excluded_skills": ["prototype-builder", "large-codebase-change"], "behaviors": []}
+            "expected": {"loaded_skills": [], "excluded_skills": ["prototype-build", "large-codebase-change"], "behaviors": []}
         },
         {
             "id": "engineering-diagnosis-before-change",
             "split": "train",
             "kind": "trigger",
-            "available_skills": ["diagnosing-bugs", "large-codebase-change", "prototype-builder"],
+            "available_skills": ["bug-diagnosis", "large-codebase-change", "prototype-build"],
             "turns": [{"prompt": "This large repository intermittently corrupts cache entries. Reproduce the failure and determine the cause before changing code.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["diagnosing-bugs"], "excluded_skills": ["large-codebase-change", "prototype-builder"], "behaviors": []}
+            "expected": {"loaded_skills": ["bug-diagnosis"], "excluded_skills": ["large-codebase-change", "prototype-build"], "behaviors": []}
         },
         {
             "id": "engineering-isolated-demo-in-monorepo",
             "split": "validation",
             "kind": "trigger",
-            "available_skills": ["prototype-builder", "large-codebase-change"],
+            "available_skills": ["prototype-build", "large-codebase-change"],
             "turns": [{"prompt": "Inside this large monorepo, create a new isolated throwaway demo that tests one WebAssembly integration idea without touching production packages.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["prototype-builder"], "excluded_skills": ["large-codebase-change"], "behaviors": []}
+            "expected": {"loaded_skills": ["prototype-build"], "excluded_skills": ["large-codebase-change"], "behaviors": []}
         },
         {
             "id": "engineering-small-diff-large-repo",
             "split": "validation",
             "kind": "interaction",
-            "available_skills": ["prototype-builder", "large-codebase-change"],
+            "available_skills": ["prototype-build", "large-codebase-change"],
             "turns": [{"prompt": "In this existing large multi-module application, add one optional response field while preserving older clients.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["large-codebase-change"], "excluded_skills": ["prototype-builder"], "behaviors": ["changes-authoritative-boundary", "maps-versioned-consumers", "verifies-old-and-new-clients", "reports-compatibility-risk", "does-not-self-authorize-required-deferrals", "returns-unresolved-required-obligations-as-blocked", "does-not-count-source-lines"]}
+            "expected": {"loaded_skills": ["large-codebase-change"], "excluded_skills": ["prototype-build"], "behaviors": ["changes-authoritative-boundary", "maps-versioned-consumers", "verifies-old-and-new-clients", "reports-compatibility-risk", "does-not-self-authorize-required-deferrals", "returns-unresolved-required-obligations-as-blocked", "does-not-count-source-lines"]}
         },
         {
             "id": "engineering-ai-performance-not-prototype",
             "split": "validation",
             "kind": "trigger",
-            "available_skills": ["ai-performance", "prototype-builder", "large-codebase-change"],
+            "available_skills": ["ai-performance", "prototype-build", "large-codebase-change"],
             "turns": [{"prompt": "Train and compare the two specified classifiers against the accepted evaluation contract and diagnose subgroup errors.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["ai-performance"], "excluded_skills": ["prototype-builder", "large-codebase-change"], "behaviors": []}
+            "expected": {"loaded_skills": ["ai-performance"], "excluded_skills": ["prototype-build", "large-codebase-change"], "behaviors": []}
         },
         {
             "id": "engineering-small-greenfield-script-native",
             "split": "validation",
             "kind": "trigger",
-            "available_skills": ["prototype-builder", "large-codebase-change"],
+            "available_skills": ["prototype-build", "large-codebase-change"],
             "turns": [{"prompt": "Write a tiny standalone script that prints the current directory. No demo or broader app is needed.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": [], "excluded_skills": ["prototype-builder", "large-codebase-change"], "behaviors": []}
+            "expected": {"loaded_skills": [], "excluded_skills": ["prototype-build", "large-codebase-change"], "behaviors": []}
         },
         {
             "id": "engineering-snapshot-audit",
             "split": "validation",
             "kind": "trigger",
-            "available_skills": ["code-review", "technical-research"],
+            "available_skills": ["change-review", "technical-research"],
             "turns": [{"prompt": "Audit this existing cache implementation against its documented invalidation contract. There is no proposed change. Use repository evidence to assess compliance.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["technical-research"], "excluded_skills": ["code-review"], "behaviors": []}
+            "expected": {"loaded_skills": ["technical-research"], "excluded_skills": ["change-review"], "behaviors": []}
         }
     ]
 }

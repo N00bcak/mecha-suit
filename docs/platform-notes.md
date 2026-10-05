@@ -22,7 +22,7 @@
 - Codex reads skill frontmatter `name` and `description` for trigger matching.
 - `agents/openai.yaml` is useful for user-facing skill display and default prompts when metadata materially improves routing or invocation.
 - This toolbox includes explicit-only `agents/openai.yaml` metadata for
-  `interview-me`, `product-co-design`, `low-friction-collaboration`,
+  `user-interview`, `product-co-design`, `low-friction-collaboration`,
   `ai-pipeline`, and `multi-step-governance`.
 - Other collaboration leaves, engineering leaves, and AI execution leaves
   currently rely on frontmatter only.

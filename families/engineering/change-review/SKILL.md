@@ -1,9 +1,9 @@
 ---
-name: code-review
+name: change-review
 description: Review changes for intent fidelity, behavioral correctness and evidence, and maintainability against a fixed point.
 ---
 
-# Code Review
+# Change Review
 
 ## Purpose
 

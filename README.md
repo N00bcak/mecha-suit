@@ -86,7 +86,7 @@ Durable `.mecha` work state requires explicitly invoked `multi-step-governance`.
 Five modes start only when you ask for them:
 
 - `product-co-design` shapes a product concept through a multi-turn exchange.
-- `interview-me` runs a focused, one-question-at-a-time interview.
+- `user-interview` runs a focused, one-question-at-a-time interview.
 - `low-friction-collaboration` makes a complex working session easier to
   follow and resume.
 - `ai-pipeline` frames an AI effort and creates an initial pipeline plan.

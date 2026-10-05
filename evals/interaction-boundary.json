@@ -12,12 +12,12 @@
             "expected": {"loaded_skills": ["product-co-design"], "excluded_skills": [], "behaviors": []}
         },
         {
-            "id": "trigger-explicit-interview-me",
+            "id": "trigger-explicit-user-interview",
             "split": "train",
             "kind": "trigger",
-            "available_skills": ["interview-me", "product-co-design"],
-            "turns": [{"prompt": "Help me uncover what I actually need for this internal tool.", "explicit_invocations": ["interview-me"]}],
-            "expected": {"loaded_skills": ["interview-me"], "excluded_skills": [], "behaviors": []}
+            "available_skills": ["user-interview", "product-co-design"],
+            "turns": [{"prompt": "Help me uncover what I actually need for this internal tool.", "explicit_invocations": ["user-interview"]}],
+            "expected": {"loaded_skills": ["user-interview"], "excluded_skills": [], "behaviors": []}
         },
         {
             "id": "trigger-explicit-low-friction",
@@ -39,15 +39,15 @@
             "id": "trigger-interview-request-without-explicit-mode",
             "split": "train",
             "kind": "trigger",
-            "available_skills": ["interview-me", "product-research"],
+            "available_skills": ["user-interview", "product-research"],
             "turns": [{"prompt": "Could you ask me a few questions about this migration before answering?", "explicit_invocations": []}],
-            "expected": {"loaded_skills": [], "excluded_skills": ["interview-me"], "behaviors": []}
+            "expected": {"loaded_skills": [], "excluded_skills": ["user-interview"], "behaviors": []}
         },
         {
             "id": "trigger-clearer-writing-without-explicit-overlay",
             "split": "train",
             "kind": "trigger",
-            "available_skills": ["low-friction-collaboration", "humanizer"],
+            "available_skills": ["low-friction-collaboration", "prose-voice"],
             "turns": [{"prompt": "Please make your explanation of this stack trace easier to follow.", "explicit_invocations": []}],
             "expected": {"loaded_skills": [], "excluded_skills": ["low-friction-collaboration"], "behaviors": []}
         },
@@ -79,9 +79,9 @@
             "id": "trigger-mention-interview-skill",
             "split": "train",
             "kind": "trigger",
-            "available_skills": ["interview-me"],
-            "turns": [{"prompt": "What does the interview-me skill do, and when would I invoke it?", "explicit_invocations": []}],
-            "expected": {"loaded_skills": [], "excluded_skills": ["interview-me"], "behaviors": []}
+            "available_skills": ["user-interview"],
+            "turns": [{"prompt": "What does the user-interview skill do, and when would I invoke it?", "explicit_invocations": []}],
+            "expected": {"loaded_skills": [], "excluded_skills": ["user-interview"], "behaviors": []}
         },
         {
             "id": "trigger-mention-product-skill",
@@ -127,15 +127,15 @@
             "id": "trigger-question-list-not-interview-loop",
             "split": "validation",
             "kind": "trigger",
-            "available_skills": ["interview-me"],
+            "available_skills": ["user-interview"],
             "turns": [{"prompt": "Give me a checklist of questions to ask vendors during tomorrow's procurement call.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": [], "excluded_skills": ["interview-me"], "behaviors": []}
+            "expected": {"loaded_skills": [], "excluded_skills": ["user-interview"], "behaviors": []}
         },
         {
             "id": "trigger-product-copy-not-co-design",
             "split": "validation",
             "kind": "trigger",
-            "available_skills": ["product-co-design", "humanizer"],
+            "available_skills": ["product-co-design", "prose-voice"],
             "turns": [{"prompt": "Rewrite this finished product announcement so it sounds natural while preserving every claim.", "explicit_invocations": []}],
             "expected": {"loaded_skills": [], "excluded_skills": ["product-co-design"], "behaviors": []}
         },
@@ -175,28 +175,28 @@
             "id": "interaction-interview-one-question",
             "split": "train",
             "kind": "interaction",
-            "available_skills": ["interview-me"],
-            "turns": [{"prompt": "Understand what I need from a home inventory system.", "explicit_invocations": ["interview-me"]}],
-            "expected": {"loaded_skills": ["interview-me"], "excluded_skills": [], "behaviors": ["asks-one-focused-question"]}
+            "available_skills": ["user-interview"],
+            "turns": [{"prompt": "Understand what I need from a home inventory system.", "explicit_invocations": ["user-interview"]}],
+            "expected": {"loaded_skills": ["user-interview"], "excluded_skills": [], "behaviors": ["asks-one-focused-question"]}
         },
         {
             "id": "interaction-two-loops-require-choice",
             "split": "train",
             "kind": "interaction",
-            "available_skills": ["interview-me", "product-co-design"],
-            "turns": [{"prompt": "Help me figure out this product idea.", "explicit_invocations": ["interview-me", "product-co-design"]}],
+            "available_skills": ["user-interview", "product-co-design"],
+            "turns": [{"prompt": "Help me figure out this product idea.", "explicit_invocations": ["user-interview", "product-co-design"]}],
             "expected": {"loaded_skills": [], "excluded_skills": [], "behaviors": ["asks-user-to-choose-one-loop-before-activation"]}
         },
         {
             "id": "interaction-loop-switch-preserves-synthesis",
             "split": "train",
             "kind": "interaction",
-            "available_skills": ["product-co-design", "interview-me"],
+            "available_skills": ["product-co-design", "user-interview"],
             "turns": [
                 {"prompt": "Explore a safer approval flow for finance operations.", "explicit_invocations": ["product-co-design"]},
-                {"prompt": "Switch modes and interview me about the operators' actual workflow.", "explicit_invocations": ["interview-me"]}
+                {"prompt": "Switch modes and interview me about the operators' actual workflow.", "explicit_invocations": ["user-interview"]}
             ],
-            "expected": {"loaded_skills": ["product-co-design", "interview-me"], "excluded_skills": [], "behaviors": ["preserves-compact-synthesis", "switches-loop-ownership"]}
+            "expected": {"loaded_skills": ["product-co-design", "user-interview"], "excluded_skills": [], "behaviors": ["preserves-compact-synthesis", "switches-loop-ownership"]}
         },
         {
             "id": "interaction-overlay-composes-with-task",

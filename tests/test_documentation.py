@@ -109,7 +109,7 @@ class DocumentationTests(unittest.TestCase):
         self.assertEqual(covered - skills, set())
 
     def test_code_review_convergence_contract_is_aligned(self) -> None:
-        review = (ROOT / "families/engineering/code-review/SKILL.md").read_text()
+        review = (ROOT / "families/engineering/change-review/SKILL.md").read_text()
         work_index = (ROOT / "templates/work-index.template.md").read_text()
 
         classifications = {

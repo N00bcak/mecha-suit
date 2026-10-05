@@ -33,7 +33,7 @@ concept that another specialist can execute.
 - Own the primary exchange until the concept is ready, the user pauses or
   cancels, or the user explicitly switches to another loop.
 - Keep at most one interactive loop active. If a request names this skill and
-  `interview-me` without choosing priority, ask which loop should govern before
+  `user-interview` without choosing priority, ask which loop should govern before
   activating either.
 - When the user explicitly switches loops, preserve a compact working model,
   pause this loop, and continue under the requested loop.
@@ -66,7 +66,7 @@ Adapt the loop to the product's maturity:
 Ask a focused question when user judgment materially changes the direction.
 Otherwise proceed with an explicit assumption and invite correction. Do not turn
 ordinary co-design into a compulsory questionnaire. If the user explicitly
-switches to `interview-me`, pause this loop before that loop begins.
+switches to `user-interview`, pause this loop before that loop begins.
 
 ## Constructive Challenge
 

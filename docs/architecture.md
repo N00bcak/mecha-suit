@@ -38,9 +38,9 @@ established-repository changes, greenfield prototypes, difficult diagnosis,
 and review. `web-design` owns web UX and visual direction through verified,
 fixture-backed frontend behavior when interface design is the primary outcome.
 `implementation-spec` owns accepted intent;
-`work-slicing` may decompose it but may not change it. `code-review` is the
+`work-slicing` may decompose it but may not change it. `change-review` is the
 sole owner of technical review judgment and is read-only unless the user
-separately requests fixes. Snapshot audits stay outside `code-review`; bounded
+separately requests fixes. Snapshot audits stay outside `change-review`; bounded
 technical audits fit `technical-research`. Large-repository applicability uses
 repository structure and affected contracts, not a source-line threshold.
 Separate specification and slicing artifacts are conditional on the task, not
@@ -52,8 +52,8 @@ explicit-only `ai-pipeline` skill is a one-time framing manual, not a controller
 that invokes or manages those leaves. The family stops at an evaluated
 solution; production integration remains engineering work.
 
-Writing skills own long-form prose. `humanizer` handles general essays,
-reports, articles, speeches, and ordinary blog posts. `blogpost-writing` owns
+Writing skills own long-form prose. `prose-voice` handles general essays,
+reports, articles, speeches, and ordinary blog posts. `blog-writing` owns
 VitePress-ready posts and CTF writeups for N00bcak's site. Documentation, code
 comments, interface copy, advertisements, social posts, and short messages
 remain native work.

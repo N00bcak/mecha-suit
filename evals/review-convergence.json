@@ -7,105 +7,105 @@
             "id": "review-blocks-evidenced-regression",
             "split": "train",
             "kind": "interaction",
-            "available_skills": ["code-review"],
+            "available_skills": ["change-review"],
             "turns": [{"prompt": "Review this fixed diff. The new retry path demonstrably writes the same payment twice under the supplied concurrent test.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["code-review"], "excluded_skills": [], "behaviors": ["blocks-evidenced-regression", "assigns-stable-finding-id"]}
+            "expected": {"loaded_skills": ["change-review"], "excluded_skills": [], "behaviors": ["blocks-evidenced-regression", "assigns-stable-finding-id"]}
         },
         {
             "id": "review-rejects-speculative-maintainability",
             "split": "train",
             "kind": "interaction",
-            "available_skills": ["code-review"],
+            "available_skills": ["change-review"],
             "turns": [{"prompt": "Re-review this small diff. The previous reviewer demanded a plugin interface because the module might need several implementations someday, but gave no current use or repository rule.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["code-review"], "excluded_skills": [], "behaviors": ["rejects-unsupported-claim", "does-not-block-speculation"]}
+            "expected": {"loaded_skills": ["change-review"], "excluded_skills": [], "behaviors": ["rejects-unsupported-claim", "does-not-block-speculation"]}
         },
         {
             "id": "review-preserves-equivalent-choice",
             "split": "train",
             "kind": "interaction",
-            "available_skills": ["code-review"],
+            "available_skills": ["change-review"],
             "turns": [{"prompt": "Review this implementation. Both the existing loop and the reviewer's proposed map operation satisfy the contract and local style with equivalent behavior and cost.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["code-review"], "excluded_skills": [], "behaviors": ["preserves-implementer-choice", "marks-preference-non-blocking"]}
+            "expected": {"loaded_skills": ["change-review"], "excluded_skills": [], "behaviors": ["preserves-implementer-choice", "marks-preference-non-blocking"]}
         },
         {
             "id": "review-defers-safe-preexisting-defect",
             "split": "train",
             "kind": "interaction",
-            "available_skills": ["code-review"],
+            "available_skills": ["change-review"],
             "turns": [{"prompt": "While reviewing this bounded logging change, note that an untouched neighboring parser has a serious old bug. The change neither reaches nor worsens it and remains safe to ship.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["code-review"], "excluded_skills": [], "behaviors": ["defers-safe-preexisting-defect", "records-scope-relation"]}
+            "expected": {"loaded_skills": ["change-review"], "excluded_skills": [], "behaviors": ["defers-safe-preexisting-defect", "records-scope-relation"]}
         },
         {
             "id": "review-requests-check-for-high-risk-uncertainty",
             "split": "validation",
             "kind": "interaction",
-            "available_skills": ["code-review"],
+            "available_skills": ["change-review"],
             "turns": [{"prompt": "Review this credential migration. The diff does not show whether rollback preserves encrypted values, and no rollback check was run; do not presume a repair before determining the behavior.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["code-review"], "excluded_skills": [], "behaviors": ["requests-decisive-check", "does-not-presume-code-fix"]}
+            "expected": {"loaded_skills": ["change-review"], "excluded_skills": [], "behaviors": ["requests-decisive-check", "does-not-presume-code-fix"]}
         },
         {
             "id": "review-accepts-remediation-rebuttal",
             "split": "validation",
             "kind": "interaction",
-            "available_skills": ["code-review"],
+            "available_skills": ["change-review"],
             "turns": [
                 {"prompt": "Review this fixed diff and record finding RF-1 about the claimed null dereference.", "explicit_invocations": []},
                 {"prompt": "The implementer rebutted RF-1 with a type invariant and a focused test proving the value cannot be null. Reconcile the response.", "explicit_invocations": []}
             ],
-            "expected": {"loaded_skills": ["code-review"], "excluded_skills": [], "behaviors": ["accepts-counter-evidence", "does-not-repeat-rebutted-assertion"]}
+            "expected": {"loaded_skills": ["change-review"], "excluded_skills": [], "behaviors": ["accepts-counter-evidence", "does-not-repeat-rebutted-assertion"]}
         },
         {
             "id": "review-preserves-id-and-labels-regression",
             "split": "validation",
             "kind": "interaction",
-            "available_skills": ["code-review"],
+            "available_skills": ["change-review"],
             "turns": [
                 {"prompt": "Review this diff and record RF-1 for the failing timeout behavior.", "explicit_invocations": []},
                 {"prompt": "Re-review the attempted fix. The timeout still fails, and the remediation separately introduced a resource leak.", "explicit_invocations": []}
             ],
-            "expected": {"loaded_skills": ["code-review"], "excluded_skills": [], "behaviors": ["preserves-finding-identity", "assigns-new-id-to-remediation-regression"]}
+            "expected": {"loaded_skills": ["change-review"], "excluded_skills": [], "behaviors": ["preserves-finding-identity", "assigns-new-id-to-remediation-regression"]}
         },
         {
             "id": "review-routes-unchanged-dispute",
             "split": "validation",
             "kind": "interaction",
-            "available_skills": ["code-review", "second-opinion"],
+            "available_skills": ["change-review", "second-opinion"],
             "turns": [
                 {"prompt": "Re-review RF-3. The implementer supplied counter-evidence, while the reviewer repeats the original assertion without a new check or evidence.", "explicit_invocations": []}
             ],
-            "expected": {"loaded_skills": ["code-review"], "excluded_skills": ["second-opinion"], "behaviors": ["routes-stalemate-to-adjudication", "does-not-bounce-to-implementation"]}
+            "expected": {"loaded_skills": ["change-review"], "excluded_skills": ["second-opinion"], "behaviors": ["routes-stalemate-to-adjudication", "does-not-bounce-to-implementation"]}
         },
         {
             "id": "review-blocks-unsafe-preexisting-defect",
             "split": "validation",
             "kind": "interaction",
-            "available_skills": ["code-review"],
+            "available_skills": ["change-review"],
             "turns": [{"prompt": "Review this deployment change. It activates a pre-existing credential bug on the required production path, so the change cannot ship safely unless that defect is addressed.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["code-review"], "excluded_skills": [], "behaviors": ["blocks-unsafe-preexisting-defect", "records-scope-relation"]}
+            "expected": {"loaded_skills": ["change-review"], "excluded_skills": [], "behaviors": ["blocks-unsafe-preexisting-defect", "records-scope-relation"]}
         },
         {
             "id": "review-routes-intent-change",
             "split": "validation",
             "kind": "interaction",
-            "available_skills": ["code-review", "implementation-spec"],
+            "available_skills": ["change-review", "implementation-spec"],
             "turns": [{"prompt": "During review, require offline synchronization even though the accepted contract explicitly excludes it and no authorized revision exists.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["code-review"], "excluded_skills": ["implementation-spec"], "behaviors": ["routes-intent-change-to-user", "does-not-create-implementation-blocker"]}
+            "expected": {"loaded_skills": ["change-review"], "excluded_skills": ["implementation-spec"], "behaviors": ["routes-intent-change-to-user", "does-not-create-implementation-blocker"]}
         },
         {
             "id": "review-passes-with-optional-items",
             "split": "validation",
             "kind": "interaction",
-            "available_skills": ["code-review"],
+            "available_skills": ["change-review"],
             "turns": [{"prompt": "Re-review the completed remediation. All evidenced blockers are resolved; only a naming preference and an optional future refactor remain.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["code-review"], "excluded_skills": [], "behaviors": ["passes-with-only-non-blocking-items", "does-not-request-another-cycle"]}
+            "expected": {"loaded_skills": ["change-review"], "excluded_skills": [], "behaviors": ["passes-with-only-non-blocking-items", "does-not-request-another-cycle"]}
         },
         {
             "id": "review-empty-diff",
             "split": "validation",
             "kind": "interaction",
-            "available_skills": ["code-review"],
-            "turns": [{"prompt": "Review the changes against HEAD. The working tree and index match HEAD.", "explicit_invocations": ["code-review"]}],
-            "expected": {"loaded_skills": ["code-review"], "excluded_skills": [], "behaviors": ["returns-nothing-to-review", "does-not-request-artificial-change", "does-not-issue-passing-disposition"]}
+            "available_skills": ["change-review"],
+            "turns": [{"prompt": "Review the changes against HEAD. The working tree and index match HEAD.", "explicit_invocations": ["change-review"]}],
+            "expected": {"loaded_skills": ["change-review"], "excluded_skills": [], "behaviors": ["returns-nothing-to-review", "does-not-request-artificial-change", "does-not-issue-passing-disposition"]}
         }
     ]
 }

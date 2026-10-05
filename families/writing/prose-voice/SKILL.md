@@ -1,9 +1,9 @@
 ---
-name: humanizer
+name: prose-voice
 description: Write and revise long-form prose with a natural, genre-aware voice while preserving meaning, evidence, and authorial intent.
 ---
 
-# Humanizer
+# Prose Voice
 
 ## Purpose
 
@@ -20,7 +20,7 @@ prose must not come from reducing the reasoning.
 - Short messages, advertisements, marketing copy, or social posts.
 - Determining whether a person or model authored a text. Style is not proof of
   provenance.
-- Posts intended for N00bcak's site or voice; use `blogpost-writing`.
+- Posts intended for N00bcak's site or voice; use `blog-writing`.
 - Do not use, spawn, request, or rely on subagents.
 
 ## Needs

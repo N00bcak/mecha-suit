@@ -1,9 +1,9 @@
 ---
-name: diagnosing-bugs
+name: bug-diagnosis
 description: Diagnose difficult bugs and regressions through a tight reproducer, falsifiable hypotheses, and regression evidence.
 ---
 
-# Diagnosing Bugs
+# Bug Diagnosis
 
 ## Purpose
 

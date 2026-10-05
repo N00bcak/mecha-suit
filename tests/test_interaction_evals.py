@@ -60,7 +60,7 @@ class InteractionEvaluationTests(unittest.TestCase):
             self.assertIn(name, cases)
         self.assertIn("multi-step-governance", cases["adhoc-plan-execution"]["expected"]["excluded_skills"])
         self.assertEqual(cases["explicit-governance-record"]["turns"][0]["explicit_invocations"], ["multi-step-governance"])
-        self.assertIn("code-review", cases["engineering-snapshot-audit"]["expected"]["excluded_skills"])
+        self.assertIn("change-review", cases["engineering-snapshot-audit"]["expected"]["excluded_skills"])
         self.assertIn("does-not-issue-passing-disposition", cases["review-empty-diff"]["expected"]["behaviors"])
 
     def test_corpus_rejects_unknown_skill(self) -> None:
@@ -80,7 +80,7 @@ class InteractionEvaluationTests(unittest.TestCase):
             for skill in case["expected"]["loaded_skills"]
         }
         self.assertTrue(
-            {"prototype-builder", "large-codebase-change", "diagnosing-bugs"}
+            {"prototype-build", "large-codebase-change", "bug-diagnosis"}
             <= loaded
         )
         self.assertTrue(any(not case["expected"]["loaded_skills"] for case in cases))
@@ -90,7 +90,7 @@ class InteractionEvaluationTests(unittest.TestCase):
         self.assertEqual(mid_sized["expected"]["loaded_skills"], [])
         self.assertEqual(
             set(mid_sized["expected"]["excluded_skills"]),
-            {"prototype-builder", "large-codebase-change"},
+            {"prototype-build", "large-codebase-change"},
         )
 
         compatibility = by_id["engineering-small-diff-large-repo"]

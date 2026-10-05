@@ -53,7 +53,7 @@
             "turns": ["Audit access.py against CONTRACT.md using repository evidence. This is an audit of the current implementation; do not change files."],
             "allowed_changes": [],
             "checks": [],
-            "manual_review": ["Finds that another authenticated user is incorrectly authorized, with a concrete counterexample.", "Does not demand a diff, create a change, or issue a PR merge disposition.", "Uses technical research or native inspection rather than the diff-only code-review workflow."]
+            "manual_review": ["Finds that another authenticated user is incorrectly authorized, with a concrete counterexample.", "Does not demand a diff, create a change, or issue a PR merge disposition.", "Uses technical research or native inspection rather than the diff-only change-review workflow."]
         },
         {
             "id": "diff-review",

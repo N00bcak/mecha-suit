@@ -17,7 +17,7 @@ requirement or source; no diff is required.
 - Do not own user, market, workflow, or product-alternative research; use
   `product-research`.
 - Do not diagnose a reported failure whose main need is a reproducer and cause;
-  use `diagnosing-bugs`.
+  use `bug-diagnosis`.
 - Do not implement the researched change unless separately requested.
 - Do not spawn, request, or rely on subagents.
 

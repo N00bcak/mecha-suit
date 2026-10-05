@@ -13,7 +13,7 @@ large repository.
 ## Do Not Use
 
 - Contained work in small repositories; use native host behavior.
-- Isolated greenfield work; use `prototype-builder`.
+- Isolated greenfield work; use `prototype-build`.
 - Uncertain-cause bugs; diagnose first.
 - Work whose primary outcome is AI or CTF analysis.
 - Do not use, spawn, request, or rely on subagents.

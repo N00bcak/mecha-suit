@@ -11,7 +11,7 @@ shape of the conversation, so the agent will not enter them by accident.
 | Skill | What you bring | What you get |
 | --- | --- | --- |
 | `product-co-design` **(ask for it)** | An idea, audience, constraints, or even a half-formed problem | A pressure-tested product concept, key choices, risks, and next step |
-| `interview-me` **(ask for it)** | A topic you want to think through | A focused one-question-at-a-time interview and a useful synthesis |
+| `user-interview` **(ask for it)** | A topic you want to think through | A focused one-question-at-a-time interview and a useful synthesis |
 | `low-friction-collaboration` **(ask for it)** | A complex task or conversation | The same depth of work, explained more clearly and kept easy to resume |
 | `multi-step-governance` **(ask for it)** | An end-to-end outcome with dependent stages | An authorized durable frontier, evidence, and next task shape |
 | `product-research` | A product question, audience, and decision to inform | Evidence-backed findings, limitations, and decision implications |
@@ -30,9 +30,9 @@ shape of the conversation, so the agent will not enter them by accident.
 | `work-slicing` | An accepted implementation contract | The next verifiable slice, its dependencies, and its completion condition |
 | `web-design` | Web content, tasks, constraints, and an existing project or delivery target | Three contextual design directions when needed, then a responsive, accessible, fixture-backed frontend |
 | `large-codebase-change` | A requested change in a large existing repository | A small, idiomatic, tested, PR-ready diff |
-| `prototype-builder` | A core idea and the behavior it should demonstrate | A runnable vertical slice, basic verification, and clearly named shortcuts |
-| `diagnosing-bugs` | The symptom, expected behavior, and reproduction clues | A reproducer, tested hypotheses, root cause, and—when requested—a verified fix |
-| `code-review` | A bounded non-empty diff, intended behavior, and any prior review findings | Evidence-gated findings, remediation reconciliation, and a pass or corrective disposition |
+| `prototype-build` | A core idea and the behavior it should demonstrate | A runnable vertical slice, basic verification, and clearly named shortcuts |
+| `bug-diagnosis` | The symptom, expected behavior, and reproduction clues | A reproducer, tested hypotheses, root cause, and—when requested—a verified fix |
+| `change-review` | A bounded non-empty diff, intended behavior, and any prior review findings | Evidence-gated findings, remediation reconciliation, and a pass or corrective disposition |
 
 A clear request, approved plan, or project criteria can be enough for ordinary
 implementation; specification and slicing are separate outcomes when useful.
@@ -54,5 +54,5 @@ Snapshot audits do not require a diff: bounded technical audits fit
 
 | Skill | What you bring | What you get |
 | --- | --- | --- |
-| `humanizer` | A writing goal or draft, audience, evidence, and desired voice | Natural long-form prose or a faithful revision that preserves meaning |
-| `blogpost-writing` | A post idea, source material, and author-owned experience | VitePress-ready blog or CTF writeup Markdown in N00bcak's voice |
+| `prose-voice` | A writing goal or draft, audience, evidence, and desired voice | Natural long-form prose or a faithful revision that preserves meaning |
+| `blog-writing` | A post idea, source material, and author-owned experience | VitePress-ready blog or CTF writeup Markdown in N00bcak's voice |

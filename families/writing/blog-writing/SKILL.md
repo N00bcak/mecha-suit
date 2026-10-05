@@ -1,9 +1,9 @@
 ---
-name: blogpost-writing
+name: blog-writing
 description: Author VitePress-ready blog posts and CTF writeups in N00bcak's evidence-grounded, adaptable personal voice.
 ---
 
-# Blogpost Writing
+# Blog Writing
 
 ## Purpose
 
@@ -17,7 +17,7 @@ carry the technical reasoning, not replace it.
 ## Do Not Use
 
 - Generic long-form prose with no connection to this site or voice; use
-  `humanizer`.
+  `prose-voice`.
 - Inventing personal experiences, opinions, experiments, results, challenge
   steps, or conversations.
 - Publishing, committing, or deploying the post unless separately requested.

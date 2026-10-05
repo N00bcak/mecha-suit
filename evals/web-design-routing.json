@@ -7,17 +7,17 @@
             "id": "web-design-astro-content-experience",
             "split": "train",
             "kind": "trigger",
-            "available_skills": ["web-design", "prototype-builder"],
+            "available_skills": ["web-design", "prototype-build"],
             "turns": [{"prompt": "Redesign and implement this Astro site for a public-transit history archive. Derive the visual direction from its maps, timetables, and oral-history material rather than using a generic editorial theme.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["web-design"], "excluded_skills": ["prototype-builder"], "behaviors": []}
+            "expected": {"loaded_skills": ["web-design"], "excluded_skills": ["prototype-build"], "behaviors": []}
         },
         {
             "id": "web-design-standalone-infographic",
             "split": "train",
             "kind": "trigger",
-            "available_skills": ["web-design", "prototype-builder"],
+            "available_skills": ["web-design", "prototype-build"],
             "turns": [{"prompt": "Create a standalone responsive HTML interactive that lets readers explore how a mangrove shoreline changes across wet and dry seasons. The visual form and palette should come from the subject, and the controls must work with realistic fixture data.", "explicit_invocations": []}],
-            "expected": {"loaded_skills": ["web-design"], "excluded_skills": ["prototype-builder"], "behaviors": []}
+            "expected": {"loaded_skills": ["web-design"], "excluded_skills": ["prototype-build"], "behaviors": []}
         },
         {
             "id": "web-design-operational-application",
@@ -63,12 +63,12 @@
             "id": "web-design-concepts-before-implementation",
             "split": "validation",
             "kind": "interaction",
-            "available_skills": ["web-design", "prototype-builder"],
+            "available_skills": ["web-design", "prototype-build"],
             "turns": [
                 {"prompt": "Design and implement a VitePress reference site for field technicians. There is no visual direction yet; use the actual repair procedures and equipment context rather than a standard documentation theme.", "explicit_invocations": []},
                 {"prompt": "I select direction two, including its proposed navigation hierarchy. Implement that direction with realistic fixtures and verify it at narrow and wide widths.", "explicit_invocations": []}
             ],
-            "expected": {"loaded_skills": ["web-design"], "excluded_skills": ["prototype-builder"], "behaviors": ["researches-context-before-design", "renders-exactly-three-materially-different-comps", "keeps-comps-outside-production-path", "waits-for-direction-selection", "implements-only-selected-direction", "discloses-fixture-boundary", "covers-material-interface-states", "verifies-responsive-behavior", "checks-wcag-2-2-aa"]}
+            "expected": {"loaded_skills": ["web-design"], "excluded_skills": ["prototype-build"], "behaviors": ["researches-context-before-design", "renders-exactly-three-materially-different-comps", "keeps-comps-outside-production-path", "waits-for-direction-selection", "implements-only-selected-direction", "discloses-fixture-boundary", "covers-material-interface-states", "verifies-responsive-behavior", "checks-wcag-2-2-aa"]}
         }
     ]
 }

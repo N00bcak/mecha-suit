@@ -13,7 +13,7 @@ future concepts in `docs/architecture.md`.
 
 Task skills are the default. Overlays and loops declare their contract in the
 body and require explicit-invocation metadata. Do not add a frontmatter field
-or registry for interaction lifetime.
+adapters. Do not add a frontmatter field or registry for interaction lifetime.
 
 ## Add or revise a skill
 
@@ -80,11 +80,11 @@ When the lifecycle contract changes, update
 `templates/work-index.template.md`, focused tests, architecture, and platform
 notes.
 
-For code-review iterations, keep the detailed `RF-*` finding ledger in a linked
+For change-review iterations, keep the detailed `RF-*` finding ledger in a linked
 report. The work index holds only the review fixed point, disposition, and open
 blocker summary. Preserve finding IDs across remediation, distinguish validity
 from current actionability, and do not turn preferences or unsupported claims
-into lifecycle blockers. `code-review` owns those judgments; the governor only
+into lifecycle blockers. `change-review` owns those judgments; the governor only
 records the report outcome and prevents closure while recorded blockers remain
 unless the user explicitly waives them.
 

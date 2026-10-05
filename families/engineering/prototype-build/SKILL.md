@@ -1,9 +1,9 @@
 ---
-name: prototype-builder
+name: prototype-build
 description: Build and verify isolated greenfield prototypes, demos, tools, or apps around one core outcome.
 ---
 
-# Prototype Builder
+# Prototype Build
 
 ## Purpose
 

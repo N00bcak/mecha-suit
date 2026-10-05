@@ -1,6 +1,0 @@
-interface:
-    display_name: "Interview Me"
-    short_description: "Run a focused user interview"
-    default_prompt: "Use $interview-me to interview me about this topic one question at a time."
-policy:
-    allow_implicit_invocation: false

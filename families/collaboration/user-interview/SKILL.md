@@ -1,9 +1,9 @@
 ---
-name: interview-me
+name: user-interview
 description: Interview the user one focused question at a time.
 ---
 
-# Interview Me
+# User Interview
 
 ## Purpose
 
@@ -32,7 +32,7 @@ or specialist.
 
 ## Interactive Loop Contract
 
-- Activate only after the user explicitly invokes `interview-me` or directly
+- Activate only after the user explicitly invokes `user-interview` or directly
   asks to use it in the current session.
 - Own the primary exchange until synthesis is complete, the user pauses or
   cancels, or the user explicitly switches to another loop.
