@@ -154,6 +154,23 @@ class SkillValidationTests(unittest.TestCase):
                 validate_repository_contract(skill),
             )
 
+    def test_explicit_declaration_must_be_visible_to_installer(self) -> None:
+        accepted = (
+            "metadata:\n    invocation: \"explicit\"\n",
+            "metadata:\n    invocation: 'explicit'\n",
+            "metadata:\n    invocation: explicit  # manual only\n",
+        )
+        for index, frontmatter in enumerate(accepted):
+            with self.subTest(frontmatter=frontmatter), tempfile.TemporaryDirectory() as directory:
+                skill = self.make_skill(Path(directory), name=f"block-{index}", extra_frontmatter=frontmatter)
+                self.assertEqual(validate_repository_contract(skill), [])
+        with tempfile.TemporaryDirectory() as directory:
+            skill = self.make_skill(Path(directory), extra_frontmatter="metadata: {invocation: explicit}\n")
+            self.assertIn(
+                "declare metadata.invocation: explicit in block style so install.sh can enforce it",
+                validate_repository_contract(skill),
+            )
+
     def test_portable_skill_rejects_unknown_invocation_policy(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             skill = self.make_skill(

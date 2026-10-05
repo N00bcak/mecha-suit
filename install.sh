@@ -226,7 +226,14 @@ provision_global_instructions() {
 # The portable metadata.invocation declaration is inert until a host adapter
 # enforces it; read it from frontmatter only.
 explicit_invocation() {
-    awk 'NR == 1 { next } /^---/ { exit } /^[[:space:]]+invocation:[[:space:]]*explicit[[:space:]]*$/ { found = 1 } END { exit !found }' "$1/SKILL.md"
+    # Accept the forms the validator allows: optional quotes and a trailing comment.
+    awk -v q="'" '
+        BEGIN { pattern = "^[[:space:]]+invocation:[[:space:]]*[\"" q "]?explicit[\"" q "]?[[:space:]]*(#.*)?$" }
+        NR == 1 { next }
+        /^---/ { exit }
+        $0 ~ pattern { found = 1 }
+        END { exit !found }
+    ' "$1/SKILL.md"
 }
 
 # Render a Claude copy of SKILL.md with host frontmatter; every other entry

@@ -42,6 +42,9 @@ INTERACTION_MARKERS = {
     "Session Overlay Contract",
     "Interactive Loop Contract",
 }
+# install.sh detects explicit skills with this line pattern, so the YAML
+# declaration must take a form it can see.
+INSTALLER_EXPLICIT_RE = re.compile(r"""^\s+invocation:\s*(["']?)explicit\1\s*(#.*)?$""", re.MULTILINE)
 RUNTIME_REFERENCE_RE = re.compile(r"`((?:\.{1,2}/|references/)[^`]+\.md)`")
 
 
@@ -153,6 +156,12 @@ def validate_repository_contract(skill_path: Path) -> list[str]:
         failures.append("skill declares multiple interaction contracts")
     if declared_markers and not explicit_invocation(frontmatter):
         failures.append("interaction skill must declare metadata.invocation: explicit")
+    if explicit_invocation(frontmatter):
+        raw_frontmatter = (skill_path / "SKILL.md").read_text(encoding="utf-8").split("---", 2)[1]
+        if not INSTALLER_EXPLICIT_RE.search(raw_frontmatter):
+            failures.append(
+                "declare metadata.invocation: explicit in block style so install.sh can enforce it"
+            )
     return failures
 
 

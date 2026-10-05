@@ -634,6 +634,9 @@ claude_install_checks() {
     local claude_skills="${CLAUDE_CONFIG_DIR}/skills"
     local rendered
     local name
+    local expected_explicit
+    local rendered_explicit
+    local render_root="${CLAUDE_CONFIG_DIR}/.mecha-render/families"
 
     assert_template_copy "${CLAUDE_CONFIG_DIR}/CLAUDE.md"
 
@@ -650,8 +653,38 @@ claude_install_checks() {
     done
     rendered="$(find "${CLAUDE_CONFIG_DIR}/.mecha-render/families" -mindepth 2 -maxdepth 2 -type d | wc -l | tr -d ' ')"
     [ "${rendered}" = 4 ] || fail "expected 4 rendered Claude adapters, got ${rendered}"
+    # The installer and validator must agree on which skills are explicit.
+    expected_explicit="$(cd "${ROOT_DIR}" && PYTHONDONTWRITEBYTECODE=1 "${DEV_PYTHON}" -c '
+import sys
+from pathlib import Path
+sys.path.insert(0, "scripts")
+from validate_skills import explicit_invocation, read_skill
+for skill in sorted(Path("families").glob("*/*/SKILL.md")):
+    frontmatter = read_skill(skill.parent)[0]
+    if frontmatter and explicit_invocation(frontmatter):
+        print(skill.parent.name)
+' | sort)"
+    rendered_explicit="$(find "${CLAUDE_CONFIG_DIR}/.mecha-render/families" -mindepth 2 -maxdepth 2 -type d -exec basename {} \; | sort)"
+    [ "${expected_explicit}" = "${rendered_explicit}" ] || fail "installer and validator disagree on explicit skills"
+    # Both detectors must agree on every declaration form, not just the repo's.
+    # Bash 3.2 cannot source a process substitution, so evaluate the function.
+    eval "$(sed -n '/^explicit_invocation()/,/^}/p' "${ROOT_DIR}/install.sh")"
+    mkdir -p "${tmp_root}/explicit-forms"
+    for value in 'explicit' '"explicit"' "'explicit'" 'explicit  # manual only' 'manual'; do
+        printf -- '---\nname: forms\nmetadata:\n    invocation: %s\n---\n' "${value}" >"${tmp_root}/explicit-forms/SKILL.md"
+        installer_says=no
+        explicit_invocation "${tmp_root}/explicit-forms" && installer_says=yes
+        validator_says="$(cd "${ROOT_DIR}" && PYTHONDONTWRITEBYTECODE=1 "${DEV_PYTHON}" -c '
+import sys
+sys.path.insert(0, "scripts")
+from validate_skills import INSTALLER_EXPLICIT_RE
+print("yes" if INSTALLER_EXPLICIT_RE.search(open(sys.argv[1]).read().split("---", 2)[1]) else "no")
+' "${tmp_root}/explicit-forms/SKILL.md")"
+        [ "${installer_says}" = "${validator_says}" ] || fail "installer and validator disagree on invocation: ${value}"
+    done
     PYTHONDONTWRITEBYTECODE=1 "${DEV_PYTHON}" "${ROOT_DIR}/scripts/validate_skills.py" --claude-installed-root "${claude_skills}" >"${tmp_root}/validate-claude.out"
     grep -Fq '[ok] Claude adapters' "${tmp_root}/validate-claude.out" || fail "Claude adapters were not validated"
+
 }
 
 use_case_checks() {
