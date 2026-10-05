@@ -30,6 +30,12 @@ assert_contains_no_files() {
     fi
 }
 
+assert_template_copy() {
+    local path="$1"
+    [ -f "${path}" ] && [ ! -L "${path}" ] || fail "expected ${path} to be a regular file"
+    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${path}" || fail "expected ${path} to match the global template"
+}
+
 assert_symlink_to() {
     local link_path="$1"
     local expected_target="$2"
@@ -410,6 +416,7 @@ install_uninstall_checks() {
     trap "rm -rf '${tmp_root}'" EXIT
     default_codex_home="${tmp_root}/codex-config"
     export CODEX_HOME="${default_codex_home}"
+    export CLAUDE_CONFIG_DIR="${tmp_root}/claude"
 
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" >"${tmp_root}/install-all.out"
     cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${default_codex_home}/AGENTS.md" || fail "default global instructions were not installed"
@@ -434,10 +441,26 @@ install_uninstall_checks() {
     assert_symlink_to "${tmp_root}/skills/blog-writing" "${ROOT_DIR}/families/writing/blog-writing"
     PYTHONDONTWRITEBYTECODE=1 "${DEV_PYTHON}" "${ROOT_DIR}/scripts/validate_skills.py" --installed-root "${tmp_root}/skills" >"${tmp_root}/validate-installed.out"
     grep -Fq '[ok] installed runtime references' "${tmp_root}/validate-installed.out" || fail "installed runtime references were not validated"
+    claude_install_checks "${tmp_root}"
 
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" >"${tmp_root}/install-all-again.out"
     grep -Eq '\[ok\] prototype-build already installed' "${tmp_root}/install-all-again.out" || fail "install is not idempotent"
     grep -Eq '\[ok\] global instructions already installed' "${tmp_root}/install-all-again.out" || fail "global instruction install is not idempotent"
+    if grep -Ev '^\[ok\]' "${tmp_root}/install-all-again.out" | grep -q .; then
+        fail "second install changed state"
+    fi
+    ln -s "${ROOT_DIR}/families/engineering/renamed-skill" "${tmp_root}/skills/renamed-skill"
+    ln -s "${CLAUDE_CONFIG_DIR}/.mecha-render/families/collaboration/renamed-skill" "${CLAUDE_CONFIG_DIR}/skills/renamed-skill"
+    ln -s "${tmp_root}/elsewhere" "${tmp_root}/skills/foreign-skill"
+    MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" >"${tmp_root}/install-prune.out"
+    assert_not_exists "${tmp_root}/skills/renamed-skill"
+    assert_not_exists "${CLAUDE_CONFIG_DIR}/skills/renamed-skill"
+    [ -L "${tmp_root}/skills/foreign-skill" ] || fail "install pruned an unrelated dangling link"
+    [ "$(grep -c '^\[prune\]' "${tmp_root}/install-prune.out")" = 2 ] || fail "stale managed links were not reported"
+    rm "${tmp_root}/skills/foreign-skill"
+    printf 'stale\n' >"${CLAUDE_CONFIG_DIR}/.mecha-render/families/collaboration/user-interview/SKILL.md"
+    MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" user-interview >"${tmp_root}/install-rerender.out"
+    grep -Fq 'disable-model-invocation: true' "${CLAUDE_CONFIG_DIR}/skills/user-interview/SKILL.md" || fail "install did not re-render a stale Claude adapter"
 
     mkdir -p "${tmp_root}/custom/skills"
     custom_prompt="custom global instructions for ${tmp_root}"
@@ -493,7 +516,12 @@ install_uninstall_checks() {
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/uninstall.sh" prototype-build >"${tmp_root}/uninstall-selected.out"
     assert_not_exists "${tmp_root}/skills/prototype-build"
 
+    ln -s "${ROOT_DIR}/families/writing/renamed-skill" "${tmp_root}/skills/renamed-skill"
+    ln -s "${tmp_root}/elsewhere" "${tmp_root}/skills/foreign-skill"
     MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/uninstall.sh" >"${tmp_root}/uninstall-all.out"
+    assert_not_exists "${tmp_root}/skills/renamed-skill"
+    [ -L "${tmp_root}/skills/foreign-skill" ] || fail "uninstall pruned an unrelated dangling link"
+    rm "${tmp_root}/skills/foreign-skill"
     assert_not_exists "${tmp_root}/skills/prototype-build"
     assert_not_exists "${tmp_root}/skills/user-interview"
     assert_not_exists "${tmp_root}/skills/low-friction-collaboration"
@@ -513,6 +541,26 @@ install_uninstall_checks() {
     assert_not_exists "${tmp_root}/skills/ai-performance"
     assert_not_exists "${tmp_root}/skills/prose-voice"
     assert_not_exists "${tmp_root}/skills/blog-writing"
+    assert_not_exists "${CLAUDE_CONFIG_DIR}/skills/prototype-build"
+    assert_not_exists "${CLAUDE_CONFIG_DIR}/skills/user-interview"
+    assert_not_exists "${CLAUDE_CONFIG_DIR}/CLAUDE.md"
+    assert_not_exists "${CLAUDE_CONFIG_DIR}/.mecha-render"
+
+    MECHA_SKILL_ROOT="${tmp_root}/no-claude" CLAUDE_CONFIG_DIR="${tmp_root}/no-claude-config" "${ROOT_DIR}/install.sh" --no-claude prototype-build >"${tmp_root}/install-no-claude.out"
+    assert_symlink_to "${tmp_root}/no-claude/prototype-build" "${ROOT_DIR}/families/engineering/prototype-build"
+    assert_not_exists "${tmp_root}/no-claude-config"
+
+    mkdir -p "${tmp_root}/custom-claude"
+    printf 'custom claude instructions\n' >"${tmp_root}/custom-claude/CLAUDE.md"
+    if MECHA_SKILL_ROOT="${tmp_root}/custom-claude-skills" CLAUDE_CONFIG_DIR="${tmp_root}/custom-claude" "${ROOT_DIR}/install.sh" prototype-build >"${tmp_root}/install-custom-claude-abort.out" 2>&1; then
+        fail "install should abort when custom Claude instructions exist"
+    fi
+    grep -Fq 'custom claude instructions' "${tmp_root}/custom-claude/CLAUDE.md" || fail "install modified custom Claude instructions"
+    MECHA_SKILL_ROOT="${tmp_root}/custom-claude-skills" CLAUDE_CONFIG_DIR="${tmp_root}/custom-claude" "${ROOT_DIR}/install.sh" --use-custom-global-instructions prototype-build >"${tmp_root}/install-custom-claude-replace.out"
+    assert_template_copy "${tmp_root}/custom-claude/CLAUDE.md"
+    backup_path="$(sed -n 's/^\[backup\] previous Claude global instructions -> //p' "${tmp_root}/install-custom-claude-replace.out")"
+    grep -Fq 'custom claude instructions' "${backup_path}" || fail "custom Claude instructions were not backed up"
+    rm -f "${backup_path}"
 
     MECHA_SKILL_ROOT= CODEX_HOME="${tmp_root}/codex-home" HOME="${tmp_root}/codex-user" "${ROOT_DIR}/install.sh" prototype-build >"${tmp_root}/install-codex-home.out"
     assert_symlink_to "${tmp_root}/codex-user/.agents/skills/prototype-build" "${ROOT_DIR}/families/engineering/prototype-build"
@@ -524,6 +572,9 @@ install_uninstall_checks() {
     MECHA_SKILL_ROOT= CODEX_HOME= HOME="${tmp_root}/home" "${ROOT_DIR}/install.sh" prototype-build >"${tmp_root}/install-home-default.out"
     assert_symlink_to "${tmp_root}/home/.agents/skills/prototype-build" "${ROOT_DIR}/families/engineering/prototype-build"
     cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${tmp_root}/home/.codex/AGENTS.md" || fail "HOME global instructions were not installed under .codex"
+    MECHA_SKILL_ROOT= CODEX_HOME= CLAUDE_CONFIG_DIR= HOME="${tmp_root}/claude-home" "${ROOT_DIR}/install.sh" prototype-build >"${tmp_root}/install-claude-home-default.out"
+    assert_symlink_to "${tmp_root}/claude-home/.claude/skills/prototype-build" "${ROOT_DIR}/families/engineering/prototype-build"
+    assert_template_copy "${tmp_root}/claude-home/.claude/CLAUDE.md"
 
     mkdir -p "${tmp_root}/legacy-codex/skills"
     ln -s "${ROOT_DIR}/families/engineering/prototype-build" "${tmp_root}/legacy-codex/skills/prototype-build"
@@ -547,7 +598,33 @@ install_uninstall_checks() {
     pass "install and uninstall behavior"
     rm -rf "${tmp_root}"
     trap - EXIT
-    unset CODEX_HOME
+    unset CODEX_HOME CLAUDE_CONFIG_DIR
+}
+
+# Claude receives the same skills; only host adapters are rendered.
+claude_install_checks() {
+    local tmp_root="$1"
+    local claude_skills="${CLAUDE_CONFIG_DIR}/skills"
+    local rendered
+    local name
+
+    assert_template_copy "${CLAUDE_CONFIG_DIR}/CLAUDE.md"
+
+    # Links from earlier installs migrate to copies without the custom flag.
+    mkdir -p "${tmp_root}/migrate-claude"
+    ln -s "${CODEX_HOME}/AGENTS.md" "${tmp_root}/migrate-claude/CLAUDE.md"
+    MECHA_SKILL_ROOT="${tmp_root}/migrate-skills" CLAUDE_CONFIG_DIR="${tmp_root}/migrate-claude" "${ROOT_DIR}/install.sh" prototype-build >"${tmp_root}/install-migrate.out"
+    assert_template_copy "${tmp_root}/migrate-claude/CLAUDE.md"
+    grep -Fq '[migrate] Claude global instructions link replaced with a copy' "${tmp_root}/install-migrate.out" || fail "instruction link migration was not reported"
+    cmp -s "${ROOT_DIR}/templates/global-AGENTS.template.md" "${CODEX_HOME}/AGENTS.md" || fail "migration wrote through the old link"
+    assert_symlink_to "${claude_skills}/prototype-build" "${ROOT_DIR}/families/engineering/prototype-build"
+    for name in user-interview product-co-design low-friction-collaboration multi-step-governance ai-pipeline; do
+        grep -Fxq 'disable-model-invocation: true' "${claude_skills}/${name}/SKILL.md" || fail "${name} Claude adapter does not disable model invocation"
+    done
+    rendered="$(find "${CLAUDE_CONFIG_DIR}/.mecha-render/families" -mindepth 2 -maxdepth 2 -type d | wc -l | tr -d ' ')"
+    [ "${rendered}" = 5 ] || fail "expected 5 rendered Claude adapters, got ${rendered}"
+    PYTHONDONTWRITEBYTECODE=1 "${DEV_PYTHON}" "${ROOT_DIR}/scripts/validate_skills.py" --claude-installed-root "${claude_skills}" >"${tmp_root}/validate-claude.out"
+    grep -Fq '[ok] Claude adapters' "${tmp_root}/validate-claude.out" || fail "Claude adapters were not validated"
 }
 
 main() {

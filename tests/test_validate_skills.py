@@ -11,6 +11,7 @@ from validate_skills import (  # noqa: E402
     catalog_estimate,
     catalog_warning,
     skill_prompt_warning,
+    validate_claude_skill,
     validate_codex_skill,
     validate_portable_skill,
     validate_repository_contract,
@@ -39,6 +40,8 @@ Do one job.
 ## Progress
 Return the current state.
 """
+
+EXPLICIT_METADATA = "metadata:\n    invocation: explicit\n"
 
 
 class SkillValidationTests(unittest.TestCase):
@@ -132,17 +135,73 @@ class SkillValidationTests(unittest.TestCase):
     def test_generic_contract_accepts_another_overlay(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             body = CORE_BODY + "\n## Session Overlay Contract\nCompose with the task.\n"
-            skill = self.make_skill(Path(directory), name="another-overlay", body=body)
+            skill = self.make_skill(
+                Path(directory),
+                name="another-overlay",
+                extra_frontmatter=EXPLICIT_METADATA,
+                body=body,
+            )
             self.write_openai_metadata(skill)
             self.assertEqual(validate_repository_contract(skill), [])
             self.assertEqual(validate_codex_skill(skill), [])
+
+    def test_interaction_contract_requires_explicit_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            body = CORE_BODY + "\n## Session Overlay Contract\nCompose with the task.\n"
+            skill = self.make_skill(Path(directory), body=body)
+            self.assertIn(
+                "interaction skill must declare metadata.invocation: explicit",
+                validate_repository_contract(skill),
+            )
+
+    def test_portable_skill_rejects_unknown_invocation_policy(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            skill = self.make_skill(
+                Path(directory),
+                extra_frontmatter="metadata:\n    invocation: manual\n",
+            )
+            self.assertIn(
+                "metadata.invocation must be 'explicit' when provided",
+                validate_portable_skill(skill),
+            )
+
+    def test_codex_policy_must_match_explicit_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            undeclared = self.make_skill(root, name="undeclared")
+            self.write_openai_metadata(undeclared)
+            self.assertIn(
+                "implicit invocation is disabled without metadata.invocation: explicit",
+                validate_codex_skill(undeclared),
+            )
+            declared = self.make_skill(root, name="declared", extra_frontmatter=EXPLICIT_METADATA)
+            self.assertIn("explicit skill is missing agents/openai.yaml", validate_codex_skill(declared))
+            self.write_openai_metadata(declared, allow_implicit="true")
+            self.assertIn("explicit skill must disable implicit invocation", validate_codex_skill(declared))
+
+    def test_claude_skill_requires_rendered_invocation_adapter(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = self.make_skill(root, extra_frontmatter=EXPLICIT_METADATA)
+            self.assertIn(
+                "disable-model-invocation must match metadata.invocation: explicit",
+                validate_claude_skill(source),
+            )
+            rendered = self.make_skill(
+                root / "claude",
+                extra_frontmatter=EXPLICIT_METADATA + "disable-model-invocation: true\n",
+            )
+            self.assertEqual(validate_claude_skill(rendered), [])
+            self.assertTrue(
+                any("Codex-incompatible" in failure for failure in validate_codex_skill(rendered))
+            )
 
     def test_explicit_interaction_requires_codex_metadata(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             body = CORE_BODY + "\n## Interactive Loop Contract\nOwn the exchange.\n"
             skill = self.make_skill(Path(directory), body=body)
             self.assertIn(
-                "explicit interaction skill is missing agents/openai.yaml",
+                "explicit skill is missing agents/openai.yaml",
                 validate_codex_skill(skill),
             )
 

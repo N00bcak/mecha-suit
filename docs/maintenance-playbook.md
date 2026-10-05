@@ -12,7 +12,7 @@ future concepts in `docs/architecture.md`.
   owns conversational control.
 
 Task skills are the default. Overlays and loops declare their contract in the
-body and require explicit-invocation metadata. Do not add a frontmatter field
+body and require `metadata.invocation: explicit` plus the matching host
 adapters. Do not add a frontmatter field or registry for interaction lifetime.
 
 ## Add or revise a skill
@@ -30,8 +30,10 @@ adapters. Do not add a frontmatter field or registry for interaction lifetime.
 7. Run the validator and full deterministic suite.
 
 Do not add a router. Do not add `agents/` metadata to task skills by default.
-Explicit-only skills use `agents/openai.yaml` with
-`allow_implicit_invocation: false` when the Codex adapter supports it.
+Explicit-only skills declare `metadata.invocation: explicit` in frontmatter
+and use `agents/openai.yaml` with `allow_implicit_invocation: false`; the
+validator requires both to agree. `install.sh` derives the Claude adapter, so
+do not add Claude-only fields to source frontmatter.
 
 Descriptions should be one constructive sentence, normally around 120
 characters. Treat that length as editorial guidance, not a validator limit.

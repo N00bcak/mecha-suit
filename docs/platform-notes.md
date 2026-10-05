@@ -79,12 +79,26 @@
 
 ## Claude Code-specific notes
 
-- Claude Code can load the shared Agent Skills-compatible `SKILL.md` files.
-- Use `templates/global-CLAUDE.template.md` as a starting point for global instructions.
-- Use `templates/repo-CLAUDE.template.md` for project-level adaptation.
-- Do not add Claude-only invocation fields to shared frontmatter while they are
-  rejected by the current Codex compatibility profile. Explicit-only behavior
-  is therefore not host-enforced in Claude Code by this repository yet.
+- `install.sh` also installs every skill into `$CLAUDE_CONFIG_DIR/skills`, or
+  `$HOME/.claude/skills`. Plain skills are symlinks to the source. Pass
+  `--no-claude` to install or uninstall for Codex only.
+- Skills that need a Claude adapter are rendered under
+  `<claude config>/.mecha-render/`, which mirrors the repository shape so
+  relative references resolve. Only `SKILL.md` is copied; everything else
+  links to the source. Rerun `./install.sh` after editing a rendered skill's
+  `SKILL.md`.
+- `metadata.invocation: explicit` renders as `disable-model-invocation: true`,
+  which Claude enforces natively while keeping `/<skill>` available. Do not add
+  that field to source frontmatter; Codex validation rejects it.
+- Skill names are identical across hosts. Avoid names of Claude Code
+  built-ins such as `code-review`, `simplify`, or `security-review`.
+- Claude loads a project `AGENTS.md` only when no `CLAUDE.md` exists, so a repo
+  `CLAUDE.md` should import it with `@AGENTS.md`. The installer copies the
+  global template to `<claude config>/CLAUDE.md` under the same
+  custom-instruction abort and backup rules as Codex. It is a copy, not a link,
+  because Claude Code skips a symlinked `~/.claude/CLAUDE.md` in Cowork
+  sessions; links left by earlier installs are migrated automatically. Full
+  uninstall removes an unmodified copy and the render tree.
 - Reuse the host-neutral evaluation corpora when a verified Claude runner is
   available; keep Claude invocation and telemetry handling in its adapter.
 

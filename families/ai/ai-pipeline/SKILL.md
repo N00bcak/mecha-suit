@@ -1,6 +1,8 @@
 ---
 name: ai-pipeline
 description: Frame AI problems from raw evidence through representation, solution design, and evaluation in one initial pass.
+metadata:
+    invocation: explicit
 ---
 
 # AI Pipeline

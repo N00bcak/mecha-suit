@@ -1,6 +1,8 @@
 ---
 name: multi-step-governance
 description: Govern an explicitly authorized end-to-end outcome across dependent specialist stages and durable evidence.
+metadata:
+    invocation: explicit
 ---
 
 # Multi-Step Governance

@@ -1,6 +1,8 @@
 ---
 name: user-interview
 description: Interview the user one focused question at a time.
+metadata:
+    invocation: explicit
 ---
 
 # User Interview

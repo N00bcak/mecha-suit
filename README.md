@@ -36,8 +36,19 @@ default prompt, run:
 ```
 
 The backup is kept under `.mecha/backups/global-instructions/` in this checkout.
-`uninstall.sh` removes managed skill links only; it never changes global
-instructions.
+
+The same run installs for Claude Code into `$CLAUDE_CONFIG_DIR/skills`, or
+`$HOME/.claude/skills`, and copies the same global instructions to
+`~/.claude/CLAUDE.md` under the same abort and backup rules. Explicit-only skills are
+rendered with Claude's `disable-model-invocation`; rerun `./install.sh` after
+editing those skills. Reinstalling also prunes managed links left dangling by
+renamed or removed skills. Pass `--no-claude` to skip Claude Code.
+
+`uninstall.sh` removes managed skill links. A full uninstall also removes an
+unmodified Claude instruction copy and the render tree it created; it never
+changes the Codex global instructions. After the template changes, existing
+copies no longer match it, so refresh them with
+`./install.sh --use-custom-global-instructions`, which backs up each old copy.
 
 Install only selected skills:
 

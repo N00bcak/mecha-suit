@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate portable skill contracts and Codex-specific metadata."""
+"""Validate portable skill contracts and Codex- and Claude-specific adapters."""
 
 from __future__ import annotations
 
@@ -27,6 +27,9 @@ PORTABLE_PROPERTIES = {
     "allowed-tools",
 }
 CODEX_PROPERTIES = PORTABLE_PROPERTIES - {"compatibility"}
+# Claude adapters are rendered at install time; source skills never carry them.
+CLAUDE_PROPERTIES = PORTABLE_PROPERTIES | {"disable-model-invocation"}
+EXPLICIT_INVOCATION = "explicit"
 CORE_SECTIONS = {
     "Purpose",
     "Do Not Use",
@@ -61,6 +64,12 @@ def read_skill(skill_path: Path) -> tuple[dict[str, Any] | None, str, list[str]]
     if not isinstance(frontmatter, dict):
         return None, match.group(2).strip(), ["frontmatter must be a YAML dictionary"]
     return frontmatter, match.group(2).strip(), []
+
+
+def explicit_invocation(frontmatter: dict[str, Any]) -> bool:
+    """Return whether the portable metadata declares explicit-only invocation."""
+    metadata = frontmatter.get("metadata")
+    return isinstance(metadata, dict) and metadata.get("invocation") == EXPLICIT_INVOCATION
 
 
 def validate_portable_skill(skill_path: Path) -> list[str]:
@@ -110,6 +119,8 @@ def validate_portable_skill(skill_path: Path) -> list[str]:
             failures.append("metadata must be a mapping")
         elif any(not isinstance(key, str) or not isinstance(value, str) for key, value in metadata.items()):
             failures.append("metadata keys and values must be strings")
+        elif metadata.get("invocation", EXPLICIT_INVOCATION) != EXPLICIT_INVOCATION:
+            failures.append(f"metadata.invocation must be {EXPLICIT_INVOCATION!r} when provided")
 
     allowed_tools = frontmatter.get("allowed-tools")
     if allowed_tools is not None and (not isinstance(allowed_tools, str) or not allowed_tools.strip()):
@@ -130,8 +141,8 @@ def markdown_headings(body: str) -> set[str]:
 
 def validate_repository_contract(skill_path: Path) -> list[str]:
     """Validate Mecha Suit's host-neutral interaction contract."""
-    _, body, failures = read_skill(skill_path)
-    if failures:
+    frontmatter, body, failures = read_skill(skill_path)
+    if failures or frontmatter is None:
         return failures
 
     headings = markdown_headings(body)
@@ -140,6 +151,8 @@ def validate_repository_contract(skill_path: Path) -> list[str]:
     declared_markers = INTERACTION_MARKERS & headings
     if len(declared_markers) > 1:
         failures.append("skill declares multiple interaction contracts")
+    if declared_markers and not explicit_invocation(frontmatter):
+        failures.append("interaction skill must declare metadata.invocation: explicit")
     return failures
 
 
@@ -177,11 +190,11 @@ def validate_codex_skill(skill_path: Path) -> list[str]:
     name = frontmatter.get("name")
     skill_name = name.strip() if isinstance(name, str) else skill_path.name
     headings = markdown_headings(body)
-    explicit_interaction = bool(INTERACTION_MARKERS & headings)
+    explicit = explicit_invocation(frontmatter) or bool(INTERACTION_MARKERS & headings)
     metadata_path = skill_path / "agents" / "openai.yaml"
     if not metadata_path.exists():
-        if explicit_interaction:
-            failures.append("explicit interaction skill is missing agents/openai.yaml")
+        if explicit:
+            failures.append("explicit skill is missing agents/openai.yaml")
         return failures
 
     document, metadata_failures = load_yaml_mapping(metadata_path)
@@ -210,9 +223,31 @@ def validate_codex_skill(skill_path: Path) -> list[str]:
         allow_implicit = policy.get("allow_implicit_invocation", True)
         if not isinstance(allow_implicit, bool):
             failures.append("agents/openai.yaml: allow_implicit_invocation must be a boolean")
-        elif explicit_interaction and allow_implicit:
-            failures.append("explicit interaction skill must disable implicit invocation")
+        elif explicit and allow_implicit:
+            failures.append("explicit skill must disable implicit invocation")
+        elif not explicit and not allow_implicit:
+            failures.append("implicit invocation is disabled without metadata.invocation: explicit")
     return failures
+
+
+def validate_claude_skill(skill_path: Path) -> list[str]:
+    """Validate a rendered or linked skill in an installed Claude skill root."""
+    frontmatter, _, failures = read_skill(skill_path)
+    if frontmatter is None:
+        return failures
+
+    unexpected = set(frontmatter) - CLAUDE_PROPERTIES
+    if unexpected:
+        failures.append(f"Claude-incompatible frontmatter keys: {', '.join(sorted(unexpected))}")
+    if frontmatter.get("name") != skill_path.name:
+        failures.append(f"folder name does not match declared name {frontmatter.get('name')!r}")
+
+    disabled = frontmatter.get("disable-model-invocation", False)
+    if not isinstance(disabled, bool):
+        failures.append("disable-model-invocation must be a boolean")
+    elif explicit_invocation(frontmatter) != disabled:
+        failures.append("disable-model-invocation must match metadata.invocation: explicit")
+    return failures + validate_runtime_references(skill_path)
 
 
 def runtime_references(skill_path: Path) -> list[str]:
@@ -292,6 +327,24 @@ def validate_installed_root(installed_root: Path, source_skill_files: list[Path]
     return failures
 
 
+def validate_claude_installed_root(installed_root: Path, source_skill_files: list[Path]) -> list[str]:
+    if not installed_root.is_dir():
+        return [f"{installed_root}: installed root is not a directory"]
+
+    installed = sorted(path.parent for path in installed_root.glob("*/SKILL.md"))
+    failures = [
+        f"{skill.name}: {message}"
+        for skill in installed
+        for message in validate_claude_skill(skill)
+    ]
+    if len(installed) < len(source_skill_files):
+        failures.append(
+            f"{installed_root}: {len(installed)} skills installed, "
+            f"expected {len(source_skill_files)}"
+        )
+    return failures
+
+
 def validate_skill(skill_path: Path) -> tuple[bool, str]:
     """Backward-compatible aggregate validation entry point."""
     failures = (
@@ -309,6 +362,11 @@ def parse_args() -> argparse.Namespace:
         "--installed-root",
         type=Path,
         help="also validate runtime references through an installed skill root",
+    )
+    parser.add_argument(
+        "--claude-installed-root",
+        type=Path,
+        help="also validate rendered Claude adapters under an installed Claude skill root",
     )
     return parser.parse_args()
 
@@ -338,6 +396,11 @@ def main() -> int:
             f"[installed-resources] {message}"
             for message in validate_installed_root(args.installed_root, skill_files)
         )
+    if args.claude_installed_root is not None:
+        failures.extend(
+            f"[claude-installed] {message}"
+            for message in validate_claude_installed_root(args.claude_installed_root, skill_files)
+        )
 
     if failures:
         for failure in failures:
@@ -364,6 +427,8 @@ def main() -> int:
     print(f"[ok] Codex adapter metadata for {metadata_count} skills")
     if args.installed_root is not None:
         print(f"[ok] installed runtime references under {args.installed_root}")
+    if args.claude_installed_root is not None:
+        print(f"[ok] Claude adapters under {args.claude_installed_root}")
     return 0
 
 

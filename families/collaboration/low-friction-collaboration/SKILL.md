@@ -1,6 +1,8 @@
 ---
 name: low-friction-collaboration
 description: Make complex technical conversations easy to follow and act on without reducing reasoning depth or precision.
+metadata:
+    invocation: explicit
 ---
 
 # Low-Friction Collaboration

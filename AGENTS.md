@@ -125,7 +125,10 @@ behavior. Add references or scripts only after the core playbook earns them.
 Descriptions are constructive routing sentences, normally around 120
 characters. Name the owned action and positive task or artifact cue. Keep
 adjacent boundaries in the runtime contract rather than filling frontmatter
-with warnings. Use host policy for manual-only invocation.
+with warnings. Declare manual-only invocation once as
+`metadata.invocation: explicit`; hosts do not read it, so host adapters
+(`agents/openai.yaml`, install-time Claude rendering) enforce it and the
+validator keeps them aligned.
 
 Use direct operational language and 4-space indentation. Preserve portability:
 no hardcoded local paths, private infrastructure, or repo-specific commands in

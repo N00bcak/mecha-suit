@@ -1,8 +1,10 @@
 # CLAUDE.md
 
-Use [AGENTS.md](AGENTS.md) as the authoritative development contract for this
-repository. Use [Platform Notes](docs/platform-notes.md) for known Claude Code
-differences. Do not copy those shared rules into this adapter.
+@AGENTS.md
+
+The imported `AGENTS.md` is the authoritative development contract. See
+[Platform Notes](docs/platform-notes.md) for Claude Code differences; do not
+restate shared rules here.
 
 ## Commands
 

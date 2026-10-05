@@ -1,6 +1,8 @@
 ---
 name: product-co-design
 description: Shape and pressure-test product concepts from early idea to specialist-ready brief.
+metadata:
+    invocation: explicit
 ---
 
 # Product Co-Design

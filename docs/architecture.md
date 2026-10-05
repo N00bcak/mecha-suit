@@ -110,10 +110,15 @@ contracts, evaluation cases, and deterministic tests.
 
 ## Portability
 
-Portable skill frontmatter contains only `name` and `description`. Host policy
-and presentation metadata remain adapters. Codex currently uses
-`agents/openai.yaml` for explicit-only invocation; Claude Code support is a
-documented adaptation rather than a claim of identical enforcement.
+Portable skill frontmatter contains `name`, `description`, and, for
+explicit-only skills, `metadata.invocation: explicit`. That metadata is a
+declaration no host enforces; adapters enforce it. Codex uses
+`agents/openai.yaml`, and `install.sh` renders a Claude copy of `SKILL.md`
+with `disable-model-invocation: true` while linking every other resource back
+to the source. Install-time rendering keeps host-only fields out of shared
+frontmatter, which Codex validation rejects. Skill names are shared by every
+host, so names must avoid host built-ins rather than rely on per-host aliases.
+Rendered copies refresh on reinstall.
 
 Project commands, private infrastructure, and repository-specific facts stay
 in local instructions or adapter skills. The global toolbox should not make a

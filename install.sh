@@ -38,9 +38,23 @@ codex_home() {
     fi
 }
 
+claude_home() {
+    if [ -n "${CLAUDE_CONFIG_DIR:-}" ]; then
+        printf '%s\n' "${CLAUDE_CONFIG_DIR}"
+    else
+        printf '%s/.claude\n' "$(user_home)"
+    fi
+}
+
 SKILL_ROOT="${MECHA_SKILL_ROOT:-$(default_skill_root)}"
 CODEX_CONFIG_ROOT="$(codex_home)"
 LEGACY_SKILL_ROOT="${CODEX_CONFIG_ROOT}/skills"
+CLAUDE_CONFIG_ROOT="$(claude_home)"
+CLAUDE_SKILL_ROOT="${CLAUDE_CONFIG_ROOT}/skills"
+# Rendered Claude adapters mirror the repository shape so relative runtime
+# references such as ../references/ and ../../../shared/ still resolve.
+CLAUDE_RENDER_ROOT="${CLAUDE_CONFIG_ROOT}/.mecha-render"
+INSTALL_CLAUDE=true
 MISSING_COUNT=0
 USE_CUSTOM_GLOBAL_INSTRUCTIONS=false
 REQUESTED_SKILLS=()
@@ -130,42 +144,53 @@ warn_about_legacy_install() {
 
 backup_global_instructions() {
     local source_path="$1"
+    local prefix="${2:-AGENTS}"
     local backup_dir="${ROOT_DIR}/.mecha/backups/global-instructions"
     local timestamp
     local backup_path
     local suffix=0
 
     timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
-    backup_path="${backup_dir}/AGENTS-${timestamp}.md"
+    backup_path="${backup_dir}/${prefix}-${timestamp}.md"
     while [ -e "${backup_path}" ]; do
         suffix=$((suffix + 1))
-        backup_path="${backup_dir}/AGENTS-${timestamp}-${suffix}.md"
+        backup_path="${backup_dir}/${prefix}-${timestamp}-${suffix}.md"
     done
 
     (umask 077 && mkdir -p "${backup_dir}" && cp "${source_path}" "${backup_path}")
     printf '%s\n' "${backup_path}"
 }
 
+# Both hosts get a regular-file copy: Claude Code skips a symlinked
+# ~/.claude/CLAUDE.md in some sessions, so links are never used here.
 provision_global_instructions() {
-    local target_path
+    local target_path="$1"
+    local prefix="$2"
+    local label="$3"
     local backup_path
 
-    target_path="$(global_instructions_path)"
+    # Links from earlier installs that still show the default template are
+    # converted without the custom-instructions flag.
+    if [ -L "${target_path}" ] && cmp -s "${GLOBAL_INSTRUCTIONS_SOURCE}" "${target_path}"; then
+        rm "${target_path}"
+        printf '[migrate] %s link replaced with a copy\n' "${label}"
+    fi
+
     if [ ! -e "${target_path}" ] && [ ! -L "${target_path}" ]; then
         mkdir -p "$(dirname "${target_path}")"
         cp "${GLOBAL_INSTRUCTIONS_SOURCE}" "${target_path}"
-        printf '[install] global instructions -> %s\n' "${target_path}"
+        printf '[install] %s -> %s\n' "${label}" "${target_path}"
         return 0
     fi
 
-    if [ -f "${target_path}" ] && [ ! -s "${target_path}" ]; then
+    if [ -f "${target_path}" ] && [ ! -L "${target_path}" ] && [ ! -s "${target_path}" ]; then
         cp "${GLOBAL_INSTRUCTIONS_SOURCE}" "${target_path}"
-        printf '[install] global instructions -> %s\n' "${target_path}"
+        printf '[install] %s -> %s\n' "${label}" "${target_path}"
         return 0
     fi
 
-    if [ -f "${target_path}" ] && cmp -s "${GLOBAL_INSTRUCTIONS_SOURCE}" "${target_path}"; then
-        printf '[ok] global instructions already installed\n'
+    if [ -f "${target_path}" ] && [ ! -L "${target_path}" ] && cmp -s "${GLOBAL_INSTRUCTIONS_SOURCE}" "${target_path}"; then
+        printf '[ok] %s already installed\n' "${label}"
         return 0
     fi
 
@@ -179,33 +204,71 @@ provision_global_instructions() {
         return 1
     fi
 
-    backup_path="$(backup_global_instructions "${target_path}")"
+    # Back up the content, then remove the path so a link is never written through.
+    backup_path="$(backup_global_instructions "${target_path}" "${prefix}")"
+    rm "${target_path}"
     cp "${GLOBAL_INSTRUCTIONS_SOURCE}" "${target_path}"
-    printf '[replace] global instructions -> %s\n' "${target_path}"
-    printf '[backup] previous global instructions -> %s\n' "${backup_path}"
+    printf '[replace] %s -> %s\n' "${label}" "${target_path}"
+    printf '[backup] previous %s -> %s\n' "${label}" "${backup_path}"
 }
 
-install_skill() {
-    local name="$1"
-    local source_dir
+# The portable metadata.invocation declaration is inert until a host adapter
+# enforces it; read it from frontmatter only.
+explicit_invocation() {
+    awk 'NR == 1 { next } /^---/ { exit } /^[[:space:]]+invocation:[[:space:]]*explicit[[:space:]]*$/ { found = 1 } END { exit !found }' "$1/SKILL.md"
+}
+
+# Render a Claude copy of SKILL.md with host frontmatter; every other entry
+# links back to the source so only SKILL.md is regenerated.
+render_claude_skill() {
+    local source_dir="$1"
+    local family_dir
+    local render_family
+    local rendered
+    local entry
+
+    family_dir="$(dirname "${source_dir}")"
+    render_family="${CLAUDE_RENDER_ROOT}/families/$(basename "${family_dir}")"
+    rendered="${render_family}/$(basename "${source_dir}")"
+
+    mkdir -p "${render_family}"
+    ln -sfn "${ROOT_DIR}/shared" "${CLAUDE_RENDER_ROOT}/shared"
+    rm -rf "${rendered}"
+    mkdir "${rendered}"
+    for entry in "${source_dir}"/*; do
+        [ "$(basename "${entry}")" = SKILL.md ] || ln -s "${entry}" "${rendered}/$(basename "${entry}")"
+    done
+    awk '
+        NR == 1 { in_frontmatter = 1; print; next }
+        in_frontmatter && /^---/ {
+            print "disable-model-invocation: true"
+            in_frontmatter = 0
+        }
+        { print }
+    ' "${source_dir}/SKILL.md" >"${rendered}/SKILL.md"
+
+    for entry in "${family_dir}"/*; do
+        if [ ! -e "${render_family}/$(basename "${entry}")" ] && [ ! -L "${render_family}/$(basename "${entry}")" ]; then
+            ln -s "${entry}" "${render_family}/$(basename "${entry}")"
+        fi
+    done
+    printf '%s\n' "${rendered}"
+}
+
+link_skill() {
+    local skill_root="$1"
+    local link_name="$2"
+    local source_real="$3"
+    local label="$4"
     local target_path
-    local source_real
     local target_real
 
-    if ! source_dir="$(skill_dir_for "${name}")"; then
-        printf '[missing] %s is not a skill in this library\n' "${name}"
-        # Keep processing other requested names, then exit nonzero at the end.
-        MISSING_COUNT=$((MISSING_COUNT + 1))
-        return 0
-    fi
-
-    mkdir -p "${SKILL_ROOT}"
-    target_path="${SKILL_ROOT}/${name}"
-    source_real="$(resolve_dir "${source_dir}")"
+    mkdir -p "${skill_root}"
+    target_path="${skill_root}/${link_name}"
 
     if [ -L "${target_path}" ]; then
         if target_real="$(resolve_symlink_dir "${target_path}")" && [ "${target_real}" = "${source_real}" ]; then
-            printf '[ok] %s already installed\n' "${name}"
+            printf '[ok] %s already installed\n' "${label}"
             return 0
         fi
         # Never replace links that the user or another tool may own.
@@ -220,7 +283,51 @@ install_skill() {
     fi
 
     ln -s "${source_real}" "${target_path}"
-    printf '[install] %s -> %s\n' "${name}" "${source_real}"
+    printf '[install] %s -> %s\n' "${label}" "${source_real}"
+}
+
+install_skill() {
+    local name="$1"
+    local source_dir
+    local source_real
+    local claude_source
+
+    if ! source_dir="$(skill_dir_for "${name}")"; then
+        printf '[missing] %s is not a skill in this library\n' "${name}"
+        # Keep processing other requested names, then exit nonzero at the end.
+        MISSING_COUNT=$((MISSING_COUNT + 1))
+        return 0
+    fi
+
+    source_real="$(resolve_dir "${source_dir}")"
+    link_skill "${SKILL_ROOT}" "${name}" "${source_real}" "${name}"
+    [ "${INSTALL_CLAUDE}" = true ] || return 0
+
+    claude_source="${source_real}"
+    if explicit_invocation "${source_real}"; then
+        claude_source="$(resolve_dir "$(render_claude_skill "${source_real}")")"
+    fi
+    link_skill "${CLAUDE_SKILL_ROOT}" "${name}" "${claude_source}" "claude/${name}"
+}
+
+# Renamed or removed skills leave managed links to paths that no longer exist.
+# Remove only dangling links that point into this checkout or its render tree.
+prune_stale_links() {
+    local skill_root="$1"
+    local link_path
+    local raw_target
+
+    [ -d "${skill_root}" ] || return 0
+    for link_path in "${skill_root}"/*; do
+        [ -L "${link_path}" ] && [ ! -e "${link_path}" ] || continue
+        raw_target="$(readlink "${link_path}")"
+        case "${raw_target}" in
+            "${ROOT_DIR}/families/"*|"${CLAUDE_RENDER_ROOT}/"*)
+                rm "${link_path}"
+                printf '[prune] %s -> %s no longer exists\n' "${link_path}" "${raw_target}"
+                ;;
+        esac
+    done
 }
 
 main() {
@@ -230,6 +337,9 @@ main() {
         case "$1" in
             --use-custom-global-instructions)
                 USE_CUSTOM_GLOBAL_INSTRUCTIONS=true
+                ;;
+            --no-claude)
+                INSTALL_CLAUDE=false
                 ;;
             --*)
                 printf '[missing] %s is not an install option or skill\n' "$1" >&2
@@ -242,7 +352,12 @@ main() {
         shift
     done
 
-    provision_global_instructions
+    provision_global_instructions "$(global_instructions_path)" AGENTS "global instructions"
+    prune_stale_links "${SKILL_ROOT}"
+    if [ "${INSTALL_CLAUDE}" = true ]; then
+        provision_global_instructions "${CLAUDE_CONFIG_ROOT}/CLAUDE.md" CLAUDE "Claude global instructions"
+        prune_stale_links "${CLAUDE_SKILL_ROOT}"
+    fi
 
     if [ "${#REQUESTED_SKILLS[@]}" -eq 0 ]; then
         while IFS= read -r name; do
