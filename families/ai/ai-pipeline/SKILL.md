@@ -1,6 +1,6 @@
 ---
 name: ai-pipeline
-description: Frame AI problems from raw evidence through representation, solution design, and evaluation in one initial pass.
+description: Frame AI problems from raw evidence through representation, solution design, and evaluation in one initial pass. Use when the user asks for an end-to-end AI pipeline map.
 metadata:
     invocation: explicit
 ---

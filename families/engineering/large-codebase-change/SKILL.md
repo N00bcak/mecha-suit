@@ -1,6 +1,6 @@
 ---
 name: large-codebase-change
-description: Implement verified changes in large established repositories across affected modules, consumers, and compatibility boundaries.
+description: Implement verified changes in large established repositories across modules, consumers, and compatibility boundaries. Use when editing an existing codebase beyond one file.
 ---
 
 # Large Codebase Change

@@ -1,6 +1,6 @@
 ---
 name: prototype-build
-description: Build and verify isolated greenfield prototypes, demos, tools, or apps around one core outcome.
+description: Build and verify isolated greenfield prototypes, demos, tools, or apps around one core outcome. Use when starting something new from scratch to prove an idea end to end.
 ---
 
 # Prototype Build

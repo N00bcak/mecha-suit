@@ -1,6 +1,6 @@
 ---
 name: blog-writing
-description: Author VitePress-ready blog posts and CTF writeups in N00bcak's evidence-grounded, adaptable personal voice.
+description: Author VitePress-ready blog posts and CTF writeups in N00bcak's evidence-grounded personal voice. Use when drafting or revising a post for N00bcak's blog.
 ---
 
 # Blog Writing

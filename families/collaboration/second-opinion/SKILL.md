@@ -1,6 +1,6 @@
 ---
 name: second-opinion
-description: Obtain an independent evidence-backed critique of a consequential conclusion, diagnosis, plan, or diff.
+description: Obtain an independent evidence-backed critique of a consequential conclusion, diagnosis, plan, or diff. Use before committing to a costly or hard-to-reverse decision.
 ---
 
 # Second Opinion

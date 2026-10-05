@@ -1,6 +1,6 @@
 ---
 name: web-design
-description: Design and implement distinctive web interfaces from contextual direction through accessible, fixture-backed frontend.
+description: Design and implement distinctive web interfaces from contextual direction through accessible, fixture-backed frontend. Use when visual design and interaction quality matter.
 ---
 
 # Web Design

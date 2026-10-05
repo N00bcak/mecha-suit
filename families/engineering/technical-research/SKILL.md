@@ -1,6 +1,6 @@
 ---
 name: technical-research
-description: Resolve software and architecture questions through primary technical sources, repository evidence, and reproducible checks.
+description: Resolve software and architecture questions through primary sources, repository evidence, and reproducible checks. Use when an engineering decision needs verified facts.
 ---
 
 # Technical Research

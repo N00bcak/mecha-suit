@@ -1,6 +1,6 @@
 ---
 name: decision-mapping
-description: Map and resolve decisions blocking a long-horizon effort until its destination is ready for implementation specification.
+description: Map and resolve decisions blocking a long-horizon effort until it is ready for specification. Use when a large, uncertain effort has open choices that depend on each other.
 ---
 
 # Decision Mapping

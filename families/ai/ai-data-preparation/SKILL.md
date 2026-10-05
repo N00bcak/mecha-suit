@@ -1,6 +1,6 @@
 ---
 name: ai-data-preparation
-description: Inspect, type, clean, convert, and package raw data into a documented analysis-ready artifact.
+description: Inspect, type, clean, convert, and package raw data into a documented analysis-ready artifact. Use when raw or messy data must become a reproducible dataset before analysis.
 ---
 
 # AI Data Preparation

@@ -1,6 +1,6 @@
 ---
 name: ai-problem-modeling
-description: Formalize AI problems and choose statistical models, neural architectures, symbolic methods, or hybrid solutions.
+description: Formalize AI problems and choose statistical, neural, symbolic, or hybrid solutions. Use when an AI task needs a formal objective and a justified set of candidate approaches.
 ---
 
 # AI Problem Modeling

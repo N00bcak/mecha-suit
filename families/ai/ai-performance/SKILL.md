@@ -1,6 +1,6 @@
 ---
 name: ai-performance
-description: Construct, optimize, train, and evaluate AI solutions with coupled diagnostics and comparative evidence.
+description: Construct, optimize, train, and evaluate AI solutions with coupled diagnostics and comparative evidence. Use when building, tuning, or comparing models or solvers.
 ---
 
 # AI Performance

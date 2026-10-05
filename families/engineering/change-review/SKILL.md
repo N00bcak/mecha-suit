@@ -1,6 +1,6 @@
 ---
 name: change-review
-description: Review changes for intent fidelity, behavioral correctness and evidence, and maintainability against a fixed point.
+description: Review changes for intent fidelity, behavioral correctness and evidence, and maintainability against a fixed point. Use when asked to review a diff, branch, or pull request.
 ---
 
 # Change Review

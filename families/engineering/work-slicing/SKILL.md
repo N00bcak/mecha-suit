@@ -1,6 +1,6 @@
 ---
 name: work-slicing
-description: Decompose an accepted implementation contract into verifiable vertical slices with explicit dependency edges.
+description: Decompose an accepted implementation contract into verifiable vertical slices with dependency edges. Use when an agreed change is too large to deliver as one step.
 ---
 
 # Work Slicing

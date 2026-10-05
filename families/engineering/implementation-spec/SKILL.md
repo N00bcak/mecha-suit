@@ -1,6 +1,6 @@
 ---
 name: implementation-spec
-description: Turn settled intent and evidence into an accepted implementation contract with criteria, constraints, and non-goals.
+description: Turn settled intent and evidence into an accepted implementation contract with criteria, constraints, and non-goals. Use when a change needs a written spec before coding.
 ---
 
 # Implementation Specification

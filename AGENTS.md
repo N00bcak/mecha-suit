@@ -122,8 +122,10 @@ Use the template matching the interaction lifetime. Runtime skills define
 purpose, exclusions, needs, returns, done conditions, and progress
 behavior. Add references or scripts only after the core playbook earns them.
 
-Descriptions are constructive routing sentences, normally around 120
-characters. Name the owned action and positive task or artifact cue. Keep
+Descriptions name the owned action, then add a "Use when …" cue for the
+situation that should trigger the skill, normally around 160-180 characters.
+Both Codex and Anthropic skill guidance ask for what and when; routing evals on
+both hosts improved with the cue. Keep
 adjacent boundaries in the runtime contract rather than filling frontmatter
 with warnings. Declare manual-only invocation once as
 `metadata.invocation: explicit`; hosts do not read it, so host adapters

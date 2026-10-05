@@ -1,6 +1,6 @@
 ---
 name: portable-handoff
-description: Package verified work state into a redacted portable handoff for another session, machine, agent, or collaborator.
+description: Package verified work state into a redacted portable handoff for another session, machine, agent, or collaborator. Use when work must pause and be resumed elsewhere.
 ---
 
 # Portable Handoff

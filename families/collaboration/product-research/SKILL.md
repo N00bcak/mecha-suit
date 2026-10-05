@@ -1,6 +1,6 @@
 ---
 name: product-research
-description: Develop evidence-backed findings about users, workflows, terminology, alternatives, and product or domain assumptions.
+description: Develop evidence-backed findings about users, workflows, terminology, alternatives, and product assumptions. Use when a product decision depends on what users or markets do.
 ---
 
 # Product Research

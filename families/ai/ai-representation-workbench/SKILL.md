@@ -1,6 +1,6 @@
 ---
 name: ai-representation-workbench
-description: Design and validate features, states, constraints, knowledge, embeddings, or heuristics for AI problems.
+description: Design and validate features, states, constraints, knowledge, embeddings, or heuristics for AI problems. Use when choosing what an AI system should see or encode.
 ---
 
 # AI Representation Workbench

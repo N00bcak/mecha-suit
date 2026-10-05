@@ -35,8 +35,10 @@ and use `agents/openai.yaml` with `allow_implicit_invocation: false`; the
 validator requires both to agree. `install.sh` derives the Claude adapter, so
 do not add Claude-only fields to source frontmatter.
 
-Descriptions should be one constructive sentence, normally around 120
-characters. Treat that length as editorial guidance, not a validator limit.
+Descriptions are an action sentence followed by a "Use when …" trigger cue,
+normally around 160-180 characters. Treat that length as editorial guidance,
+not a validator limit. Check routing on both hosts with
+`run_interaction_evals.py --host both` after changing descriptions.
 
 ## Control context consumption
 

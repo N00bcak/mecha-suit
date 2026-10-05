@@ -1,6 +1,6 @@
 ---
 name: user-interview
-description: Interview the user one focused question at a time.
+description: Interview the user one focused question at a time and synthesize what they said. Use when the user asks to be interviewed to clarify their own needs or ideas.
 metadata:
     invocation: explicit
 ---

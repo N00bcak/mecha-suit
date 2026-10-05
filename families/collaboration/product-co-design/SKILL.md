@@ -1,6 +1,6 @@
 ---
 name: product-co-design
-description: Shape and pressure-test product concepts from early idea to specialist-ready brief.
+description: Shape and pressure-test product concepts from early idea to specialist-ready brief. Use when the user wants a thinking partner to develop or challenge a product idea.
 metadata:
     invocation: explicit
 ---

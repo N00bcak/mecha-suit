@@ -1,6 +1,6 @@
 ---
 name: prose-voice
-description: Write and revise long-form prose with a natural, genre-aware voice while preserving meaning, evidence, and authorial intent.
+description: Write and revise long-form prose with a natural, genre-aware voice while preserving meaning and evidence. Use when prose reads generic or machine-written and needs revision.
 ---
 
 # Prose Voice

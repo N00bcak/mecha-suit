@@ -171,12 +171,12 @@ collaboration_checks() {
     grep -Fq 'Do not impose an arbitrary item limit' "${low_friction_file}" || fail "low-friction list discipline is missing"
     grep -Fq '## Edit The Language' "${low_friction_file}" || fail "low-friction Orwell editing guidance is missing"
     grep -Fq 'Do not use, spawn, request, or rely on subagents.' "${low_friction_file}" || fail "low-friction subagent boundary is missing"
-    grep -Fxq 'description: Delegate independent bounded subtasks concurrently and integrate their evidence into one verified outcome.' "${parallel}" || fail "parallel-subagents description drifted"
-    grep -Fxq 'description: Obtain an independent evidence-backed critique of a consequential conclusion, diagnosis, plan, or diff.' "${second_opinion}" || fail "second-opinion description drifted"
-    grep -Fxq 'description: Develop evidence-backed findings about users, workflows, terminology, alternatives, and product or domain assumptions.' "${product_research}" || fail "product-research description drifted"
-    grep -Fxq 'description: Sharpen domain terminology and record durable decisions against concrete scenarios, existing code, and evidence.' "${domain_modeling}" || fail "domain-modeling description drifted"
-    grep -Fxq 'description: Map and resolve decisions blocking a long-horizon effort until its destination is ready for implementation specification.' "${decision_mapping}" || fail "decision-mapping description drifted"
-    grep -Fxq 'description: Package verified work state into a redacted portable handoff for another session, machine, agent, or collaborator.' "${portable_handoff}" || fail "portable-handoff description drifted"
+    grep -Fxq 'description: Delegate independent bounded subtasks concurrently and integrate their evidence into one verified outcome. Use when independent parts of a task can run in parallel.' "${parallel}" || fail "parallel-subagents description drifted"
+    grep -Fxq 'description: Obtain an independent evidence-backed critique of a consequential conclusion, diagnosis, plan, or diff. Use before committing to a costly or hard-to-reverse decision.' "${second_opinion}" || fail "second-opinion description drifted"
+    grep -Fxq 'description: Develop evidence-backed findings about users, workflows, terminology, alternatives, and product assumptions. Use when a product decision depends on what users or markets do.' "${product_research}" || fail "product-research description drifted"
+    grep -Fxq 'description: Sharpen domain terminology and record durable decisions against scenarios, code, and evidence. Use when terms or business rules are ambiguous, overloaded, or contradict the code.' "${domain_modeling}" || fail "domain-modeling description drifted"
+    grep -Fxq 'description: Map and resolve decisions blocking a long-horizon effort until it is ready for specification. Use when a large, uncertain effort has open choices that depend on each other.' "${decision_mapping}" || fail "decision-mapping description drifted"
+    grep -Fxq 'description: Package verified work state into a redacted portable handoff for another session, machine, agent, or collaborator. Use when work must pause and be resumed elsewhere.' "${portable_handoff}" || fail "portable-handoff description drifted"
     assert_not_exists "${ROOT_DIR}/families/collaboration/parallel-subagents/agents/openai.yaml"
     assert_not_exists "${ROOT_DIR}/families/collaboration/second-opinion/agents/openai.yaml"
     assert_not_exists "${ROOT_DIR}/families/collaboration/product-research/agents/openai.yaml"
@@ -200,12 +200,12 @@ engineering_checks() {
     local code_review="${family_dir}/change-review/SKILL.md"
     local reference
 
-    grep -Fxq 'description: Build and verify isolated greenfield prototypes, demos, tools, or apps around one core outcome.' "${prototype_skill}" || fail "prototype-build description drifted"
-    grep -Fxq 'description: Resolve software and architecture questions through primary technical sources, repository evidence, and reproducible checks.' "${technical_research}" || fail "technical-research description drifted"
-    grep -Fxq 'description: Turn settled intent and evidence into an accepted implementation contract with criteria, constraints, and non-goals.' "${implementation_spec}" || fail "implementation-spec description drifted"
-    grep -Fxq 'description: Decompose an accepted implementation contract into verifiable vertical slices with explicit dependency edges.' "${work_slicing}" || fail "work-slicing description drifted"
-    grep -Fxq 'description: Diagnose difficult bugs and regressions through a tight reproducer, falsifiable hypotheses, and regression evidence.' "${diagnosing_bugs}" || fail "bug-diagnosis description drifted"
-    grep -Fxq 'description: Review changes for intent fidelity, behavioral correctness and evidence, and maintainability against a fixed point.' "${code_review}" || fail "change-review description drifted"
+    grep -Fxq 'description: Build and verify isolated greenfield prototypes, demos, tools, or apps around one core outcome. Use when starting something new from scratch to prove an idea end to end.' "${prototype_skill}" || fail "prototype-build description drifted"
+    grep -Fxq 'description: Resolve software and architecture questions through primary sources, repository evidence, and reproducible checks. Use when an engineering decision needs verified facts.' "${technical_research}" || fail "technical-research description drifted"
+    grep -Fxq 'description: Turn settled intent and evidence into an accepted implementation contract with criteria, constraints, and non-goals. Use when a change needs a written spec before coding.' "${implementation_spec}" || fail "implementation-spec description drifted"
+    grep -Fxq 'description: Decompose an accepted implementation contract into verifiable vertical slices with dependency edges. Use when an agreed change is too large to deliver as one step.' "${work_slicing}" || fail "work-slicing description drifted"
+    grep -Fxq "description: Diagnose difficult bugs and regressions through a tight reproducer, falsifiable hypotheses, and regression evidence. Use when a failure's cause is unknown or disputed." "${diagnosing_bugs}" || fail "bug-diagnosis description drifted"
+    grep -Fxq 'description: Review changes for intent fidelity, behavioral correctness and evidence, and maintainability against a fixed point. Use when asked to review a diff, branch, or pull request.' "${code_review}" || fail "change-review description drifted"
 
     assert_exists "${ROOT_DIR}/shared/rubrics/change-discipline.md"
     grep -Fq '`../../../shared/rubrics/change-discipline.md`' "${large_skill}" || fail "large-codebase-change does not link shared change discipline"
@@ -281,12 +281,12 @@ ai_family_checks() {
     local leaf
     local reference
 
-    grep -Fxq 'description: Frame AI problems from raw evidence through representation, solution design, and evaluation in one initial pass.' "${pipeline}" || fail "ai-pipeline description drifted"
-    grep -Fxq 'description: Inspect, type, clean, convert, and package raw data into a documented analysis-ready artifact.' "${family_dir}/ai-data-preparation/SKILL.md" || fail "ai-data-preparation description drifted"
-    grep -Fxq 'description: Develop evidence-backed insights about data, domain structure, dynamics, labels, and candidate solution signals.' "${family_dir}/ai-insight-development/SKILL.md" || fail "ai-insight-development description drifted"
-    grep -Fxq 'description: Design and validate features, states, constraints, knowledge, embeddings, or heuristics for AI problems.' "${family_dir}/ai-representation-workbench/SKILL.md" || fail "ai-representation-workbench description drifted"
-    grep -Fxq 'description: Formalize AI problems and choose statistical models, neural architectures, symbolic methods, or hybrid solutions.' "${family_dir}/ai-problem-modeling/SKILL.md" || fail "ai-problem-modeling description drifted"
-    grep -Fxq 'description: Construct, optimize, train, and evaluate AI solutions with coupled diagnostics and comparative evidence.' "${family_dir}/ai-performance/SKILL.md" || fail "ai-performance description drifted"
+    grep -Fxq 'description: Frame AI problems from raw evidence through representation, solution design, and evaluation in one initial pass. Use when the user asks for an end-to-end AI pipeline map.' "${pipeline}" || fail "ai-pipeline description drifted"
+    grep -Fxq 'description: Inspect, type, clean, convert, and package raw data into a documented analysis-ready artifact. Use when raw or messy data must become a reproducible dataset before analysis.' "${family_dir}/ai-data-preparation/SKILL.md" || fail "ai-data-preparation description drifted"
+    grep -Fxq 'description: Develop evidence-backed insights about data, domain structure, dynamics, labels, and solution signals. Use when patterns could change how an AI problem is framed or solved.' "${family_dir}/ai-insight-development/SKILL.md" || fail "ai-insight-development description drifted"
+    grep -Fxq 'description: Design and validate features, states, constraints, knowledge, embeddings, or heuristics for AI problems. Use when choosing what an AI system should see or encode.' "${family_dir}/ai-representation-workbench/SKILL.md" || fail "ai-representation-workbench description drifted"
+    grep -Fxq 'description: Formalize AI problems and choose statistical, neural, symbolic, or hybrid solutions. Use when an AI task needs a formal objective and a justified set of candidate approaches.' "${family_dir}/ai-problem-modeling/SKILL.md" || fail "ai-problem-modeling description drifted"
+    grep -Fxq 'description: Construct, optimize, train, and evaluate AI solutions with coupled diagnostics and comparative evidence. Use when building, tuning, or comparing models or solvers.' "${family_dir}/ai-performance/SKILL.md" || fail "ai-performance description drifted"
 
     assert_exists "${pipeline_metadata}"
     grep -Fq 'allow_implicit_invocation: false' "${pipeline_metadata}" || fail "ai-pipeline implicit invocation is not disabled"
@@ -372,8 +372,8 @@ writing_family_checks() {
     local prose_voice="${family_dir}/prose-voice/SKILL.md"
     local blogpost="${family_dir}/blog-writing/SKILL.md"
 
-    grep -Fxq 'description: Write and revise long-form prose with a natural, genre-aware voice while preserving meaning, evidence, and authorial intent.' "${prose_voice}" || fail "prose-voice description drifted"
-    grep -Fxq "description: Author VitePress-ready blog posts and CTF writeups in N00bcak's evidence-grounded, adaptable personal voice." "${blogpost}" || fail "blog-writing description drifted"
+    grep -Fxq 'description: Write and revise long-form prose with a natural, genre-aware voice while preserving meaning and evidence. Use when prose reads generic or machine-written and needs revision.' "${prose_voice}" || fail "prose-voice description drifted"
+    grep -Fxq "description: Author VitePress-ready blog posts and CTF writeups in N00bcak's evidence-grounded personal voice. Use when drafting or revising a post for N00bcak's blog." "${blogpost}" || fail "blog-writing description drifted"
 
     assert_exists "${family_dir}/prose-voice/references/revision-patterns.md"
     assert_exists "${family_dir}/blog-writing/references/n00bcak-voice.md"

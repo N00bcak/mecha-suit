@@ -1,6 +1,6 @@
 ---
 name: parallel-subagents
-description: Delegate independent bounded subtasks concurrently and integrate their evidence into one verified outcome.
+description: Delegate independent bounded subtasks concurrently and integrate their evidence into one verified outcome. Use when independent parts of a task can run in parallel.
 ---
 
 # Parallel Subagents

@@ -1,6 +1,6 @@
 ---
 name: bug-diagnosis
-description: Diagnose difficult bugs and regressions through a tight reproducer, falsifiable hypotheses, and regression evidence.
+description: Diagnose difficult bugs and regressions through a tight reproducer, falsifiable hypotheses, and regression evidence. Use when a failure's cause is unknown or disputed.
 ---
 
 # Bug Diagnosis

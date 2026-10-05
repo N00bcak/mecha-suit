@@ -1,6 +1,6 @@
 ---
 name: ai-insight-development
-description: Develop evidence-backed insights about data, domain structure, dynamics, labels, and candidate solution signals.
+description: Develop evidence-backed insights about data, domain structure, dynamics, labels, and solution signals. Use when patterns could change how an AI problem is framed or solved.
 ---
 
 # AI Insight Development

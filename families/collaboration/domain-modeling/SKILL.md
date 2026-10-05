@@ -1,6 +1,6 @@
 ---
 name: domain-modeling
-description: Sharpen domain terminology and record durable decisions against concrete scenarios, existing code, and evidence.
+description: Sharpen domain terminology and record durable decisions against scenarios, code, and evidence. Use when terms or business rules are ambiguous, overloaded, or contradict the code.
 ---
 
 # Domain Modeling
