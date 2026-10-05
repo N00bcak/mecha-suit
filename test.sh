@@ -685,6 +685,21 @@ print("yes" if INSTALLER_EXPLICIT_RE.search(open(sys.argv[1]).read().split("---"
     PYTHONDONTWRITEBYTECODE=1 "${DEV_PYTHON}" "${ROOT_DIR}/scripts/validate_skills.py" --claude-installed-root "${claude_skills}" >"${tmp_root}/validate-claude.out"
     grep -Fq '[ok] Claude adapters' "${tmp_root}/validate-claude.out" || fail "Claude adapters were not validated"
 
+    # A skill that became explicit has its source link repointed to the render.
+    rm "${claude_skills}/user-interview"
+    ln -s "${ROOT_DIR}/families/collaboration/user-interview" "${claude_skills}/user-interview"
+    MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" user-interview >"${tmp_root}/install-became-explicit.out"
+    grep -Fxq 'disable-model-invocation: true' "${claude_skills}/user-interview/SKILL.md" || fail "newly explicit skill stayed model-invocable in Claude"
+    grep -Fq '[update] claude/user-interview' "${tmp_root}/install-became-explicit.out" || fail "explicit-status link update was not reported"
+
+    # A skill that stopped being explicit loses its disabled render.
+    mkdir -p "${render_root}/engineering/prototype-build"
+    printf -- '---\ndisable-model-invocation: true\n---\n' >"${render_root}/engineering/prototype-build/SKILL.md"
+    rm "${claude_skills}/prototype-build"
+    ln -s "${render_root}/engineering/prototype-build" "${claude_skills}/prototype-build"
+    MECHA_SKILL_ROOT="${tmp_root}/skills" "${ROOT_DIR}/install.sh" prototype-build >"${tmp_root}/install-no-longer-explicit.out"
+    assert_symlink_to "${claude_skills}/prototype-build" "${ROOT_DIR}/families/engineering/prototype-build"
+    assert_not_exists "${render_root}/engineering/prototype-build"
 }
 
 use_case_checks() {

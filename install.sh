@@ -273,6 +273,15 @@ render_claude_skill() {
     printf '%s\n' "${rendered}"
 }
 
+managed_link_target() {
+    case "$1" in
+        "${ROOT_DIR}/families/"*|"${CLAUDE_RENDER_ROOT}/"*|"$(physical_render_root)/"*)
+            return 0
+            ;;
+    esac
+    return 1
+}
+
 link_skill() {
     local skill_root="$1"
     local link_name="$2"
@@ -289,7 +298,13 @@ link_skill() {
             printf '[ok] %s already installed\n' "${label}"
             return 0
         fi
-        # Never replace links that the user or another tool may own.
+        # Links into this checkout or its render tree are ours; repoint them
+        # when a skill's explicit status changes. Never replace other links.
+        if managed_link_target "$(readlink "${target_path}")"; then
+            ln -sfn "${source_real}" "${target_path}"
+            printf '[update] %s -> %s\n' "${label}" "${source_real}"
+            return 0
+        fi
         printf '[skip] %s exists as an unrelated symlink\n' "${target_path}"
         return 0
     fi
@@ -309,6 +324,7 @@ install_skill() {
     local source_dir
     local source_real
     local claude_source
+    local stale_render
 
     if ! source_dir="$(skill_dir_for "${name}")"; then
         printf '[missing] %s is not a skill in this library\n' "${name}"
@@ -326,6 +342,13 @@ install_skill() {
         claude_source="$(resolve_dir "$(render_claude_skill "${source_real}")")"
     fi
     link_skill "${CLAUDE_SKILL_ROOT}" "${name}" "${claude_source}" "claude/${name}"
+
+    # A skill that is no longer explicit must not keep a disabled render.
+    stale_render="${CLAUDE_RENDER_ROOT}/families/$(basename "$(dirname "${source_real}")")/${name}"
+    if [ "${claude_source}" = "${source_real}" ] && [ -d "${stale_render}" ] && [ ! -L "${stale_render}" ]; then
+        rm -rf "${stale_render}"
+        printf '[prune] %s is no longer explicit\n' "${stale_render}"
+    fi
 }
 
 # Rendered adapters of removed skills are real directories, so links to them
