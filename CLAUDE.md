@@ -15,17 +15,11 @@ uv sync --dev
 ./uninstall.sh
 ```
 
-Run `./test.sh` after changing skills, templates, docs, validators, evaluation
-corpora, or install behavior.
+## Claude Code deltas
 
-## Claude Code Deltas
-
-- Shared `SKILL.md` files follow the portable Agent Skills contract.
-- Codex invocation policy lives in `agents/openai.yaml`; do not assume Claude
-  Code enforces those fields.
-- Treat `interview-me`, `product-co-design`, `low-friction-collaboration`,
-  `ai-pipeline`, and `multi-step-governance` as explicit-only.
-- Only `parallel-subagents` and `second-opinion` may authorize subagents, when
-  the host exposes that capability.
-- Keep Claude-specific invocation and telemetry logic in an adapter rather
-  than shared skill frontmatter.
+- Claude Code does not read `agents/openai.yaml`. Explicit-only skills reach
+  Claude through `install.sh`, which renders them with
+  `disable-model-invocation: true`; never add that field to source frontmatter.
+- Invoke skills as `/name` here; Codex uses `$name`.
+- Live Claude evals run through `scripts/eval_hosts.py` and need
+  `CLAUDE_CODE_OAUTH_TOKEN`.

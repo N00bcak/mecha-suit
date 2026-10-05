@@ -99,6 +99,9 @@
   because Claude Code skips a symlinked `~/.claude/CLAUDE.md` in Cowork
   sessions; links left by earlier installs are migrated automatically. Full
   uninstall removes an unmodified copy and the render tree.
+- Use `templates/repo-CLAUDE.template.md` for project-level adaptation. Name
+  skills in the host's syntax: `/name` in Claude files, `$name` in Codex files.
+  Claude starts an explicit-only skill only from a leading `/name`.
 - Reuse the host-neutral evaluation corpora when a verified Claude runner is
   available; keep Claude invocation and telemetry handling in its adapter.
 

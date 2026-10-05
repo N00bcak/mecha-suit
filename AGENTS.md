@@ -21,8 +21,9 @@ install scripts, and documentation. Runtime behavior remains in each skill's
 
 ## Working discipline
 
-Before a non-trivial change, state the goal, material assumptions, and the
-smallest useful plan. Inspect available context before asking questions. If a
+State the goal and material assumptions before a non-trivial change. Add the
+smallest useful plan only when the change touches an architecture invariant or
+the install scripts. Inspect available context before asking questions. If a
 missing user-owned choice changes architecture or scope, ask one focused
 question; otherwise state a reversible assumption and proceed.
 
@@ -38,25 +39,20 @@ resulting diff. Do not claim verification you did not perform.
 
 ### Native selection is the top layer
 
-The host selects callable skills from leaf frontmatter and handles ordinary
-clarification. Do not add a router, registry, orchestration layer, score
-matrix, or duplicate selection table. Keep positive task and artifact cues in
-each leaf description.
+- The host selects callable skills from leaf frontmatter and handles ordinary
+  clarification.
+- Do not add a router, registry, orchestration layer, score matrix, or
+  duplicate selection table.
+- Keep positive task and artifact cues in each leaf description.
 
 ### Skills stay narrow
 
-Specialist leaves own one recognizable job. Current leaves include
-`interview-me`, `product-co-design`, `low-friction-collaboration`,
-`product-research`, `domain-modeling`, `decision-mapping`, `portable-handoff`,
-`parallel-subagents`, `second-opinion`, `technical-research`,
-`implementation-spec`, `work-slicing`, `large-codebase-change`,
-`prototype-builder`, `diagnosing-bugs`, `code-review`,
-`ai-data-preparation`, `ai-insight-development`,
-`ai-representation-workbench`, `ai-problem-modeling`, and `ai-performance`.
-
-`ai-pipeline` is an explicit-only conceptual manual rather than a specialist
-execution leaf. Add no broad umbrella skill without a demonstrated ownership
-gap.
+- Specialist leaves own one recognizable job. The catalog lives in
+  `docs/skills.md` and `families/`; do not copy it here.
+- `ai-pipeline` is an explicit-only conceptual manual rather than a specialist
+  execution leaf.
+- Add no broad umbrella skill without a demonstrated ownership gap.
+- Skill names are shared by every host, so avoid host built-in names.
 
 ### Interaction lifetime shapes the contract
 
@@ -84,20 +80,22 @@ future concepts in `docs/architecture.md` until then.
 
 ### Subagent authorization has two owners
 
-Only `parallel-subagents` and `second-opinion` may authorize subagent use.
-Every other skill must not spawn, request, assume, or depend on subagents.
-
-Both authorized skills must check host capability, preserve main-process
-ownership, prohibit nested delegation, and require structured evidence.
-`parallel-subagents` requires independent non-overlapping work;
-`second-opinion` requires one non-leading review and main-process adjudication.
+- Only `parallel-subagents` and `second-opinion` may authorize subagent use.
+  Every other skill must not spawn, request, assume, or depend on subagents.
+- Both authorized skills must check host capability, preserve main-process
+  ownership, prohibit nested delegation, and require structured evidence.
+- `parallel-subagents` requires independent non-overlapping work;
+  `second-opinion` requires one non-leading review and main-process
+  adjudication.
 
 ### Durable work does not route
 
-Only `multi-step-governance` may update a matching `.mecha/work/<slug>/index.md`
-record under `shared/rubrics/lifecycle-contract.md`. Contributors return
-verified artifacts; the record does not select or invoke skills. Accepted intent
-remains user-authoritative. Ad-hoc work creates no record.
+- Only `multi-step-governance` may update a matching
+  `.mecha/work/<slug>/index.md` record under
+  `shared/rubrics/lifecycle-contract.md`.
+- Contributors return verified artifacts; the record does not select or invoke
+  skills.
+- Accepted intent remains user-authoritative. Ad-hoc work creates no record.
 
 ## File ownership
 
@@ -145,6 +143,17 @@ output. Live evaluation is optional evidence, not a merge gate.
 If a public skill or contract changes, update the applicable template,
 `docs/skills.md`, `docs/maintenance-playbook.md`, focused tests, evaluation
 cases, and `docs/architecture.md` only where ownership or rationale changed.
+
+## Gotchas
+
+- Run `install.sh`, `uninstall.sh`, and live evals only with temporary
+  `CODEX_HOME`, `CLAUDE_CONFIG_DIR`, and `MECHA_SKILL_ROOT`; never against the
+  real home directory unless the user asks.
+- `./test.sh` rewrites the tracked `scripts/__pycache__` bytecode; restore it
+  before reviewing the diff.
+- Bulk renames also match shell variables and eval ids; review every hit.
+- Live Claude evals need `CLAUDE_CODE_OAUTH_TOKEN` from `claude setup-token`;
+  live runs cost money, so ask before starting them.
 
 ## Definition of done
 

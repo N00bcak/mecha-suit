@@ -399,7 +399,6 @@ writing_family_checks() {
 }
 
 metadata_policy_checks() {
-    grep -Fq '`ai-pipeline`' "${ROOT_DIR}/CLAUDE.md" || fail "CLAUDE metadata policy does not mention ai-pipeline"
     grep -Fq '`ai-pipeline`' "${ROOT_DIR}/README.md" || fail "README metadata policy does not mention ai-pipeline"
     grep -Fq '`multi-step-governance`' "${ROOT_DIR}/docs/platform-notes.md" || fail "platform explicit-mode metadata policy is missing"
     pass "metadata policy"

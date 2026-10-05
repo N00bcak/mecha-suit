@@ -5,6 +5,16 @@ This profile is distilled from public posts across `docs/blog/` and
 competition recaps, challenge solutions, and criticism. It describes a range,
 not a character to perform.
 
+## Contents
+
+- Stable Tendencies
+- Technical And Research Posts
+- Competition Recaps And Personal Technical Posts
+- CTF Writeups
+- Polemical Posts
+- Surface Habits
+- Avoid Caricature
+
 ## Stable Tendencies
 
 - Begin near the actual motivation: a puzzle, result, irritation, surprising

@@ -1,7 +1,7 @@
 # AI Coding Discipline
 
-Apply `../../../shared/rubrics/change-discipline.md` as the universal floor,
-then use these AI-specific rules.
+These AI-specific rules extend the universal change-discipline floor that
+each AI skill loads alongside this file.
 
 ## Readability
 

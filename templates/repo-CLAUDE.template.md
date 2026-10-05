@@ -10,11 +10,12 @@ Use this repo-local file to adapt the global toolbox for Claude Code.
 - Keep ordinary implementation in the relevant specialist leaf.
 - Require explicit invocation for session overlays and interactive loops; keep
   at most one interactive loop active.
-- Do not authorize subagent use outside the global `parallel-subagents` and
-  `second-opinion` skill contracts.
-- Only `$multi-step-governance` creates or updates `.mecha/work/` state.
-  Resume candidates require fresh explicit invocation; contributors return
-  bounded artifacts and evidence.
+- Among Mecha Suit skills, only `parallel-subagents` and `second-opinion` may
+  use subagents; host-native workflows keep their own subagent rules.
+- Only `/multi-step-governance` creates or updates `.mecha/work/` state.
+  Contributors return bounded artifacts and evidence.
+- Treat resume candidates as advisory context. Offer reactivation with Claude
+  `/skill-name` syntax, and never activate one from the record alone.
 
 ## Project Commands
 

@@ -4,6 +4,18 @@ Use this reference for substantial revision, humanization, or a requested
 style audit. These are contextual editing signals, not evidence about who or
 what wrote a text.
 
+## Contents
+
+- Calibrate First
+- Meaning And Evidence
+- Abstraction And Inflation
+- Filler And Meta-Prose
+- Attribution And Confidence
+- Rhythm And Structure
+- Stock Personality
+- Formatting
+- Final Pass
+
 ## Calibrate First
 
 Establish the genre, audience, purpose, and existing voice before changing

@@ -9,8 +9,8 @@ Use this repo-local file to connect project facts to the global skill toolbox.
   materially changes the work.
 - Require explicit invocation for session overlays and interactive loops; keep
   at most one interactive loop active.
-- Do not authorize subagent use outside the global `parallel-subagents` and
-  `second-opinion` skill contracts.
+- Among Mecha Suit skills, only `parallel-subagents` and `second-opinion` may
+  use subagents; host-native workflows keep their own subagent rules.
 - Only `$multi-step-governance` creates or updates `.mecha/work/` state.
   Specialist skills return bounded artifacts and evidence for the governor.
 - Treat resume candidates as advisory context. Use Codex `$skill-name` syntax
