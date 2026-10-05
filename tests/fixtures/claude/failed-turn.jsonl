@@ -1,0 +1,2 @@
+{"type":"system","subtype":"init","cwd":"/WORKSPACE","model":"claude-haiku-4-5-20251001","mcp_servers":[{"name":"claude.ai Gmail","status":"needs-auth","source":"claudeai"}],"plugins":[{"name":"user-plugin","path":"/somewhere"}],"skills":["change-review","user-interview"],"tools":["Read","Bash","Skill"],"session_id":"s2"}
+{"type":"result","subtype":"error_max_turns","is_error":true,"num_turns":9,"result_index":0,"session_id":"s2"}

@@ -169,6 +169,11 @@ remain isolated. Explicit skills use structured bindings, while implicit
 skill-file-read evidence remains heuristic. Review live responses rather than
 treating them as a merge gate.
 
+Use `--host claude` or `--host both` to run the same cases on Claude Code. Each
+Claude run gets a temporary `CLAUDE_CONFIG_DIR`, so your installed skills and
+instructions never leak in. Authenticate once with `claude setup-token` and
+export the printed token as `CLAUDE_CODE_OAUTH_TOKEN`.
+
 For paired task-outcome comparisons, start with the offline fixture preview:
 
 ```bash
@@ -177,6 +182,7 @@ uv run python scripts/run_outcome_evals.py --dry-run
 
 The outcome runner compares project instructions alone against the same
 project with Mecha's global prompt and full catalog. Live runs require explicit
-model and effort settings and remain optional. See the
+model and effort settings and remain optional; pass `--host claude` to compare
+on Claude Code (the objective checks still run in Codex's read-only sandbox). See the
 [maintenance playbook](docs/maintenance-playbook.md#compare-actual-outcomes)
 for isolation requirements and manual review of the resulting evidence.

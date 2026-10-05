@@ -117,7 +117,23 @@
   through one ephemeral thread. It still infers implicit skill use from
   `SKILL.md` read commands and labels that evidence as heuristic.
 - The JSON corpora contain no `$` or `/` invocation syntax; adapters add it at
-  execution time.
+  execution time. A case that one host cannot express declares `hosts` with a
+  `hosts_reason`; Claude Code runs only one leading `/skill` per message, so
+  cases that invoke two explicit modes in one turn are Codex-only.
+- `--host claude` (or `both`) runs the same corpora through
+  `scripts/eval_hosts.py`. Each run gets a temporary home and
+  `CLAUDE_CONFIG_DIR`, installs only the case's skills with the real
+  `install.sh`, and authenticates with `CLAUDE_CODE_OAUTH_TOKEN` from
+  `claude setup-token`. Only `PATH`, locale, and certificate variables are
+  inherited, so `ANTHROPIC_API_KEY` or a provider switch cannot outrank the
+  token. `--bare` is not used: it ignores the token and skips `CLAUDE.md`.
+- The Claude adapter drives `claude -p` with stream-json input and output,
+  `--strict-mcp-config`, and `--disallowed-tools`. It aborts a run as
+  inconclusive unless the `init` event reports the evaluation workspace, the
+  requested model, no MCP servers or non-built-in plugins, no denied tools,
+  and exactly the case's Mecha skills. Implicit use is observed from `Skill`
+  tool calls and `SKILL.md` reads. Routing runs remove the global `CLAUDE.md`,
+  matching the Codex runner's empty user instructions.
 
 ### Codex outcome comparisons
 
@@ -132,7 +148,16 @@ are unchanged. This measures the isolated Mecha stack, not every installed
 plugin or a user's ambient host customization.
 
 Evaluator commands use the app-server command API under a read-only sandbox.
-They do not start model turns. See the maintenance playbook for opt-in runs and
+They do not start model turns.
+
+`--host claude` runs the same paired arms on Claude Code. The workspace adds a
+`CLAUDE.md` containing `@AGENTS.md`, because Claude's `InstructionsLoaded` hook
+does not report a natively read `AGENTS.md`. The hook log must list exactly the
+workspace files plus, in the Mecha arm, the global `CLAUDE.md`. Bash is allowed
+with Claude's sandbox enabled and no network domains, but Claude exposes no
+telemetry that confirms the sandbox, so the report records it as requested.
+Effort is set through `effortLevel` and is likewise unverified. The evaluator
+still uses Codex's read-only sandbox, so Codex must be installed. See the maintenance playbook for opt-in runs and
 interpretation; deterministic tests use a fake app server without credentials.
 
 ### Planning-mode adapter stub

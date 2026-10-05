@@ -2,7 +2,8 @@
 """Render or run host-neutral interaction evaluations through a host adapter.
 
 The Codex adapter uses structured inputs for explicit skills and labels
-implicit skill-file-read observations as heuristic.
+implicit skill-file-read observations as heuristic. The Claude adapter runs in
+an isolated config directory and observes Skill tool calls directly.
 """
 
 from __future__ import annotations
@@ -15,14 +16,18 @@ import subprocess
 import sys
 import tempfile
 import threading
+import os
 import time
 from pathlib import Path
 from typing import Any, Callable
+
+import eval_hosts
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CORPUS = ROOT / "evals" / "interaction-boundary.json"
 VALID_SPLITS = {"train", "validation"}
 VALID_KINDS = {"trigger", "interaction"}
+HOSTS = ("codex", "claude")
 
 
 class AppServerError(RuntimeError):
@@ -210,6 +215,13 @@ def validate_corpus(document: Any, known_skills: set[str] | None = None) -> list
         seen_ids.add(case_id)
         prefix = case_id
 
+        hosts = case.get("hosts")
+        if hosts is not None:
+            if not isinstance(hosts, list) or not hosts or not set(hosts) <= set(HOSTS):
+                failures.append(f"{prefix}: hosts must be a non-empty subset of {list(HOSTS)}")
+            if not isinstance(case.get("hosts_reason"), str) or not case["hosts_reason"].strip():
+                failures.append(f"{prefix}: hosts requires a hosts_reason")
+
         if case.get("split") not in VALID_SPLITS:
             failures.append(f"{prefix}: split must be train or validation")
         kind = case.get("kind")
@@ -271,6 +283,10 @@ def validate_corpus(document: Any, known_skills: set[str] | None = None) -> list
     return failures
 
 
+def cases_for_host(cases: list[dict[str, Any]], host: str) -> list[dict[str, Any]]:
+    return [case for case in cases if host in case.get("hosts", HOSTS)]
+
+
 def select_cases(
     corpus: dict[str, Any], split: str, requested_ids: list[str]
 ) -> list[dict[str, Any]]:
@@ -290,9 +306,15 @@ def select_cases(
 
 
 def render_turn(turn: dict[str, Any], host: str) -> str:
-    if host != "codex":
+    if host == "codex":
+        invocations = " ".join(f"${name}" for name in turn["explicit_invocations"])
+    elif host == "claude":
+        # Claude Code treats a leading /name as the explicit skill invocation.
+        if len(turn["explicit_invocations"]) > 1:
+            raise ValueError("Claude Code runs only one explicit skill per message")
+        invocations = " ".join(f"/{name}" for name in turn["explicit_invocations"])
+    else:
         raise ValueError(f"unsupported host: {host}")
-    invocations = " ".join(f"${name}" for name in turn["explicit_invocations"])
     return f"{invocations} {turn['prompt']}".strip()
 
 
@@ -638,6 +660,97 @@ def run_codex_case(case: dict[str, Any], runs: int, timeout: int) -> dict[str, A
     return result
 
 
+def run_claude_case(
+    case: dict[str, Any], runs: int, timeout: int, model: str | None, token: str | None,
+    effort: str | None = None,
+) -> dict[str, Any]:
+    results: list[dict[str, Any]] = []
+    loaded_counts = {name: 0 for name in case["available_skills"]}
+    read_counts = {name: 0 for name in case["available_skills"]}
+    successful_runs = 0
+    prompts = [render_turn(turn, "claude") for turn in case["turns"]]
+    explicit_bindings = {name for turn in case["turns"] for name in turn["explicit_invocations"]}
+    for run_number in range(1, runs + 1):
+        with tempfile.TemporaryDirectory(prefix="mecha-eval-claude-") as directory:
+            root = Path(directory).resolve()
+            home, workspace = root / "home", root / "workspace"
+            workspace.mkdir()
+            stderr = ""
+            try:
+                env = eval_hosts.isolated_environment(home, token)
+                # Match the Codex runner, which clears user instructions for routing runs.
+                eval_hosts.install(env, case["available_skills"], global_instructions=False)
+                eval_hosts.write_settings(env, sandbox=False, effort=effort)
+                command = eval_hosts.stream_command(
+                    model=model, permission_mode="default",
+                    denied_tools=eval_hosts.READ_ONLY_DENIED_TOOLS,
+                )
+                events, stderr = eval_hosts.run_turns(command, env, workspace, prompts, timeout)
+                session = eval_hosts.verify_session(
+                    events, workspace=workspace, expected_skills=case["available_skills"],
+                    model=model, denied_tools=eval_hosts.READ_ONLY_DENIED_TOOLS,
+                )
+                turns = eval_hosts.turn_results(events)
+                observed = eval_hosts.observe_skills(events, case["available_skills"])
+                run_succeeded = (
+                    len(turns) == len(case["turns"])
+                    and all(turn["status"] == "completed" for turn in turns)
+                )
+                if run_succeeded:
+                    successful_runs += 1
+                    for name in observed | explicit_bindings:
+                        loaded_counts[name] += 1
+                    for name in observed:
+                        read_counts[name] += 1
+                results.append({
+                    "run": run_number,
+                    "classification": run_classification(
+                        case, observed, explicit_bindings, run_succeeded, []
+                    ),
+                    "explicit_bindings": sorted(explicit_bindings),
+                    "observed_skill_reads": sorted(observed),
+                    "turns": turns,
+                    "tool_calls": [
+                        {"name": use.get("name"), "input": use.get("input")}
+                        for use in eval_hosts.tool_uses(events)
+                    ],
+                    "session": session,
+                    "stderr": stderr,
+                })
+            except (eval_hosts.ClaudeHostError, OSError) as error:
+                results.append({
+                    "run": run_number,
+                    "classification": "inconclusive",
+                    "explicit_bindings": [],
+                    "observed_skill_reads": [],
+                    "turns": [],
+                    "error": str(error),
+                    "stderr": stderr,
+                })
+
+    result = {
+        "id": case["id"],
+        "telemetry": {
+            "explicit": "leading-slash-invocation",
+            "implicit": "Skill tool calls plus SKILL.md reads",
+        },
+        "runs": results,
+        "successful_runs": successful_runs,
+        "loaded_rates": {
+            name: loaded_counts[name] / successful_runs if successful_runs else 0.0
+            for name in sorted(loaded_counts)
+        },
+        "observed_read_rates": {
+            name: read_counts[name] / successful_runs if successful_runs else 0.0
+            for name in sorted(read_counts)
+        },
+    }
+    if case["kind"] == "interaction":
+        result["evaluation"] = "manual-review-required"
+        result["expected_behaviors"] = case["expected"]["behaviors"]
+    return result
+
+
 def summarize_case(case: dict[str, Any], result: dict[str, Any], threshold: float) -> None:
     if case["kind"] != "trigger" or "loaded_rates" not in result:
         return
@@ -658,7 +771,9 @@ def summarize_case(case: dict[str, Any], result: dict[str, Any], threshold: floa
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--host", choices=("codex",), default="codex")
+    parser.add_argument("--host", choices=(*HOSTS, "both"), default="codex")
+    parser.add_argument("--model", help="Claude model alias or id; Codex uses its configured model")
+    parser.add_argument("--effort", help="Claude effortLevel; Codex uses its configured effort")
     parser.add_argument("--corpus", type=Path, default=DEFAULT_CORPUS)
     parser.add_argument("--split", choices=("train", "validation", "all"), default="validation")
     parser.add_argument("--case", action="append", default=[], dest="case_ids")
@@ -678,30 +793,52 @@ def main() -> int:
         print(f"[fail] {error}", file=sys.stderr)
         return 2
 
-    if args.dry_run:
-        report = dry_run(cases, args.host)
-    else:
-        if shutil.which("codex") is None:
-            print("[fail] Codex CLI is not available", file=sys.stderr)
+    hosts = list(HOSTS) if args.host == "both" else [args.host]
+    reports: dict[str, Any] = {}
+    for host in hosts:
+        host_cases = cases_for_host(cases, host)
+        if args.dry_run:
+            reports[host] = dry_run(host_cases, host)
+            continue
+        if shutil.which(host) is None:
+            print(f"[fail] {host} CLI is not available", file=sys.stderr)
+            return 2
+        token = os.environ.get(eval_hosts.TOKEN_VARIABLE)
+        if host == "claude" and not token:
+            print(f"[fail] {eval_hosts.TOKEN_VARIABLE} is required; run `claude setup-token`", file=sys.stderr)
             return 2
         runs = args.runs or corpus["default_runs"]
         if runs < 1:
             print("[fail] --runs must be positive", file=sys.stderr)
             return 2
-        results = [run_codex_case(case, runs, args.timeout) for case in cases]
-        by_id = {case["id"]: case for case in cases}
-        for result in results:
-            summarize_case(by_id[result["id"]], result, corpus["trigger_threshold"])
-        report = {
-            "host": args.host,
-            "telemetry": {
+        print(f"[run] {host}: {len(host_cases)} cases x {runs} runs", file=sys.stderr)
+        if host == "codex":
+            results = [run_codex_case(case, runs, args.timeout) for case in host_cases]
+            telemetry = {
                 "explicit": "structured skill input",
                 "implicit": "heuristic; Codex exposes no stable implicit-skill invocation event",
-            },
+            }
+        else:
+            results = [
+                run_claude_case(case, runs, args.timeout, args.model, token, args.effort)
+                for case in host_cases
+            ]
+            telemetry = {
+                "explicit": "leading /skill invocation",
+                "implicit": "Skill tool calls plus SKILL.md reads in an isolated CLAUDE_CONFIG_DIR",
+            }
+        by_id = {case["id"]: case for case in host_cases}
+        for result in results:
+            summarize_case(by_id[result["id"]], result, corpus["trigger_threshold"])
+        reports[host] = {
+            "host": host,
+            "telemetry": telemetry,
             "runs_per_trigger_case": runs,
             "trigger_threshold": corpus["trigger_threshold"],
+            "skipped_cases": sorted({case["id"] for case in cases} - set(by_id)),
             "results": results,
         }
+    report = reports[hosts[0]] if len(hosts) == 1 else {"hosts": reports}
 
     rendered = json.dumps(report, indent=2, sort_keys=True) + "\n"
     if args.output:

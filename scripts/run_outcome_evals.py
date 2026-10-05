@@ -22,6 +22,7 @@ import tempfile
 import time
 from typing import Any
 
+import eval_hosts
 from run_interaction_evals import (
     AppServerClient, AppServerError, collect_turn, listed_skills_for_workspace,
 )
@@ -366,6 +367,70 @@ def run_arm(case: dict, arm: str, model: str, effort: str, timeout: int,
     return result
 
 
+def run_claude_arm(case: dict, arm: str, model: str, effort: str, timeout: int,
+                   token: str | None, checker=run_checks) -> dict:
+    """Claude counterpart to run_arm, isolated by a temporary CLAUDE_CONFIG_DIR."""
+    result: dict[str, Any] = {"arm": arm, "status": "inconclusive", "turns": [], "events": [],
+                              "usage": None, "manual_review": [{"criterion": c, "verdict": None} for c in case["manual_review"]]}
+    result["user_turns"] = case["turns"]
+    started = time.monotonic()
+    with tempfile.TemporaryDirectory(prefix="mecha-outcome-claude-") as temporary:
+        root = Path(temporary).resolve()
+        home, workspace = root / "home", root / "workspace"
+        prepare_workspace(workspace, case)
+        # Claude reads AGENTS.md natively, but only a CLAUDE.md import reports the
+        # load through InstructionsLoaded, which the instruction check relies on.
+        (workspace / "CLAUDE.md").write_text("@AGENTS.md\n")
+        before = snapshot(workspace)
+        result["initial_files"] = before
+        result["initial_fingerprint"] = fingerprint(before)
+        env: dict[str, str] = {}
+        try:
+            env = eval_hosts.isolated_environment(home, token)
+            expected = sorted(eval_hosts.mecha_skill_names()) if arm == "mecha" else []
+            if expected:
+                eval_hosts.install(env, expected, global_instructions=True)
+            result["expected_catalog"] = expected
+            eval_hosts.write_settings(env, sandbox=True, effort=effort)
+            command = eval_hosts.stream_command(
+                model=model, permission_mode="acceptEdits",
+                denied_tools=eval_hosts.OUTCOME_DENIED_TOOLS, allowed_tools=["Bash"],
+            )
+            events, result["server_stderr"] = eval_hosts.run_turns(command, env, workspace, case["turns"], timeout)
+            result["events"] = events
+            session = eval_hosts.verify_session(
+                events, workspace=workspace, expected_skills=expected,
+                model=model, denied_tools=eval_hosts.OUTCOME_DENIED_TOOLS,
+            )
+            result["verified_model"] = session["model"]
+            result["requested_effort"] = effort
+            expected_files = {workspace / "CLAUDE.md", workspace / "AGENTS.md"}
+            if arm == "mecha":
+                expected_files.add(Path(env["CLAUDE_CONFIG_DIR"]) / "CLAUDE.md")
+            loaded = {str(Path(p).resolve()) for p in eval_hosts.loaded_instruction_files(env)}
+            if loaded != {str(p.resolve()) for p in expected_files}:
+                raise eval_hosts.ClaudeHostError(f"instruction files {sorted(loaded)} do not match the comparison arm")
+            result["turns"] = eval_hosts.turn_results(events)
+            if len(result["turns"]) != len(case["turns"]) or any(t["status"] != "completed" for t in result["turns"]):
+                raise eval_hosts.ClaudeHostError("turn failed; inspect retained trace")
+            result["usage"] = [t["usage"] for t in result["turns"]]
+            result["status"] = "completed"
+        except (eval_hosts.ClaudeHostError, OSError) as error:
+            result["error"] = eval_hosts.redact(str(error), env)
+        finally:
+            after = snapshot(workspace)
+            result["changes"] = changes(before, after)
+            result["scope"] = scope_check(result["changes"], case["allowed_changes"])
+            result["checks"] = {"status": "inconclusive"}
+            if result["status"] == "completed":
+                try:
+                    result["checks"] = checker(case, workspace, isolated_environment(root / "checker", None), timeout)
+                except (AppServerError, OSError, TimeoutError, subprocess.TimeoutExpired) as error:
+                    result["checks"] = {"status": "inconclusive", "error": str(error)}
+            result["elapsed_seconds"] = round(time.monotonic() - started, 3)
+    return result
+
+
 def comparison(cases: list[dict], runs: int, model: str, effort: str, timeout: int,
                auth_source: Path | None, runner=run_arm) -> dict:
     report = {"schema_version": 1, "model": model, "effort": effort,
@@ -407,6 +472,7 @@ def render_summary(report: dict) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--host", choices=("codex", "claude", "both"), default="codex")
     parser.add_argument("--case", action="append", default=[])
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--model")
@@ -425,17 +491,34 @@ def main(argv: list[str] | None = None) -> int:
         if args.output and args.output.suffix != ".json":
             raise ValueError("--output must end in .json (the companion report uses .md)")
         if args.dry_run:
-            report = {"mode": "dry-run", "cases": cases, "arms": ["baseline", "mecha"],
+            report = {"mode": "dry-run", "host": args.host, "cases": cases, "arms": ["baseline", "mecha"],
                       "runs": args.runs, "catalog": sorted(p.parent.name for p in ROOT.glob("families/*/*/SKILL.md"))}
         else:
             if not args.model or not args.effort:
                 raise ValueError("live comparisons require --model and --effort")
+            if args.host == "both":
+                raise ValueError("models differ per host; run --host codex and --host claude separately")
+            # The objective checker always runs in Codex's read-only sandbox.
             if shutil.which("codex") is None:
                 raise ValueError("Codex CLI is not available")
             auth_source = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex"))) / "auth.json"
-            version = subprocess.run(["codex", "--version"], capture_output=True, text=True, check=True).stdout.strip()
-            report = comparison(cases, args.runs, args.model, args.effort, args.timeout, auth_source)
-            report["codex_version"] = version
+            if args.host == "claude":
+                if shutil.which("claude") is None:
+                    raise ValueError("Claude CLI is not available")
+                token = os.environ.get(eval_hosts.TOKEN_VARIABLE)
+                if not token:
+                    raise ValueError(f"{eval_hosts.TOKEN_VARIABLE} is required; run `claude setup-token`")
+                runner = lambda case, arm, model, effort, timeout, _auth: run_claude_arm(
+                    case, arm, model, effort, timeout, token)
+                version_command = ["claude", "--version"]
+            else:
+                runner = run_arm
+                version_command = ["codex", "--version"]
+            print(f"[run] {args.host}: {len(cases)} cases x {args.runs} runs x 2 arms", file=sys.stderr)
+            version = subprocess.run(version_command, capture_output=True, text=True, check=True).stdout.strip()
+            report = comparison(cases, args.runs, args.model, args.effort, args.timeout, auth_source, runner)
+            report["host"] = args.host
+            report[f"{args.host}_version"] = version
             report["mecha_fingerprint"] = fingerprint({str(p.relative_to(ROOT)): p.read_text()
                 for parent in ("families", "shared", "templates")
                 for p in sorted((ROOT / parent).rglob("*")) if p.suffix in {".md", ".yaml"}})
